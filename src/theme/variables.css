@@ -1,2 +1,6 @@
 /* For information on how to create your own theme, please refer to:
 http://ionicframework.com/docs/theming/ */
+
+@layer theme, base, components, utilities;
+@import "tailwindcss/theme.css" layer(theme) prefix(tw);
+@import "tailwindcss/utilities.css" layer(utilities) prefix(tw);

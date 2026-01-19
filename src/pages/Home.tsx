@@ -7,8 +7,8 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import "./Home.css";
 import { scan } from "ionicons/icons";
+import "./Home.css";
 
 const Home: React.FC = () => {
   return (
@@ -19,9 +19,9 @@ const Home: React.FC = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
-        <div className="ion-padding">
+        <div className="tw:size-full tw:flex tw:items-center tw:justify-center ion-padding">
           <IonButton size="large">
-            Start Scanning
+            Start QR
             <IonIcon slot="end" ios={scan} md={scan}></IonIcon>
           </IonButton>
         </div>
