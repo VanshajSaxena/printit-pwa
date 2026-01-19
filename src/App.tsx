@@ -44,44 +44,52 @@ import "@ionic/react/css/palettes/dark.system.css";
 
 /* Theme variables */
 import "./theme/variables.css";
+import Scan from "./pages/Scan";
 
 setupIonicReact({ mode: "ios" });
 
 const App: React.FC = () => (
   <IonApp>
     <IonReactRouter>
-      <IonTabs>
-        <IonRouterOutlet>
-          <Route exact path="/home">
-            <Home />
-          </Route>
-          <Route exact path="/printers">
-            <Printers />
-          </Route>
-          <Route path="/settings">
-            <Settings />
-          </Route>
-          <Route exact path="/">
-            <Redirect to="/home" />
-          </Route>
-        </IonRouterOutlet>
-        <IonTabBar slot="bottom">
-          <IonTabButton tab="home" href="/home">
-            <IonIcon aria-hidden="true" icon={home} />
-            <IonLabel>Home</IonLabel>
-          </IonTabButton>
-          <IonTabButton tab="printers" href="/printers">
-            <IonIcon aria-hidden="true" icon={print} />
-            <IonLabel>Printers</IonLabel>
-          </IonTabButton>
-          <IonTabButton tab="settings" href="/settings">
-            <IonIcon aria-hidden="true" icon={settings} />
-            <IonLabel>Settings</IonLabel>
-          </IonTabButton>
-        </IonTabBar>
-      </IonTabs>
+      <IonRouterOutlet>
+        <Route exact path="/scan" render={() => <Scan />}></Route>
+        <Route path="/" component={TabsLayout} />
+      </IonRouterOutlet>
     </IonReactRouter>
   </IonApp>
+);
+
+const TabsLayout: React.FC = () => (
+  <IonTabs>
+    <IonRouterOutlet>
+      <Route exact path="/home">
+        <Home />
+      </Route>
+      <Route exact path="/printers">
+        <Printers />
+      </Route>
+      <Route path="/settings">
+        <Settings />
+      </Route>
+      <Route exact path="/">
+        <Redirect to="/home" />
+      </Route>
+    </IonRouterOutlet>
+    <IonTabBar slot="bottom">
+      <IonTabButton tab="home" href="/home">
+        <IonIcon aria-hidden="true" icon={home} />
+        <IonLabel>Home</IonLabel>
+      </IonTabButton>
+      <IonTabButton tab="printers" href="/printers">
+        <IonIcon aria-hidden="true" icon={print} />
+        <IonLabel>Printers</IonLabel>
+      </IonTabButton>
+      <IonTabButton tab="settings" href="/settings">
+        <IonIcon aria-hidden="true" icon={settings} />
+        <IonLabel>Settings</IonLabel>
+      </IonTabButton>
+    </IonTabBar>
+  </IonTabs>
 );
 
 export default App;
