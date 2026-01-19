@@ -50,6 +50,10 @@
     "vite": "^5.0.0",
     "vitest": "^0.34.6"
   },
+  "resolutions": {
+    "@types/react": "19.0.10",
+    "@types/react-dom": "19.0.4"
+  },
   "description": "An Ionic project",
   "packageManager": "yarn@4.12.0"
 }
