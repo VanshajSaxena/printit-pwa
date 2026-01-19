@@ -6,7 +6,7 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import ExploreContainer from "../components/ExploreContainer";
-import "./Tab1.css";
+import "./Home.css";
 
 const Home: React.FC = () => {
   return (
