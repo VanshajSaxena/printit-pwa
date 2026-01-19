@@ -1,11 +1,14 @@
 import {
+  IonButton,
   IonContent,
   IonHeader,
+  IonIcon,
   IonPage,
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
 import "./Home.css";
+import { scan } from "ionicons/icons";
 
 const Home: React.FC = () => {
   return (
@@ -16,11 +19,12 @@ const Home: React.FC = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
-        <IonHeader collapse="condense">
-          <IonToolbar>
-            <IonTitle size="large">Home</IonTitle>
-          </IonToolbar>
-        </IonHeader>
+        <div className="ion-padding">
+          <IonButton size="large">
+            Start Scanning
+            <IonIcon slot="end" ios={scan} md={scan}></IonIcon>
+          </IonButton>
+        </div>
       </IonContent>
     </IonPage>
   );
