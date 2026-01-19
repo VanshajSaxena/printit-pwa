@@ -3032,7 +3032,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@zxing/text-encoding@npm:^0.9.0":
+"@zxing/library@npm:^0.21.3":
+  version: 0.21.3
+  resolution: "@zxing/library@npm:0.21.3"
+  dependencies:
+    "@zxing/text-encoding": "npm:~0.9.0"
+    ts-custom-error: "npm:^3.2.1"
+  dependenciesMeta:
+    "@zxing/text-encoding":
+      optional: true
+  checksum: 10c0/c6b33998847ad2fda0bce2f07f5b625e33e9dd98f84818ceb976b1193936b69b38ac3120418cca24b38441c711cfd21208b50851967bf8f301567e7f70197268
+  languageName: node
+  linkType: hard
+
+"@zxing/text-encoding@npm:^0.9.0, @zxing/text-encoding@npm:~0.9.0":
   version: 0.9.0
   resolution: "@zxing/text-encoding@npm:0.9.0"
   checksum: 10c0/d15bff181d46c2ab709e7242801a8d40408aa8c19b44462e5f60e766bf59105b44957914ab6baab60d10d466a5e965f21fe890c67dfdb7d5c7f940df457b4d0d
@@ -7523,6 +7536,7 @@ __metadata:
     "@vitejs/plugin-legacy": "npm:^5.0.0"
     "@vitejs/plugin-react": "npm:^4.0.1"
     "@zxing/browser": "npm:^0.1.5"
+    "@zxing/library": "npm:^0.21.3"
     cypress: "npm:^13.5.0"
     eslint: "npm:^9.20.1"
     eslint-plugin-react: "npm:^7.32.2"
@@ -8939,6 +8953,13 @@ __metadata:
   peerDependencies:
     typescript: ">=4.8.4"
   checksum: 10c0/ed185861aef4e7124366a3f6561113557a57504267d4d452a51e0ba516a9b6e713b56b4aeaab9fa13de9db9ab755c65c8c13a777dba9133c214632cb7b65c083
+  languageName: node
+  linkType: hard
+
+"ts-custom-error@npm:^3.2.1":
+  version: 3.3.1
+  resolution: "ts-custom-error@npm:3.3.1"
+  checksum: 10c0/67cc807d03406d7eeb2b908408d455d253cc43b480d669e2e3ea028b9aaa2c78ad1b392425b86368bbbc3c43a15e4abe304312d87ed845091646ec1937bab982
   languageName: node
   linkType: hard
 
