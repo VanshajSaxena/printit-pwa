@@ -7,18 +7,18 @@ import {
 } from "@ionic/react";
 import "./Printers.css";
 
-const Tab2: React.FC = () => {
+const Printers: React.FC = () => {
   return (
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonTitle>Tab 2</IonTitle>
+          <IonTitle>Printers</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
         <IonHeader collapse="condense">
           <IonToolbar>
-            <IonTitle size="large">Tab 2</IonTitle>
+            <IonTitle size="large">Printers</IonTitle>
           </IonToolbar>
         </IonHeader>
       </IonContent>
@@ -26,4 +26,4 @@ const Tab2: React.FC = () => {
   );
 };
 
-export default Tab2;
+export default Printers;
