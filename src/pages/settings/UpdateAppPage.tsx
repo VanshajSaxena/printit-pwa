@@ -28,7 +28,8 @@ export default function UpdateAppPage() {
         <IonList inset>
           <IonItem>
             <IonLabel>Current version</IonLabel>
-            <IonLabel slot="end">0.1.0</IonLabel>
+            {/* This gets replaced during build process. */}
+            <IonLabel slot="end">{import.meta.env.VITE_APP_VERSION}</IonLabel>
           </IonItem>
         </IonList>
         {needRefresh[0] && (

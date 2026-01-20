@@ -1,6 +1,9 @@
+import { useUpdate } from "@hooks/useUpdate";
 import {
+  IonBadge,
   IonHeader,
   IonItem,
+  IonLabel,
   IonList,
   IonPage,
   IonTitle,
@@ -9,6 +12,7 @@ import {
 import AppContent from "@layout/AppContent";
 
 const SettingsPage: React.FC = () => {
+  const { needRefresh } = useUpdate();
   return (
     <IonPage>
       <IonHeader>
@@ -28,7 +32,8 @@ const SettingsPage: React.FC = () => {
             routerLink="/settings/update"
             routerDirection="forward"
           >
-            Check for updates
+            <IonLabel>Check for updates</IonLabel>
+            {needRefresh[0] && <IonBadge color={"danger"}>1</IonBadge>}
           </IonItem>
         </IonList>
       </AppContent>
