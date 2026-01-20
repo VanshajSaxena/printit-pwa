@@ -7,6 +7,7 @@ import {
   IonLabel,
   IonList,
   IonPage,
+  IonText,
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
@@ -32,12 +33,16 @@ export default function UpdateAppPage() {
             <IonLabel slot="end">{import.meta.env.VITE_APP_VERSION}</IonLabel>
           </IonItem>
         </IonList>
-        {needRefresh[0] && (
+        {needRefresh[0] ? (
           <IonList inset>
             <IonItem button onClick={() => updateServiceWorker()}>
               Install Update
             </IonItem>
           </IonList>
+        ) : (
+          <IonText className="mt-8 flex items-center justify-center">
+            You are using the latest version of Printly.
+          </IonText>
         )}
       </AppContent>
     </IonPage>
