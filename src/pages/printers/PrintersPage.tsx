@@ -1,6 +1,5 @@
 import { IonHeader, IonPage, IonTitle, IonToolbar } from "@ionic/react";
-import AppContent from "./AppContent";
-import "./Printers.css";
+import AppContent from "@layout/AppContent";
 
 const Printers: React.FC = () => {
   return (

@@ -8,8 +8,7 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import { scan } from "ionicons/icons";
-import AppContent from "./AppContent";
-import "./Home.css";
+import AppContent from "@layout/AppContent";
 
 const Home: React.FC = () => {
   return (

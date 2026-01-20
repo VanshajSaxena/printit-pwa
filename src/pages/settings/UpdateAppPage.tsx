@@ -9,7 +9,7 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import AppContent from "./AppContent";
+import AppContent from "@layout/AppContent";
 
 export default function UpdateAppPage() {
   return (

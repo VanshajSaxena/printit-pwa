@@ -6,8 +6,7 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import AppContent from "./AppContent";
-import "./Settings.css";
+import AppContent from "@layout/AppContent";
 
 const Settings: React.FC = () => {
   return (

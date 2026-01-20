@@ -11,10 +11,10 @@ import {
 import { IonReactRouter } from "@ionic/react-router";
 import { home, print, settings } from "ionicons/icons";
 import { Redirect, Route } from "react-router-dom";
-import Home from "./pages/Home";
-import Printers from "./pages/Printers";
+import Home from "./pages/home/HomePage";
+import Printers from "./pages/printers/PrintersPage";
 import Scan from "./pages/Scan";
-import Settings from "./pages/Settings";
+import Settings from "./pages/settings/SettingsPage";
 
 /* Core CSS required for Ionic components to work properly */
 import "@ionic/react/css/core.css";
@@ -43,7 +43,7 @@ import "@ionic/react/css/palettes/dark.always.css";
 
 /* Theme variables */
 import "./theme/variables.css";
-import UpdateAppPage from "./pages/UpdateAppPage";
+import UpdateAppPage from "./pages/settings/UpdateAppPage";
 
 setupIonicReact({ mode: "ios" });
 
