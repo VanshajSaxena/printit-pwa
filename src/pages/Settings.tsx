@@ -23,7 +23,7 @@ const Settings: React.FC = () => {
             <IonTitle size="large">Settings</IonTitle>
           </IonToolbar>
         </IonHeader>
-        <IonList inset className="w-full max-w-2xl">
+        <IonList inset>
           <IonItem
             button
             routerLink="/settings/update"
