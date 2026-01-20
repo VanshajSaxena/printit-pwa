@@ -1,14 +1,14 @@
 import {
   IonButton,
-  IonContent,
   IonHeader,
   IonIcon,
   IonPage,
+  IonText,
   IonTitle,
   IonToolbar,
-  IonText,
 } from "@ionic/react";
 import { scan } from "ionicons/icons";
+import AppContent from "./AppContent";
 import "./Home.css";
 
 const Home: React.FC = () => {
@@ -19,7 +19,7 @@ const Home: React.FC = () => {
           <IonTitle>Home</IonTitle>
         </IonToolbar>
       </IonHeader>
-      <IonContent fullscreen scrollY={false}>
+      <AppContent fullscreen scrollY={false}>
         <div className="flex flex-col items-center justify-start gap-4 p-2 sm:gap-6 sm:p-2 md:gap-8 md:p-4 lg:gap-10 lg:p-6 xl:gap-12 xl:p-8 2xl:gap-14 2xl:p-10">
           <h3 className="text-center">Scan the QR code to start</h3>
           <IonButton size="large" routerLink="/scan" routerDirection="root">
@@ -33,7 +33,7 @@ const Home: React.FC = () => {
             </IonText>
           </p>
         </div>
-      </IonContent>
+      </AppContent>
     </IonPage>
   );
 };
