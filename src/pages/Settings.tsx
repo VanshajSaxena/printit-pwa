@@ -1,6 +1,8 @@
 import {
   IonContent,
   IonHeader,
+  IonItem,
+  IonList,
   IonPage,
   IonTitle,
   IonToolbar,
@@ -21,6 +23,17 @@ const Settings: React.FC = () => {
             <IonTitle size="large">Settings</IonTitle>
           </IonToolbar>
         </IonHeader>
+        <div className="flex h-fit w-full justify-center">
+          <IonList inset className="w-full max-w-2xl">
+            <IonItem
+              button
+              routerLink="/settings/update"
+              routerDirection="forward"
+            >
+              Check for updates
+            </IonItem>
+          </IonList>
+        </div>
       </IonContent>
     </IonPage>
   );

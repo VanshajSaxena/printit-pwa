@@ -37,14 +37,15 @@ import "@ionic/react/css/text-transformation.css";
  * https://ionicframework.com/docs/theming/dark-mode
  */
 
-/* import '@ionic/react/css/palettes/dark.always.css'; */
-/* import '@ionic/react/css/palettes/dark.class.css'; */
-import "@ionic/react/css/palettes/dark.system.css";
+import "@ionic/react/css/palettes/dark.always.css";
+// import "@ionic/react/css/palettes/dark.class.css";
+// import "@ionic/react/css/palettes/dark.system.css";
 
 /* Theme variables */
 import "./theme/variables.css";
+import UpdateAppPage from "./pages/UpdateAppPage";
 
-setupIonicReact();
+setupIonicReact({ mode: "ios" });
 
 const App: React.FC = () => (
   <IonApp>
@@ -63,8 +64,11 @@ const App: React.FC = () => (
               <Route exact path="/printers">
                 <Printers />
               </Route>
-              <Route path="/settings">
+              <Route exact path="/settings">
                 <Settings />
+              </Route>
+              <Route exact path="/settings/update">
+                <UpdateAppPage />
               </Route>
               <Route exact path="/">
                 <Redirect to="/home" />
