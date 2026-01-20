@@ -13,7 +13,7 @@ import { home, print, settings } from "ionicons/icons";
 import { Redirect, Route } from "react-router-dom";
 import Home from "./pages/home/HomePage";
 import Printers from "./pages/printers/PrintersPage";
-import Scan from "./pages/Scan";
+import ScanPage from "./pages/ScanPage";
 import Settings from "./pages/settings/SettingsPage";
 
 /* Core CSS required for Ionic components to work properly */
@@ -42,8 +42,8 @@ import "@ionic/react/css/palettes/dark.always.css";
 // import "@ionic/react/css/palettes/dark.system.css";
 
 /* Theme variables */
-import "./theme/variables.css";
 import UpdateAppPage from "./pages/settings/UpdateAppPage";
+import "./theme/variables.css";
 
 setupIonicReact();
 
@@ -52,7 +52,7 @@ const App: React.FC = () => (
     <IonReactRouter>
       <IonRouterOutlet>
         <Route exact path="/scan">
-          <Scan />
+          <ScanPage />
         </Route>
 
         <Route>

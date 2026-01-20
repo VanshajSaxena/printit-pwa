@@ -4,6 +4,7 @@ import {
   IonIcon,
   IonPage,
   useIonViewDidEnter,
+  useIonViewDidLeave,
   useIonViewWillLeave,
 } from "@ionic/react";
 import type { BrowserQRCodeReader, IScannerControls } from "@zxing/browser";
@@ -11,7 +12,7 @@ import { close } from "ionicons/icons";
 import { useRef } from "react";
 import { useHistory } from "react-router-dom";
 
-export default function Scan() {
+export default function ScanPage() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const controlRef = useRef<IScannerControls | null>(null);
   const readerRef = useRef<BrowserQRCodeReader | null>(null);
@@ -22,6 +23,9 @@ export default function Scan() {
     startScanning();
   });
 
+  useIonViewDidLeave(() => {
+    stopScanning();
+  });
   useIonViewWillLeave(() => {
     stopScanning();
   });
