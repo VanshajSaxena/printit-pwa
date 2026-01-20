@@ -1,23 +1,22 @@
 import {
+  IonButton,
   IonContent,
-  IonPage,
-  IonFab,
-  IonFabButton,
   IonIcon,
+  IonPage,
   useIonViewDidEnter,
   useIonViewWillLeave,
 } from "@ionic/react";
-import { close } from "ionicons/icons";
-import { useHistory } from "react-router-dom"; // v5 Hook
-import { useRef } from "react";
 import type { BrowserQRCodeReader, IScannerControls } from "@zxing/browser";
+import { close } from "ionicons/icons";
+import { useRef } from "react";
+import { useHistory } from "react-router-dom";
 
 export default function Scan() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const controlRef = useRef<IScannerControls | null>(null);
   const readerRef = useRef<BrowserQRCodeReader | null>(null);
 
-  const history = useHistory(); // Use history for v5
+  const history = useHistory();
 
   useIonViewDidEnter(() => {
     startScanning();
@@ -28,7 +27,6 @@ export default function Scan() {
   });
 
   async function startScanning() {
-    // Prevent double initialization
     if (controlRef.current) return;
 
     try {
@@ -48,12 +46,10 @@ export default function Scan() {
               const url = new URL(decodedText);
               const paths = url.pathname.split("/");
               if (paths[2]) {
-                // Stop camera before navigating away
                 stopScanning();
                 history.push(`/profile/${paths[2]}`);
               }
             } catch {
-              // Optional: Toast or Alert here
               console.warn("Invalid URL scanned");
             }
           }
@@ -75,30 +71,24 @@ export default function Scan() {
 
   return (
     <IonPage>
-      {/* fullscreen: Allows content to go behind status bar 
-         scrollY={false}: Prevents dragging the camera view 
-      */}
-      <IonContent fullscreen scrollY={false} className="bg-black">
-        <div className="relative h-full w-full overflow-hidden bg-black">
-          {/* Video Stream */}
+      <IonContent>
+        <div className="relative h-screen w-screen overflow-hidden bg-black">
           <video
             ref={videoRef}
             className="absolute inset-0 h-full w-full object-cover"
             muted
+            autoPlay
             playsInline
-            // AutoPlay removed here as we control it via JS,
-            // but keeping it doesn't hurt.
           />
 
-          {/* Overlay UI (Your Custom Design) */}
-          <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
+          <div className="absolute inset-0 flex flex-col items-center justify-center">
             <p className="z-10 mb-12 text-base font-medium text-white drop-shadow-md">
               Position the QR code within the frame
             </p>
             <div className="relative">
               <div className="relative z-0 size-64 rounded-lg shadow-[0_0_0_9999px_rgba(0,0,0,0.6)] md:size-72"></div>
 
-              <div className="absolute top-1/2 left-1/2 size-72 -translate-x-1/2 -translate-y-1/2 md:size-80">
+              <div className="pointer-events-none absolute top-1/2 left-1/2 size-72 -translate-x-1/2 -translate-y-1/2 md:size-80">
                 <div className="absolute top-0 left-0 h-8 w-8 rounded-tl-lg border-t-2 border-l-[3px] border-white"></div>
                 <div className="absolute top-0 right-0 h-8 w-8 rounded-tr-lg border-t-2 border-r-[3px] border-white"></div>
                 <div className="absolute bottom-0 left-0 h-8 w-8 rounded-bl-lg border-b-2 border-l-[3px] border-white"></div>
@@ -107,15 +97,16 @@ export default function Scan() {
             </div>
           </div>
 
-          <IonFab vertical="top" horizontal="end" slot="fixed" className="m-4">
-            <IonFabButton
-              color="dark"
-              className="bg-black/40 backdrop-blur-md"
-              onClick={() => history.goBack()}
-            >
-              <IonIcon icon={close} />
-            </IonFabButton>
-          </IonFab>
+          <IonButton
+            color={"light"}
+            shape={"round"}
+            className="--padding-start-0 --padding-end-0 absolute top-6 right-6 size-12"
+            onClick={() => {
+              history.goBack();
+            }}
+          >
+            <IonIcon slot="icon-only" icon={close} size={"small"}></IonIcon>
+          </IonButton>
         </div>
       </IonContent>
     </IonPage>
