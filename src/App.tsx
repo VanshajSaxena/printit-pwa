@@ -45,7 +45,7 @@ import "@ionic/react/css/palettes/dark.always.css";
 import "./theme/variables.css";
 import UpdateAppPage from "./pages/settings/UpdateAppPage";
 
-setupIonicReact({ mode: "ios" });
+setupIonicReact();
 
 const App: React.FC = () => (
   <IonApp>
