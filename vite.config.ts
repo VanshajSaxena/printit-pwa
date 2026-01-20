@@ -47,8 +47,10 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      "@pages": path.resolve(__dirname, "./src/pages"),
+      "@context": path.resolve(__dirname, "./src/context"),
+      "@hooks": path.resolve(__dirname, "./src/hooks"),
       "@layout": path.resolve(__dirname, "./src/layout"),
+      "@pages": path.resolve(__dirname, "./src/pages"),
     },
   },
 });

@@ -28,7 +28,7 @@ import "@ionic/react/css/palettes/dark.always.css";
 /* Theme variables */
 import AppLayout from "@layout/AppLayout";
 import "./theme/variables.css";
-import { UpdateProvider } from "./context/UpdateProvider";
+import { UpdateProvider } from "@context/UpdateProvider";
 
 setupIonicReact();
 
