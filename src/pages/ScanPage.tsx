@@ -4,7 +4,6 @@ import {
   IonIcon,
   IonPage,
   useIonViewDidEnter,
-  useIonViewDidLeave,
   useIonViewWillLeave,
 } from "@ionic/react";
 import type { BrowserQRCodeReader, IScannerControls } from "@zxing/browser";
@@ -23,9 +22,6 @@ export default function ScanPage() {
     startScanning();
   });
 
-  useIonViewDidLeave(() => {
-    stopScanning();
-  });
   useIonViewWillLeave(() => {
     stopScanning();
   });
