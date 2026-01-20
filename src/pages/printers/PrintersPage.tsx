@@ -1,7 +1,7 @@
 import { IonHeader, IonPage, IonTitle, IonToolbar } from "@ionic/react";
 import AppContent from "@layout/AppContent";
 
-const Printers: React.FC = () => {
+const PrintersPage: React.FC = () => {
   return (
     <IonPage>
       <IonHeader>
@@ -20,4 +20,4 @@ const Printers: React.FC = () => {
   );
 };
 
-export default Printers;
+export default PrintersPage;

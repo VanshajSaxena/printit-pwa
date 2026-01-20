@@ -1,9 +1,9 @@
 import { IonRouterOutlet, IonTabs } from "@ionic/react";
 import { IonReactRouter } from "@ionic/react-router";
-import Home from "@pages/home/HomePage";
-import Printers from "@pages/printers/PrintersPage";
+import HomePage from "@pages/home/HomePage";
+import PrintersPage from "@pages/printers/PrintersPage";
 import ScanPage from "@pages/ScanPage";
-import Settings from "@pages/settings/SettingsPage";
+import SettingsPage from "@pages/settings/SettingsPage";
 import UpdateAppPage from "@pages/settings/UpdateAppPage";
 import { Redirect, Route } from "react-router-dom";
 import AppTabBar from "./AppTabBar";
@@ -20,13 +20,13 @@ export default function Applayout() {
           <IonTabs>
             <IonRouterOutlet>
               <Route exact path="/home">
-                <Home />
+                <HomePage />
               </Route>
               <Route exact path="/printers">
-                <Printers />
+                <PrintersPage />
               </Route>
               <Route exact path="/settings">
-                <Settings />
+                <SettingsPage />
               </Route>
               <Route exact path="/settings/update">
                 <UpdateAppPage />

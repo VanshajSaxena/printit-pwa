@@ -10,7 +10,7 @@ import {
 import { scan } from "ionicons/icons";
 import AppContent from "@layout/AppContent";
 
-const Home: React.FC = () => {
+const HomePage: React.FC = () => {
   return (
     <IonPage>
       <IonHeader>
@@ -37,4 +37,4 @@ const Home: React.FC = () => {
   );
 };
 
-export default Home;
+export default HomePage;
