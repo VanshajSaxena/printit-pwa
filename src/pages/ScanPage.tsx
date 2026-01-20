@@ -106,6 +106,7 @@ export default function ScanPage() {
             shape={"round"}
             className="--padding-start-0 --padding-end-0 absolute top-6 right-6 size-12"
             onClick={() => {
+              stopScanning();
               history.goBack();
             }}
           >
