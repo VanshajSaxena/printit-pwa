@@ -1,3 +1,4 @@
+import { useUpdate } from "@hooks/useUpdate";
 import {
   IonBackButton,
   IonButtons,
@@ -12,6 +13,7 @@ import {
 import AppContent from "@layout/AppContent";
 
 export default function UpdateAppPage() {
+  const { needRefresh, updateServiceWorker } = useUpdate();
   return (
     <IonPage>
       <IonHeader translucent>
@@ -29,9 +31,13 @@ export default function UpdateAppPage() {
             <IonLabel slot="end">0.1.0</IonLabel>
           </IonItem>
         </IonList>
-        <IonList inset>
-          <IonItem button>Install Update</IonItem>
-        </IonList>
+        {needRefresh[0] && (
+          <IonList inset>
+            <IonItem button onClick={() => updateServiceWorker()}>
+              Install Update
+            </IonItem>
+          </IonList>
+        )}
       </AppContent>
     </IonPage>
   );
