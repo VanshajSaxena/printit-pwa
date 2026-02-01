@@ -1,2 +1,12 @@
 [build.environment]
   VITE_API_BASE_URL = "https://api.dev.print-ly.ink"
+
+[context.production.environment]
+  VITE_API_BASE_URL = "https://api.print-ly.ink"
+
+[context.deploy-preview.environment]
+  VITE_API_BASE_URL = "https://api.dev.print-ly.ink"
+
+[context.main.environment]
+  VITE_API_BASE_URL = "https://api.dev.print-ly.ink"
+
