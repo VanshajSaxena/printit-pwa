@@ -1,5 +1,6 @@
 import { IonRouterOutlet, IonTabs } from "@ionic/react";
 import { IonReactRouter } from "@ionic/react-router";
+import SelectedPrinterPage from "@pages/home/SelectedPrinterPage";
 import HomePage from "@pages/home/HomePage";
 import PrintersPage from "@pages/printers/PrintersPage";
 import ScanPage from "@pages/ScanPage";
@@ -7,6 +8,10 @@ import SettingsPage from "@pages/settings/SettingsPage";
 import UpdateAppPage from "@pages/settings/UpdateAppPage";
 import { Redirect, Route } from "react-router-dom";
 import AppTabBar from "./AppTabBar";
+import NotFoundPage from "@pages/NotFoundPage";
+import CheckoutPage from "@pages/home/CheckoutPage";
+import { RequireCurrentTransaction } from "@pages/home/RequireCurrentTransaction";
+import { ChangePrintSettingsPage } from "@pages/home/ChangePrintSettingsPage";
 
 export default function Applayout() {
   return (
@@ -15,12 +20,25 @@ export default function Applayout() {
         <Route exact path="/scan">
           <ScanPage />
         </Route>
-
+        <Route exact path="/not-found" component={NotFoundPage} />
         <Route>
           <IonTabs>
             <IonRouterOutlet>
               <Route exact path="/home">
                 <HomePage />
+              </Route>
+              <Route exact path="/home/printer/:id">
+                <SelectedPrinterPage />
+              </Route>
+              <Route exact path="/home/checkout">
+                <RequireCurrentTransaction>
+                  <CheckoutPage />
+                </RequireCurrentTransaction>
+              </Route>
+              <Route exact path="/home/checkout/print-settings">
+                <RequireCurrentTransaction>
+                  <ChangePrintSettingsPage />
+                </RequireCurrentTransaction>
               </Route>
               <Route exact path="/printers">
                 <PrintersPage />
@@ -34,6 +52,7 @@ export default function Applayout() {
               <Route exact path="/">
                 <Redirect to="/home" />
               </Route>
+              <Route render={() => <Redirect to="/not-found" />} />
             </IonRouterOutlet>
             <AppTabBar />
           </IonTabs>

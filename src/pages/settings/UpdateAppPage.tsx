@@ -1,13 +1,14 @@
 import { useUpdate } from "@hooks/useUpdate";
 import {
   IonBackButton,
+  IonBadge,
   IonButtons,
   IonHeader,
   IonItem,
   IonLabel,
   IonList,
+  IonNote,
   IonPage,
-  IonText,
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
@@ -26,7 +27,7 @@ export default function UpdateAppPage() {
         </IonToolbar>
       </IonHeader>
       <AppContent fullscreen>
-        <IonList inset>
+        <IonList inset className="py-0!">
           <IonItem>
             <IonLabel>Current version</IonLabel>
             {/* This gets replaced during build process. */}
@@ -34,15 +35,16 @@ export default function UpdateAppPage() {
           </IonItem>
         </IonList>
         {needRefresh[0] ? (
-          <IonList inset>
-            <IonItem button onClick={() => updateServiceWorker()}>
-              Install Update
+          <IonList inset className="py-0!">
+            <IonItem button detail onClick={() => void updateServiceWorker()}>
+              <IonLabel>Install Update</IonLabel>
+              <IonBadge color={"danger"}>1</IonBadge>
             </IonItem>
           </IonList>
         ) : (
-          <IonText className="mt-8 flex items-center justify-center">
+          <IonNote className="mt-8 flex items-center justify-center">
             You are using the latest version of Printly.
-          </IonText>
+          </IonNote>
         )}
       </AppContent>
     </IonPage>

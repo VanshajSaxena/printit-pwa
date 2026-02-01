@@ -16,7 +16,7 @@ export default defineConfig({
   plugins: [
     react(),
     legacy(),
-    tailwindcss(),
+    tailwindcss({ optimize: { minify: true } }),
     VitePWA({
       registerType: "prompt",
       // Caching strategies
@@ -51,7 +51,9 @@ export default defineConfig({
   },
   resolve: {
     alias: {
+      "@components": path.resolve(__dirname, "./src/components"),
       "@context": path.resolve(__dirname, "./src/context"),
+      "@store": path.resolve(__dirname, "./src/store"),
       "@hooks": path.resolve(__dirname, "./src/hooks"),
       "@layout": path.resolve(__dirname, "./src/layout"),
       "@pages": path.resolve(__dirname, "./src/pages"),

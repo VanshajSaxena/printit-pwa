@@ -2,35 +2,43 @@ import {
   IonButton,
   IonHeader,
   IonIcon,
+  IonNote,
   IonPage,
-  IonText,
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { scan } from "ionicons/icons";
 import AppContent from "@layout/AppContent";
+import { scan } from "ionicons/icons";
 
 const HomePage: React.FC = () => {
   return (
     <IonPage>
-      <IonHeader>
+      <IonHeader translucent>
         <IonToolbar>
           <IonTitle>Home</IonTitle>
         </IonToolbar>
       </IonHeader>
-      <AppContent fullscreen scrollY={false}>
-        <div className="flex flex-col items-center justify-start gap-4 p-2 sm:gap-6 sm:p-2 md:gap-8 md:p-4 lg:gap-10 lg:p-6 xl:gap-12 xl:p-8 2xl:gap-14 2xl:p-10">
-          <h3 className="text-center">Scan the QR code to start</h3>
-          <IonButton size="large" routerLink="/scan" routerDirection="root">
+      <AppContent
+        fullscreen
+        className="ion-padding flex min-h-full flex-col items-center justify-evenly"
+      >
+        <h1>Scan the QR code to start</h1>
+
+        <div className="flex w-full max-w-xs flex-col gap-4">
+          <IonButton
+            size="large"
+            routerLink="/scan"
+            routerDirection="none"
+            expand="block"
+          >
             Scan QR
             <IonIcon slot="end" ios={scan} md={scan}></IonIcon>
           </IonButton>
-          <p className="text-center text-sm">
-            You can find the QR code at your nearby prints shop. Tap to{" "}
-            <IonText color="primary" className="cursor-pointer font-medium">
-              Learn More.
-            </IonText>
-          </p>
+
+          <IonNote className="text-center text-sm leading-relaxed">
+            You can find the QR code at your nearby Printly Shops. Tap to{" "}
+            <span className="cursor-pointer font-medium">Learn More.</span>
+          </IonNote>
         </div>
       </AppContent>
     </IonPage>

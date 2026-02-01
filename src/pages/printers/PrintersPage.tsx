@@ -4,7 +4,7 @@ import AppContent from "@layout/AppContent";
 const PrintersPage: React.FC = () => {
   return (
     <IonPage>
-      <IonHeader>
+      <IonHeader translucent>
         <IonToolbar>
           <IonTitle>Printers</IonTitle>
         </IonToolbar>

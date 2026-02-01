@@ -9,8 +9,6 @@ import { home, print, settings } from "ionicons/icons";
 import { useUpdate } from "@hooks/useUpdate";
 export default function AppTabBar() {
   const { needRefresh } = useUpdate();
-  // __AUTO_GENERATED_PRINT_VAR_START__
-  console.log("Applayout needRefresh:", needRefresh[0]); // __AUTO_GENERATED_PRINT_VAR_END__
   return (
     <IonTabBar slot="bottom">
       <IonTabButton tab="home" href="/home">

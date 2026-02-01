@@ -21,14 +21,14 @@ import "@ionic/react/css/text-transformation.css";
  * https://ionicframework.com/docs/theming/dark-mode
  */
 
-import "@ionic/react/css/palettes/dark.always.css";
+// import "@ionic/react/css/palettes/dark.always.css";
 // import "@ionic/react/css/palettes/dark.class.css";
-// import "@ionic/react/css/palettes/dark.system.css";
+import "@ionic/react/css/palettes/dark.system.css";
 
 /* Theme variables */
+import { UpdateProvider } from "@context/UpdateProvider";
 import AppLayout from "@layout/AppLayout";
 import "./theme/variables.css";
-import { UpdateProvider } from "@context/UpdateProvider";
 
 setupIonicReact();
 

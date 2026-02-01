@@ -1,25 +1,49 @@
 import {
+  IonAlert,
   IonButton,
   IonContent,
   IonIcon,
   IonPage,
-  useIonViewDidEnter,
+  useIonRouter,
+  useIonViewWillEnter,
   useIonViewWillLeave,
 } from "@ionic/react";
 import type { BrowserQRCodeReader, IScannerControls } from "@zxing/browser";
 import { close } from "ionicons/icons";
-import { useRef } from "react";
-import { useHistory } from "react-router-dom";
+import { useRef, useState } from "react";
 
 export default function ScanPage() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const controlRef = useRef<IScannerControls | null>(null);
   const readerRef = useRef<BrowserQRCodeReader | null>(null);
 
-  const history = useHistory();
+  const alertDefinion = {
+    header: "Invalid QR Code",
+    message: "Looks like you are scanning an unsupported QR code.",
+    buttons: [
+      {
+        text: "Cancel",
+        handler: () => {
+          router.goBack();
+        },
+      },
+      {
+        text: "Try Again",
+        handler: () => {
+          setIsAlertOpen(false);
+        },
+      },
+    ],
+    onDidDismiss: () => {
+      setIsAlertOpen(false);
+    },
+  };
 
-  useIonViewDidEnter(() => {
-    startScanning();
+  const [isAlertOpen, setIsAlertOpen] = useState(false);
+  const router = useIonRouter();
+
+  useIonViewWillEnter(() => {
+    void startScanning();
   });
 
   useIonViewWillLeave(() => {
@@ -44,13 +68,20 @@ export default function ScanPage() {
             const decodedText = result.getText();
             try {
               const url = new URL(decodedText);
+              const hostname = url.hostname;
+              if (
+                hostname !== "app.print-ly.ink" &&
+                hostname !== "testing--printly-app.netlify.app"
+              ) {
+                setIsAlertOpen(true);
+              }
               const paths = url.pathname.split("/");
               if (paths[2]) {
                 stopScanning();
-                history.push(`/profile/${paths[2]}`);
+                router.push(`/home/printer/${paths[2]}`);
               }
             } catch {
-              console.warn("Invalid URL scanned");
+              setIsAlertOpen(true);
             }
           }
         },
@@ -71,7 +102,7 @@ export default function ScanPage() {
 
   return (
     <IonPage>
-      <IonContent>
+      <IonContent scrollY={false}>
         <div className="relative h-screen w-screen overflow-hidden bg-black">
           <video
             ref={videoRef}
@@ -102,13 +133,14 @@ export default function ScanPage() {
             shape={"round"}
             className="--padding-start-0 --padding-end-0 absolute top-6 right-6 size-12"
             onClick={() => {
-              history.goBack();
               stopScanning();
+              router.goBack();
             }}
           >
             <IonIcon slot="icon-only" icon={close} size={"small"}></IonIcon>
           </IonButton>
         </div>
+        <IonAlert isOpen={isAlertOpen} {...alertDefinion}></IonAlert>
       </IonContent>
     </IonPage>
   );

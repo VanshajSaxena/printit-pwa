@@ -15,7 +15,7 @@ const SettingsPage: React.FC = () => {
   const { needRefresh } = useUpdate();
   return (
     <IonPage>
-      <IonHeader>
+      <IonHeader translucent>
         <IonToolbar>
           <IonTitle>Settings</IonTitle>
         </IonToolbar>
@@ -26,9 +26,10 @@ const SettingsPage: React.FC = () => {
             <IonTitle size="large">Settings</IonTitle>
           </IonToolbar>
         </IonHeader>
-        <IonList inset>
+        <IonList inset className="py-0!">
           <IonItem
             button
+            detail
             routerLink="/settings/update"
             routerDirection="forward"
           >
