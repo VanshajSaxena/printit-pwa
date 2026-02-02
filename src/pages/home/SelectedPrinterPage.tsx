@@ -77,7 +77,7 @@ const SelectedPrinterPage: React.FC = () => {
         scrollY={true}
         className="ion-padding flex min-h-full flex-col items-center justify-between"
       >
-        <IonCard>
+        <IonCard className="max-w-full min-w-full">
           <IonCardHeader className="p-4">
             <div className="flex items-center gap-8">
               <PrinterGraphic />
