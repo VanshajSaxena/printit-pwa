@@ -29,15 +29,19 @@ import "@ionic/react/css/palettes/dark.system.css";
 import { UpdateProvider } from "@context/UpdateProvider";
 import AppLayout from "@layout/AppLayout";
 import "./theme/variables.css";
+import { QueryClientProvider } from "@tanstack/react-query";
+import { queryClient } from "./api/client";
 
 setupIonicReact();
 
 const App: React.FC = () => (
-  <UpdateProvider>
-    <IonApp>
-      <AppLayout />
-    </IonApp>
-  </UpdateProvider>
+  <QueryClientProvider client={queryClient}>
+    <UpdateProvider>
+      <IonApp>
+        <AppLayout />
+      </IonApp>
+    </UpdateProvider>
+  </QueryClientProvider>
 );
 
 export default App;
