@@ -2735,6 +2735,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@tanstack/query-core@npm:5.90.20":
+  version: 5.90.20
+  resolution: "@tanstack/query-core@npm:5.90.20"
+  checksum: 10c0/70637dfcecd5ed9d810629aa27f1632af8a4bcd083e75cf29408d058c32f8234704a3231ec280e2c4016ea0485b16124fdf70ab97793b5a7b670f43f7659e9fe
+  languageName: node
+  linkType: hard
+
+"@tanstack/react-query@npm:^5.90.20":
+  version: 5.90.20
+  resolution: "@tanstack/react-query@npm:5.90.20"
+  dependencies:
+    "@tanstack/query-core": "npm:5.90.20"
+  peerDependencies:
+    react: ^18 || ^19
+  checksum: 10c0/a8da6455d02ec769afc9ad528ec7b576d0becedfb5349e32592b9991a3c71a162f7115c054116d0101b55a473c689c06f8b03a7f56a9904f4329f75370e5a3f4
+  languageName: node
+  linkType: hard
+
 "@testing-library/dom@npm:>=7.21.4":
   version: 10.4.1
   resolution: "@testing-library/dom@npm:10.4.1"
@@ -7845,6 +7863,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"openapi-react-query@npm:^0.5.1":
+  version: 0.5.1
+  resolution: "openapi-react-query@npm:0.5.1"
+  dependencies:
+    openapi-typescript-helpers: "npm:^0.0.15"
+  peerDependencies:
+    "@tanstack/react-query": ^5.80.0
+    openapi-fetch: ^0.15.0
+  checksum: 10c0/23701d4e40fbd09ed6e848b075aec96f12a172bacc93b67b81c5e461f4e30e3889defb48d2c52d9c03471aceb73b5291b1c3756ede4fce11ab27e6237d9c8f53
+  languageName: node
+  linkType: hard
+
 "openapi-typescript-helpers@npm:^0.0.15":
   version: 0.0.15
   resolution: "openapi-typescript-helpers@npm:0.0.15"
@@ -8335,6 +8365,7 @@ __metadata:
     "@ionic/react": "npm:^8.5.0"
     "@ionic/react-router": "npm:^8.5.0"
     "@tailwindcss/vite": "npm:^4.1.18"
+    "@tanstack/react-query": "npm:^5.90.20"
     "@testing-library/dom": "npm:>=7.21.4"
     "@testing-library/jest-dom": "npm:^5.16.5"
     "@testing-library/react": "npm:^16.2.0"
@@ -8360,6 +8391,7 @@ __metadata:
     ionicons: "npm:^7.4.0"
     jsdom: "npm:^22.1.0"
     openapi-fetch: "npm:^0.15.0"
+    openapi-react-query: "npm:^0.5.1"
     openapi-typescript: "npm:^7.10.1"
     pdf-lib: "npm:^1.17.1"
     prettier: "npm:3.8.0"
