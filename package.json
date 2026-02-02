@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "start:dev": "ionic serve --no-open",
+    "api:gen": "openapi-typescript ./src/api/cloud-api.spec.json --alphabetize --root-types --root-types-no-schema-prefix --output ./src/api/cloud-api-types.ts",
     "build": "tsc && vite build",
     "preview": "vite preview",
     "test.e2e": "cypress run",
