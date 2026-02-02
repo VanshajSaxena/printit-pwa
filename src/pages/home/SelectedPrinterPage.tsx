@@ -1,3 +1,5 @@
+import { PrinterGraphic } from "@components/graphics/PrinterGraphic";
+import { PulseIcon } from "@components/graphics/PulseIcon";
 import {
   IonBackButton,
   IonButton,
@@ -19,11 +21,9 @@ import {
   useIonRouter,
 } from "@ionic/react";
 import AppContent from "@layout/AppContent";
+import { useDraftStore } from "@store/draftStore";
 import { cloudUploadOutline } from "ionicons/icons";
 import { ChangeEvent, useRef } from "react";
-import { PrinterGraphic } from "@components/graphics/PrinterGraphic";
-import { PulseIcon } from "@components/graphics/PulseIcon";
-import { useDraftStore } from "@store/draftStore";
 
 const SelectedPrinterPage: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);

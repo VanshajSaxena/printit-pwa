@@ -74,6 +74,7 @@ export default function ScanPage() {
                 hostname !== "testing--printly-app.netlify.app"
               ) {
                 setIsAlertOpen(true);
+                return;
               }
               const paths = url.pathname.split("/");
               if (paths[2]) {
