@@ -27,8 +27,10 @@ export default defineConfig({
         name: "Printly",
         short_name: "Printly",
         description: "Print, Instantly. Anywhere.",
-        theme_color: "#ffffff",
+        theme_color: "#4782eb",
         background_color: "#ffffff",
+        orientation: "portrait",
+        categories: ["productivity", "education"],
         icons: [
           {
             src: "pwa-192x192.png",
