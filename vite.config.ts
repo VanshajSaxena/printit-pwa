@@ -57,6 +57,7 @@ export default defineConfig({
       "@hooks": path.resolve(__dirname, "./src/hooks"),
       "@layout": path.resolve(__dirname, "./src/layout"),
       "@pages": path.resolve(__dirname, "./src/pages"),
+      "@api": path.resolve(__dirname, "./src/api"),
     },
   },
 });
