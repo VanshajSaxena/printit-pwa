@@ -23,7 +23,7 @@ interface DraftDocument {
 
 interface DraftJob extends DraftBaseType {
   document: DraftDocument;
-  copies: number;
+  copyCount: number;
 }
 
 interface DraftTransaction extends DraftBaseType {
@@ -74,7 +74,7 @@ export const useDraftStore = create<DraftStore>()(
             createdAt: now,
             updatedAt: now,
             document,
-            copies: 1, // we assume single copy by default
+            copyCount: 1, // we assume single copy by default
           };
         });
         const transaction = {
