@@ -44,17 +44,20 @@ export default function CheckoutPage() {
   const filesMutation = client.useMutation("post", "/api/v1/files/upload");
 
   const handleSubmit = async () => {
-    const documents = await Promise.all(
-      currentDraftTransaction.jobs.map(async ({ document }) => {
-        const resposne = await documentsMutation.mutateAsync({
-          body: {
-            filename: document.filename,
-            contentType: document.contentType,
-          },
-        });
-        return { ...resposne, draftId: document.id };
-      }),
+    const draftDocuments = currentDraftTransaction.jobs.map(
+      ({ document: draft }) => {
+        return {
+          filename: draft.filename,
+          contentType: draft.contentType,
+          draftId: draft.id,
+        };
+      },
     );
+
+    const { documents } = await documentsMutation.mutateAsync({
+      body: { documents: draftDocuments },
+    });
+
     const { signedUrls } = await filesMutation.mutateAsync({
       body: {
         ids: documents.map((document) => document.id),
@@ -70,23 +73,23 @@ export default function CheckoutPage() {
             throw Error("A document was not found.");
           }
 
-          const fileObj = currentDraftTransaction.jobs.find(
+          const file = currentDraftTransaction.jobs.find(
             ({ document: draftDocument }) =>
               draftDocument.id == document.draftId,
           )?.document.file;
 
-          if (!fileObj) {
+          if (!file) {
             throw Error("Persisted file no longer in storage.");
           }
 
           const uploadResponse = await fetch(url, {
             method: "PUT",
-            headers: { "Content-Type": fileObj.type },
-            body: fileObj,
+            headers: { "Content-Type": file.type },
+            body: file,
           });
 
           if (!uploadResponse.ok) {
-            throw new Error(`Upload Failed for ${fileObj.name}`);
+            throw new Error(`Upload Failed for ${file.name}`);
           }
           return true;
         }),
