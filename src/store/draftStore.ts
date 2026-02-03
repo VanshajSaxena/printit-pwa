@@ -11,7 +11,7 @@ interface DraftBaseType {
   updatedAt: number;
 }
 
-interface DraftDocument {
+interface DraftDocument extends DraftBaseType {
   filename: string;
   contentType: string;
   file: File;
@@ -58,6 +58,9 @@ export const useDraftStore = create<DraftStore>()(
           files.map(async (file) => {
             const pageCount = await getPdfPageCount(file);
             return {
+              id: getUUID(),
+              createdAt: now,
+              updatedAt: now,
               filename: file.name,
               contentType: file.type,
               file,

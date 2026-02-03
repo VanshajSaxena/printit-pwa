@@ -1,3 +1,5 @@
+import { client } from "@api/client";
+import { PulseIcon } from "@components/graphics/PulseIcon";
 import {
   IonBackButton,
   IonButton,
@@ -19,9 +21,8 @@ import {
   useIonRouter,
 } from "@ionic/react";
 import AppContent from "@layout/AppContent";
-import { document, printOutline, settingsOutline } from "ionicons/icons";
-import { PulseIcon } from "@components/graphics/PulseIcon";
 import { useDraftStore } from "@store/draftStore";
+import { document, printOutline, settingsOutline } from "ionicons/icons";
 
 export default function CheckoutPage() {
   const router = useIonRouter();
@@ -39,8 +40,63 @@ export default function CheckoutPage() {
     return store.state.transactions[currentDraftTransactionId];
   });
 
-  const handleSubmit = () => {
-    console.log("submit");
+  const documentsMutation = client.useMutation("post", "/api/v1/documents");
+  const filesMutation = client.useMutation("post", "/api/v1/files/upload");
+
+  const handleSubmit = async () => {
+    const documents = await Promise.all(
+      currentDraftTransaction.jobs.map(async ({ document }) => {
+        const resposne = await documentsMutation.mutateAsync({
+          body: {
+            filename: document.filename,
+            contentType: document.contentType,
+          },
+        });
+        return { ...resposne, draftId: document.id };
+      }),
+    );
+    const { signedUrls } = await filesMutation.mutateAsync({
+      body: {
+        ids: documents.map((document) => document.id),
+      },
+    });
+
+    try {
+      await Promise.all(
+        signedUrls.map(async ({ url, id }) => {
+          const document = documents.find((document) => (document.id = id));
+
+          if (!document) {
+            throw Error("A document was not found.");
+          }
+
+          const fileObj = currentDraftTransaction.jobs.find(
+            ({ document: draftDocument }) =>
+              (draftDocument.id = document.draftId),
+          )?.document.file;
+
+          if (!fileObj) {
+            throw Error("Persisted file no longer in storage.");
+          }
+
+          const uploadResponse = await fetch(url, {
+            method: "PUT",
+            headers: { "Content-Type": fileObj.type },
+            body: fileObj,
+          });
+
+          if (!uploadResponse.ok) {
+            throw new Error(`Upload Failed for ${fileObj.name}`);
+          }
+          return true;
+        }),
+      );
+    } catch (error) {
+      console.error(error);
+      console.error("Upload failed.");
+      return;
+    }
+    alert("uplaod successfull");
   };
 
   return (
@@ -175,7 +231,7 @@ export default function CheckoutPage() {
           color={"primary"}
           className="mt-auto mb-0 min-w-full"
           onClick={() => {
-            handleSubmit();
+            void handleSubmit();
           }}
         >
           <IonLabel>Start Printing</IonLabel>
