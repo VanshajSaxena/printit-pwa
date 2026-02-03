@@ -64,7 +64,7 @@ export default function CheckoutPage() {
     try {
       await Promise.all(
         signedUrls.map(async ({ url, id }) => {
-          const document = documents.find((document) => (document.id = id));
+          const document = documents.find((document) => document.id == id);
 
           if (!document) {
             throw Error("A document was not found.");
@@ -72,7 +72,7 @@ export default function CheckoutPage() {
 
           const fileObj = currentDraftTransaction.jobs.find(
             ({ document: draftDocument }) =>
-              (draftDocument.id = document.draftId),
+              draftDocument.id == document.draftId,
           )?.document.file;
 
           if (!fileObj) {
