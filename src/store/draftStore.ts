@@ -3,10 +3,7 @@ import { persist } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 import { createIdbStorage } from "./createIdbStorage";
 import { getPdfPageCount } from "../utils/getPdfPageCount";
-
-function getUUID() {
-  return crypto.randomUUID();
-}
+import { getUUID } from "@utils/getUUID";
 
 interface DraftBaseType {
   id: string;
