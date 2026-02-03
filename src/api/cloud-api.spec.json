@@ -417,7 +417,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CreateDocumentRequestDto"
+                "$ref": "#/components/schemas/CreateDocumentBatchRequestDto"
               }
             }
           }
@@ -428,7 +428,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/CreateDocumentResponseDto"
+                  "$ref": "#/components/schemas/CreateDocumentBatchResponseDto"
                 }
               }
             }
@@ -879,18 +879,43 @@
         "type": "object",
         "properties": {
           "filename": { "type": "string" },
-          "contentType": { "type": "string" }
+          "contentType": { "type": "string" },
+          "draftId": { "type": "string" }
         },
-        "required": ["filename", "contentType"]
+        "required": ["filename", "contentType", "draftId"]
+      },
+      "CreateDocumentBatchRequestDto": {
+        "type": "object",
+        "properties": {
+          "documents": {
+            "minItems": 1,
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/CreateDocumentRequestDto" }
+          }
+        },
+        "required": ["documents"]
       },
       "CreateDocumentResponseDto": {
         "type": "object",
         "properties": {
           "id": { "type": "number" },
           "filename": { "type": "string" },
-          "contentType": { "type": "string" }
+          "contentType": { "type": "string" },
+          "draftId": { "type": "string" }
         },
-        "required": ["id", "filename", "contentType"]
+        "required": ["id", "filename", "contentType", "draftId"]
+      },
+      "CreateDocumentBatchResponseDto": {
+        "type": "object",
+        "properties": {
+          "documents": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreateDocumentResponseDto"
+            }
+          }
+        },
+        "required": ["documents"]
       },
       "UpdateDocumentDto": { "type": "object", "properties": {} },
       "CreateJobResponseDto": {

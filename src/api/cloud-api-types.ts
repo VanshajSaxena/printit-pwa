@@ -232,12 +232,20 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
   schemas: {
+    CreateDocumentBatchRequestDto: {
+      documents: components["schemas"]["CreateDocumentRequestDto"][];
+    };
+    CreateDocumentBatchResponseDto: {
+      documents: components["schemas"]["CreateDocumentResponseDto"][];
+    };
     CreateDocumentRequestDto: {
       contentType: string;
+      draftId: string;
       filename: string;
     };
     CreateDocumentResponseDto: {
       contentType: string;
+      draftId: string;
       filename: string;
       id: number;
     };
@@ -351,6 +359,10 @@ export interface components {
   headers: never;
   pathItems: never;
 }
+export type CreateDocumentBatchRequestDto =
+  components["schemas"]["CreateDocumentBatchRequestDto"];
+export type CreateDocumentBatchResponseDto =
+  components["schemas"]["CreateDocumentBatchResponseDto"];
 export type CreateDocumentRequestDto =
   components["schemas"]["CreateDocumentRequestDto"];
 export type CreateDocumentResponseDto =
@@ -528,7 +540,7 @@ export interface operations {
     };
     requestBody: {
       content: {
-        "application/json": components["schemas"]["CreateDocumentRequestDto"];
+        "application/json": components["schemas"]["CreateDocumentBatchRequestDto"];
       };
     };
     responses: {
@@ -537,7 +549,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["CreateDocumentResponseDto"];
+          "application/json": components["schemas"]["CreateDocumentBatchResponseDto"];
         };
       };
     };
