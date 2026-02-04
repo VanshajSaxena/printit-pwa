@@ -496,7 +496,9 @@
           "required": true,
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/UpdateDocumentDto" }
+              "schema": {
+                "$ref": "#/components/schemas/UpdateDocumentRequestDto"
+              }
             }
           }
         },
@@ -819,6 +821,49 @@
         },
         "required": ["vendorId", "jobs"]
       },
+      "CreateDocumentResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "number" },
+          "filename": { "type": "string" },
+          "contentType": { "type": "string" },
+          "draftId": { "type": "string" },
+          "createdAt": { "format": "date-time", "type": "string" },
+          "updatedAt": { "format": "date-time", "type": "string" }
+        },
+        "required": [
+          "id",
+          "filename",
+          "contentType",
+          "draftId",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "CreateJobResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "number" },
+          "outputColor": {
+            "enum": ["COLOR", "MONOCHROME", "GRAYSCALE"],
+            "type": "string"
+          },
+          "copyCount": { "type": "number" },
+          "document": {
+            "$ref": "#/components/schemas/CreateDocumentResponseDto"
+          },
+          "createdAt": { "format": "date-time", "type": "string" },
+          "updatedAt": { "format": "date-time", "type": "string" }
+        },
+        "required": [
+          "id",
+          "outputColor",
+          "copyCount",
+          "document",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
       "CreateTransactionResponseDto": {
         "type": "object",
         "properties": {
@@ -827,9 +872,22 @@
             "enum": ["PENDING", "QUEUED", "PRINTING", "COMPLETED", "ERROR"],
             "type": "string"
           },
-          "friendlyId": { "type": "string" }
+          "friendlyId": { "type": "string" },
+          "jobs": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/CreateJobResponseDto" }
+          },
+          "createdAt": { "format": "date-time", "type": "string" },
+          "updatedAt": { "format": "date-time", "type": "string" }
         },
-        "required": ["id", "status", "friendlyId"]
+        "required": [
+          "id",
+          "status",
+          "friendlyId",
+          "jobs",
+          "createdAt",
+          "updatedAt"
+        ]
       },
       "FindDocumentResponseDto": {
         "type": "object",
@@ -895,16 +953,6 @@
         },
         "required": ["documents"]
       },
-      "CreateDocumentResponseDto": {
-        "type": "object",
-        "properties": {
-          "id": { "type": "number" },
-          "filename": { "type": "string" },
-          "contentType": { "type": "string" },
-          "draftId": { "type": "string" }
-        },
-        "required": ["id", "filename", "contentType", "draftId"]
-      },
       "CreateDocumentBatchResponseDto": {
         "type": "object",
         "properties": {
@@ -917,11 +965,15 @@
         },
         "required": ["documents"]
       },
-      "UpdateDocumentDto": { "type": "object", "properties": {} },
-      "CreateJobResponseDto": {
+      "UpdateDocumentRequestDto": {
         "type": "object",
-        "properties": { "id": { "type": "number" } },
-        "required": ["id"]
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["CREATED", "UPLOADED", "FAILED", "DELETED"]
+          }
+        },
+        "required": ["status"]
       },
       "UpdateJobDto": {
         "type": "object",
