@@ -112,23 +112,33 @@ export default function CheckoutPage() {
       );
 
       await Promise.all(
-        documents.map((document) =>
-          updateDocumentsMutation.mutateAsync({
+        documents.map(async (document) => {
+          // __AUTO_GENERATED_PRINT_VAR_START__
+          console.log(
+            "CheckoutPage#handleSubmit#(success) document.id:",
+            document.id,
+          ); // __AUTO_GENERATED_PRINT_VAR_END__
+          await updateDocumentsMutation.mutateAsync({
             params: { path: { id: document.id } },
             body: { status: "UPLOADED" },
-          }),
-        ),
+          });
+        }),
       );
     } catch (error) {
       console.error("Upload failed.", error);
 
       await Promise.all(
-        documents.map((document) =>
-          updateDocumentsMutation.mutateAsync({
+        documents.map(async (document) => {
+          // __AUTO_GENERATED_PRINT_VAR_START__
+          console.log(
+            "CheckoutPage#handleSubmit#(failed) document.id",
+            document.id,
+          ); // __AUTO_GENERATED_PRINT_VAR_END__
+          await updateDocumentsMutation.mutateAsync({
             params: { path: { id: document.id } },
             body: { status: "FAILED" },
-          }),
-        ),
+          });
+        }),
       );
       return;
     }
