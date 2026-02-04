@@ -40,46 +40,48 @@ export default function CheckoutPage() {
     return store.state.transactions[currentDraftTransactionId];
   });
 
-  const documentsMutation = client.useMutation("post", "/api/v1/documents");
+  const createDocumentsMutation = client.useMutation(
+    "post",
+    "/api/v1/documents",
+  );
+  const updateDocumentsMutation = client.useMutation(
+    "patch",
+    "/api/v1/documents/{id}",
+  );
   const filesMutation = client.useMutation("post", "/api/v1/files/upload");
 
   const handleSubmit = async () => {
     const draftDocuments = currentDraftTransaction.jobs.map(
-      ({ document: draft }) => {
-        return {
-          filename: draft.filename,
-          contentType: draft.contentType,
-          draftId: draft.id,
-        };
-      },
+      ({ document: draft }) => ({
+        filename: draft.filename,
+        contentType: draft.contentType,
+        draftId: draft.id,
+      }),
     );
 
-    const { documents } = await documentsMutation.mutateAsync({
+    const { documents } = await createDocumentsMutation.mutateAsync({
       body: { documents: draftDocuments },
     });
 
     const { signedUrls } = await filesMutation.mutateAsync({
-      body: {
-        ids: documents.map((document) => document.id),
-      },
+      body: { ids: documents.map((document) => document.id) },
     });
 
     try {
       await Promise.all(
         signedUrls.map(async ({ url, id }) => {
-          const document = documents.find((document) => document.id == id);
-
+          const document = documents.find((doc) => doc.id === id);
           if (!document) {
-            throw Error("A document was not found.");
+            throw new Error(`Document not found for id ${id.toString()}`);
           }
 
           const file = currentDraftTransaction.jobs.find(
             ({ document: draftDocument }) =>
-              draftDocument.id == document.draftId,
+              draftDocument.id === document.draftId,
           )?.document.file;
 
           if (!file) {
-            throw Error("Persisted file no longer in storage.");
+            throw new Error(`File not found for draftId ${document.draftId}`);
           }
 
           const uploadResponse = await fetch(url, {
@@ -89,17 +91,33 @@ export default function CheckoutPage() {
           });
 
           if (!uploadResponse.ok) {
-            throw new Error(`Upload Failed for ${file.name}`);
+            throw new Error(
+              `Upload failed for document ${id.toString()}: ${uploadResponse.status.toString()}`,
+            );
           }
-          return true;
         }),
       );
+
+      await Promise.all(
+        documents.map((document) =>
+          updateDocumentsMutation.mutateAsync({
+            params: { path: { id: document.id } },
+            body: { status: "UPLOADED" },
+          }),
+        ),
+      );
     } catch (error) {
-      console.error(error);
-      console.error("Upload failed.");
-      return;
+      console.error("Upload failed.", error);
+
+      await Promise.all(
+        documents.map((document) =>
+          updateDocumentsMutation.mutateAsync({
+            params: { path: { id: document.id } },
+            body: { status: "FAILED" },
+          }),
+        ),
+      );
     }
-    alert("uplaod successfull");
   };
 
   return (

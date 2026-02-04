@@ -323,7 +323,10 @@ export interface components {
       id: number;
       name: string;
     };
-    UpdateDocumentDto: Record<string, never>;
+    UpdateDocumentRequestDto: {
+      /** @enum {string} */
+      status: "CREATED" | "UPLOADED" | "FAILED" | "DELETED";
+    };
     UpdateJobDto: {
       copyCount?: number;
       documentId?: number;
@@ -388,7 +391,8 @@ export type FindJobResponseDto = components["schemas"]["FindJobResponseDto"];
 export type FindTransactionResponseDto =
   components["schemas"]["FindTransactionResponseDto"];
 export type PrinterResponseDto = components["schemas"]["PrinterResponseDto"];
-export type UpdateDocumentDto = components["schemas"]["UpdateDocumentDto"];
+export type UpdateDocumentRequestDto =
+  components["schemas"]["UpdateDocumentRequestDto"];
 export type UpdateJobDto = components["schemas"]["UpdateJobDto"];
 export type UpdatePrinterDto = components["schemas"]["UpdatePrinterDto"];
 export type UpdateTransactionDto =
@@ -607,7 +611,7 @@ export interface operations {
     };
     requestBody: {
       content: {
-        "application/json": components["schemas"]["UpdateDocumentDto"];
+        "application/json": components["schemas"]["UpdateDocumentRequestDto"];
       };
     };
     responses: {
