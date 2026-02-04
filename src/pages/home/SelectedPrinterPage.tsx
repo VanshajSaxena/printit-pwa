@@ -1,5 +1,6 @@
 import { PrinterGraphic } from "@components/graphics/PrinterGraphic";
 import { PulseIcon } from "@components/graphics/PulseIcon";
+import { useSocket } from "@hooks/useSocket";
 import {
   IonBackButton,
   IonButton,
@@ -23,7 +24,7 @@ import {
 import AppContent from "@layout/AppContent";
 import { useDraftStore } from "@store/draftStore";
 import { cloudUploadOutline } from "ionicons/icons";
-import { ChangeEvent, useRef } from "react";
+import { ChangeEvent, useEffect, useRef } from "react";
 import { useParams } from "react-router";
 
 interface SelectedPrinterPageProps {
@@ -31,6 +32,7 @@ interface SelectedPrinterPageProps {
 }
 
 export default function SelectedPrinterPage() {
+  const { connect, isConnected } = useSocket();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { id } = useParams<SelectedPrinterPageProps>();
   console.log(id);
@@ -64,6 +66,12 @@ export default function SelectedPrinterPage() {
     event.target.value = "";
     router.push("/home/checkout");
   };
+
+  useEffect(() => {
+    connect();
+  });
+
+  console.log("isConnected: ", isConnected);
 
   const pickFiles = () => {
     fileInputRef.current?.click();

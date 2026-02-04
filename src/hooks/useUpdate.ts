@@ -1,8 +1,8 @@
-import { useContext } from "react";
 import { UpdateContext } from "@context/UpdateContext";
+import { use } from "react";
 
 export function useUpdate() {
-  const context = useContext(UpdateContext);
+  const context = use(UpdateContext);
 
   if (!context) {
     throw new Error("useUpdate must be used within an UpdateProvider");

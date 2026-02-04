@@ -1,7 +1,7 @@
 import { createContext } from "react";
 import { Socket } from "socket.io-client";
 
-export interface SocketContextValue {
+export interface SocketContextType {
   socket: Socket | null;
   isConnected: boolean;
   connect: () => void;
@@ -10,6 +10,6 @@ export interface SocketContextValue {
   onDisconnect: (cb: (reason: string) => void) => () => void;
 }
 
-export const SocketContext = createContext<SocketContextValue | undefined>(
+export const SocketContext = createContext<SocketContextType | undefined>(
   undefined,
 );
