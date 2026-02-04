@@ -3,34 +3,34 @@ import { persist } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 import { createIdbStorage } from "./createIdbStorage";
 import { getPdfPageCount } from "../utils/getPdfPageCount";
+import { getUUID } from "@utils/getUUID";
 
-function getUUID() {
-  return crypto.randomUUID();
-}
+export type OutputColor = "COLOR" | "MONOCHROME" | "GRAYSCALE";
 
-interface DraftBaseType {
+export interface TimeAndIdentifierType {
   id: string;
-  createdAt: number;
-  updatedAt: number;
+  createdAt: string;
+  updatedAt: string;
 }
 
-interface DraftDocument {
+export interface DraftDocument extends TimeAndIdentifierType {
   filename: string;
   contentType: string;
   file: File;
   pageCount: number;
 }
 
-interface DraftJob extends DraftBaseType {
+export interface DraftJob extends TimeAndIdentifierType {
   document: DraftDocument;
-  copies: number;
+  copyCount: number;
+  outputColor: OutputColor;
 }
 
-interface DraftTransaction extends DraftBaseType {
+export interface DraftTransaction extends TimeAndIdentifierType {
   jobs: DraftJob[];
 }
 
-interface DraftStore {
+export interface DraftStore {
   state: {
     transactions: Record<string, DraftTransaction>;
     currentDraftTransactionId: string | null;
@@ -56,11 +56,14 @@ export const useDraftStore = create<DraftStore>()(
         });
       },
       createDraftTransaction: async (files) => {
-        const now = Date.now();
+        const now = new Date().toISOString();
         const documents = await Promise.all(
           files.map(async (file) => {
             const pageCount = await getPdfPageCount(file);
             return {
+              id: getUUID(),
+              createdAt: now,
+              updatedAt: now,
               filename: file.name,
               contentType: file.type,
               file,
@@ -74,8 +77,9 @@ export const useDraftStore = create<DraftStore>()(
             createdAt: now,
             updatedAt: now,
             document,
-            copies: 1, // we assume single copy by default
-          };
+            copyCount: 1, // we assume single copy by default
+            outputColor: "MONOCHROME", // we assume Monochrome by default
+          } satisfies DraftJob;
         });
         const transaction = {
           id: getUUID(),

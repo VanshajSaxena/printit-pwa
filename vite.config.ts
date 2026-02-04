@@ -27,8 +27,10 @@ export default defineConfig({
         name: "Printly",
         short_name: "Printly",
         description: "Print, Instantly. Anywhere.",
-        theme_color: "#ffffff",
+        theme_color: "#4782eb",
         background_color: "#ffffff",
+        orientation: "portrait",
+        categories: ["productivity", "education"],
         icons: [
           {
             src: "pwa-192x192.png",
@@ -51,12 +53,14 @@ export default defineConfig({
   },
   resolve: {
     alias: {
+      "@api": path.resolve(__dirname, "./src/api"),
       "@components": path.resolve(__dirname, "./src/components"),
       "@context": path.resolve(__dirname, "./src/context"),
-      "@store": path.resolve(__dirname, "./src/store"),
       "@hooks": path.resolve(__dirname, "./src/hooks"),
       "@layout": path.resolve(__dirname, "./src/layout"),
       "@pages": path.resolve(__dirname, "./src/pages"),
+      "@store": path.resolve(__dirname, "./src/store"),
+      "@utils": path.resolve(__dirname, "./src/utils"),
     },
   },
 });

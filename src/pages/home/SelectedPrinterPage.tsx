@@ -24,9 +24,16 @@ import AppContent from "@layout/AppContent";
 import { useDraftStore } from "@store/draftStore";
 import { cloudUploadOutline } from "ionicons/icons";
 import { ChangeEvent, useRef } from "react";
+import { useParams } from "react-router";
 
-const SelectedPrinterPage: React.FC = () => {
+interface SelectedPrinterPageProps {
+  id: string;
+}
+
+export default function SelectedPrinterPage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { id } = useParams<SelectedPrinterPageProps>();
+  console.log(id);
   const router = useIonRouter();
   const [present, dismiss] = useIonLoading();
 
@@ -128,6 +135,4 @@ const SelectedPrinterPage: React.FC = () => {
       </AppContent>
     </IonPage>
   );
-};
-
-export default SelectedPrinterPage;
+}

@@ -1,3 +1,5 @@
+import { client } from "@api/client";
+import { PulseIcon } from "@components/graphics/PulseIcon";
 import {
   IonBackButton,
   IonButton,
@@ -19,14 +21,17 @@ import {
   useIonRouter,
 } from "@ionic/react";
 import AppContent from "@layout/AppContent";
-import { document, printOutline, settingsOutline } from "ionicons/icons";
-import { PulseIcon } from "@components/graphics/PulseIcon";
 import { useDraftStore } from "@store/draftStore";
+import { useTransactionStore } from "@store/transactionStore";
+import { document, printOutline, settingsOutline } from "ionicons/icons";
 
 export default function CheckoutPage() {
   const router = useIonRouter();
   const getCurrentDraftTransactionId = useDraftStore(
     (store) => store.getCurrentDraftTransactionId,
+  );
+  const createTransaction = useTransactionStore(
+    (store) => store.createTransaction,
   );
   const currentDraftTransactionId = getCurrentDraftTransactionId();
 
@@ -38,6 +43,113 @@ export default function CheckoutPage() {
   const currentDraftTransaction = useDraftStore((store) => {
     return store.state.transactions[currentDraftTransactionId];
   });
+
+  const createDocumentsMutation = client.useMutation(
+    "post",
+    "/api/v1/documents",
+  );
+  const updateDocumentsMutation = client.useMutation(
+    "patch",
+    "/api/v1/documents/{id}",
+  );
+  const createTransactionMutation = client.useMutation(
+    "post",
+    "/api/v1/transactions",
+  );
+  const filesMutation = client.useMutation("post", "/api/v1/files/upload");
+
+  const handleSubmit = async () => {
+    const draftDocuments = currentDraftTransaction.jobs.map(
+      ({ document: draft }) => ({
+        filename: draft.filename,
+        contentType: draft.contentType,
+        draftId: draft.id,
+      }),
+    );
+
+    const { documents } = await createDocumentsMutation.mutateAsync({
+      body: { documents: draftDocuments },
+    });
+
+    const { signedUrls } = await filesMutation.mutateAsync({
+      body: { ids: documents.map((document) => document.id) },
+    });
+
+    try {
+      await Promise.all(
+        signedUrls.map(async ({ url, id }) => {
+          const document = documents.find((document) => document.id === id);
+          if (!document) {
+            throw new Error(`Document not found for id ${id.toString()}`);
+          }
+
+          const file = currentDraftTransaction.jobs.find(
+            ({ document: draftDocument }) =>
+              draftDocument.id === document.draftId,
+          )?.document.file;
+
+          if (!file) {
+            throw new Error(`File not found for draftId ${document.draftId}`);
+          }
+
+          const uploadResponse = await fetch(url, {
+            method: "PUT",
+            headers: { "Content-Type": file.type },
+            body: file,
+          });
+
+          if (!uploadResponse.ok) {
+            throw new Error(
+              `Upload failed for document ${id.toString()}: ${uploadResponse.status.toString()}`,
+            );
+          }
+        }),
+      );
+
+      await Promise.all(
+        documents.map(async (document) => {
+          await updateDocumentsMutation.mutateAsync({
+            params: { path: { id: document.id } },
+            body: { status: "UPLOADED" },
+          });
+        }),
+      );
+    } catch (error) {
+      console.error("Upload failed: ", error);
+
+      await Promise.all(
+        documents.map(async (document) => {
+          await updateDocumentsMutation.mutateAsync({
+            params: { path: { id: document.id } },
+            body: { status: "FAILED" },
+          });
+        }),
+      );
+      return;
+    }
+
+    const jobs = currentDraftTransaction.jobs.map((job) => {
+      const documentId = documents.find(
+        (document) => job.document.id === document.draftId,
+      )?.id;
+      if (!documentId) {
+        throw new Error(
+          `Missing document id for from documents received from backend`,
+        );
+      }
+      return {
+        copyCount: job.copyCount,
+        outputColor: job.outputColor,
+        documentId,
+      };
+    });
+
+    const transactionResponse = await createTransactionMutation.mutateAsync({
+      body: { jobs, vendorId: 1 },
+    });
+
+    createTransaction(transactionResponse);
+  };
 
   return (
     <IonPage>
@@ -127,7 +239,7 @@ export default function CheckoutPage() {
                     </IonCol>
 
                     <IonCol size="auto" className="min-w-12 text-center">
-                      {job.copies}
+                      {job.copyCount}
                     </IonCol>
 
                     <IonCol
@@ -154,7 +266,7 @@ export default function CheckoutPage() {
                   <strong>
                     {currentDraftTransaction.jobs.reduce(
                       (total, job) =>
-                        total + job.document.pageCount * job.copies,
+                        total + job.document.pageCount * job.copyCount,
                       0,
                     )}
                   </strong>
@@ -170,6 +282,9 @@ export default function CheckoutPage() {
           fill="solid"
           color={"primary"}
           className="mt-auto mb-0 min-w-full"
+          onClick={() => {
+            void handleSubmit();
+          }}
         >
           <IonLabel>Start Printing</IonLabel>
           <IonIcon icon={printOutline} slot="start"></IonIcon>
