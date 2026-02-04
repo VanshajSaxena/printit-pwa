@@ -48,6 +48,10 @@ export default function CheckoutPage() {
     "patch",
     "/api/v1/documents/{id}",
   );
+  const createTransactionMutation = client.useMutation(
+    "post",
+    "/api/v1/transactions",
+  );
   const filesMutation = client.useMutation("post", "/api/v1/files/upload");
 
   const handleSubmit = async () => {
@@ -117,7 +121,28 @@ export default function CheckoutPage() {
           }),
         ),
       );
+      return;
     }
+
+    const jobs = currentDraftTransaction.jobs.map((job) => {
+      const documentId = documents.find(
+        (document) => job.document.id === document.draftId,
+      )?.id;
+      if (!documentId) {
+        throw new Error(
+          `Missing document id for from documents received from backend`,
+        );
+      }
+      return {
+        copyCount: job.copyCount,
+        outputColor: job.outputColor,
+        documentId,
+      };
+    });
+
+    const transactionResponse = await createTransactionMutation.mutateAsync({
+      body: { jobs, vendorId: 1 },
+    });
   };
 
   return (

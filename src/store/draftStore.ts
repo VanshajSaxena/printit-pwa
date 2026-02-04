@@ -5,6 +5,8 @@ import { createIdbStorage } from "./createIdbStorage";
 import { getPdfPageCount } from "../utils/getPdfPageCount";
 import { getUUID } from "@utils/getUUID";
 
+type OutputColor = "COLOR" | "MONOCHROME" | "GRAYSCALE";
+
 interface DraftBaseType {
   id: string;
   createdAt: number;
@@ -21,6 +23,7 @@ interface DraftDocument extends DraftBaseType {
 interface DraftJob extends DraftBaseType {
   document: DraftDocument;
   copyCount: number;
+  outputColor: OutputColor;
 }
 
 interface DraftTransaction extends DraftBaseType {
@@ -75,7 +78,8 @@ export const useDraftStore = create<DraftStore>()(
             updatedAt: now,
             document,
             copyCount: 1, // we assume single copy by default
-          };
+            outputColor: "MONOCHROME", // we assume Monochrome by default
+          } satisfies DraftJob;
         });
         const transaction = {
           id: getUUID(),
