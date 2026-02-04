@@ -80,6 +80,7 @@ export default function CheckoutPage() {
         signedUrls.map(async ({ url, id }) => {
           const document = documents.find((doc) => doc.id === id);
           if (!document) {
+            console.error(`Document not found for id ${id.toString()}`);
             throw new Error(`Document not found for id ${id.toString()}`);
           }
 
@@ -89,6 +90,7 @@ export default function CheckoutPage() {
           )?.document.file;
 
           if (!file) {
+            console.error(`File not found for draftId ${document.draftId}`);
             throw new Error(`File not found for draftId ${document.draftId}`);
           }
 
@@ -99,6 +101,9 @@ export default function CheckoutPage() {
           });
 
           if (!uploadResponse.ok) {
+            console.error(
+              `Upload failed for document ${id.toString()}: ${uploadResponse.status.toString()}`,
+            );
             throw new Error(
               `Upload failed for document ${id.toString()}: ${uploadResponse.status.toString()}`,
             );
