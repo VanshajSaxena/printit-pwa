@@ -2,19 +2,25 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 import { createIdbStorage } from "./createIdbStorage";
+import { OutputColor, TimeAndIdentifierType } from "./draftStore";
+import { CreateTransactionResponseDto } from "@api/cloud-api-types";
 
-interface JobDocument {
+interface JobDocument extends Omit<TimeAndIdentifierType, "id"> {
   id: number;
+  filename: string;
+  contentType: string;
 }
 
-interface Job {
-  id: number;
-  documents: JobDocument;
+interface Job extends Omit<TimeAndIdentifierType, "id"> {
+  document: JobDocument;
   copyCount: number;
+  outputColor: OutputColor;
 }
 
-interface Transaction {
+interface Transaction extends Omit<TimeAndIdentifierType, "id"> {
   jobs: Job[];
+  friendlyId: string;
+  status: "PENDING" | "QUEUED" | "PRINTING" | "COMPLETED" | "ERROR";
 }
 
 interface TransactionState {
@@ -23,14 +29,21 @@ interface TransactionState {
 
 interface TransactionStore {
   state: TransactionState;
-  createTransaction: () => void;
+  createTransaction: (
+    transactionResponse: CreateTransactionResponseDto,
+  ) => void;
 }
 
 export const useTransactionStore = create<TransactionStore>()(
   persist(
-    immer((set, get) => ({
+    immer((set) => ({
       state: { transactions: {} },
-      createTransaction: () => ({}),
+      createTransaction: (transactionResponse) => {
+        set((store) => {
+          store.state.transactions[transactionResponse.id] ??=
+            transactionResponse;
+        });
+      },
     })),
     {
       name: "printly-transaction-store",

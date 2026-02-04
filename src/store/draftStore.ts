@@ -5,32 +5,32 @@ import { createIdbStorage } from "./createIdbStorage";
 import { getPdfPageCount } from "../utils/getPdfPageCount";
 import { getUUID } from "@utils/getUUID";
 
-type OutputColor = "COLOR" | "MONOCHROME" | "GRAYSCALE";
+export type OutputColor = "COLOR" | "MONOCHROME" | "GRAYSCALE";
 
-interface DraftBaseType {
+export interface TimeAndIdentifierType {
   id: string;
-  createdAt: number;
-  updatedAt: number;
+  createdAt: string;
+  updatedAt: string;
 }
 
-interface DraftDocument extends DraftBaseType {
+export interface DraftDocument extends TimeAndIdentifierType {
   filename: string;
   contentType: string;
   file: File;
   pageCount: number;
 }
 
-interface DraftJob extends DraftBaseType {
+export interface DraftJob extends TimeAndIdentifierType {
   document: DraftDocument;
   copyCount: number;
   outputColor: OutputColor;
 }
 
-interface DraftTransaction extends DraftBaseType {
+export interface DraftTransaction extends TimeAndIdentifierType {
   jobs: DraftJob[];
 }
 
-interface DraftStore {
+export interface DraftStore {
   state: {
     transactions: Record<string, DraftTransaction>;
     currentDraftTransactionId: string | null;
@@ -56,7 +56,7 @@ export const useDraftStore = create<DraftStore>()(
         });
       },
       createDraftTransaction: async (files) => {
-        const now = Date.now();
+        const now = new Date().toISOString();
         const documents = await Promise.all(
           files.map(async (file) => {
             const pageCount = await getPdfPageCount(file);

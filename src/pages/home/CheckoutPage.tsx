@@ -22,12 +22,16 @@ import {
 } from "@ionic/react";
 import AppContent from "@layout/AppContent";
 import { useDraftStore } from "@store/draftStore";
+import { useTransactionStore } from "@store/transactionStore";
 import { document, printOutline, settingsOutline } from "ionicons/icons";
 
 export default function CheckoutPage() {
   const router = useIonRouter();
   const getCurrentDraftTransactionId = useDraftStore(
     (store) => store.getCurrentDraftTransactionId,
+  );
+  const createTransaction = useTransactionStore(
+    (store) => store.createTransaction,
   );
   const currentDraftTransactionId = getCurrentDraftTransactionId();
 
@@ -143,6 +147,8 @@ export default function CheckoutPage() {
     const transactionResponse = await createTransactionMutation.mutateAsync({
       body: { jobs, vendorId: 1 },
     });
+
+    createTransaction(transactionResponse);
   };
 
   return (

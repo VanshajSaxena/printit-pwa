@@ -245,9 +245,13 @@ export interface components {
     };
     CreateDocumentResponseDto: {
       contentType: string;
+      /** Format: date-time */
+      createdAt: string;
       draftId: string;
       filename: string;
       id: number;
+      /** Format: date-time */
+      updatedAt: string;
     };
     CreateJobRequestDto: {
       copyCount: number;
@@ -256,7 +260,15 @@ export interface components {
       outputColor: "COLOR" | "MONOCHROME" | "GRAYSCALE";
     };
     CreateJobResponseDto: {
+      copyCount: number;
+      /** Format: date-time */
+      createdAt: string;
+      document: components["schemas"]["CreateDocumentResponseDto"];
       id: number;
+      /** @enum {string} */
+      outputColor: "COLOR" | "MONOCHROME" | "GRAYSCALE";
+      /** Format: date-time */
+      updatedAt: string;
     };
     CreatePrinterDto: {
       /** Format: json */
@@ -269,10 +281,15 @@ export interface components {
       vendorId: number;
     };
     CreateTransactionResponseDto: {
+      /** Format: date-time */
+      createdAt: string;
       friendlyId: string;
       id: number;
+      jobs: components["schemas"]["CreateJobResponseDto"][];
       /** @enum {string} */
       status: "PENDING" | "QUEUED" | "PRINTING" | "COMPLETED" | "ERROR";
+      /** Format: date-time */
+      updatedAt: string;
     };
     CreateVendorDto: {
       address?: string;
