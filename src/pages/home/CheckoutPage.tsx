@@ -78,7 +78,7 @@ export default function CheckoutPage() {
     try {
       await Promise.all(
         signedUrls.map(async ({ url, id }) => {
-          const document = documents.find((doc) => doc.id === id);
+          const document = documents.find((document) => document.id === id);
           if (!document) {
             console.error(`Document not found for id ${id.toString()}`);
             throw new Error(`Document not found for id ${id.toString()}`);
@@ -113,11 +113,6 @@ export default function CheckoutPage() {
 
       await Promise.all(
         documents.map(async (document) => {
-          // __AUTO_GENERATED_PRINT_VAR_START__
-          console.log(
-            "CheckoutPage#handleSubmit#(success) document.id:",
-            document.id,
-          ); // __AUTO_GENERATED_PRINT_VAR_END__
           await updateDocumentsMutation.mutateAsync({
             params: { path: { id: document.id } },
             body: { status: "UPLOADED" },
@@ -129,11 +124,6 @@ export default function CheckoutPage() {
 
       await Promise.all(
         documents.map(async (document) => {
-          // __AUTO_GENERATED_PRINT_VAR_START__
-          console.log(
-            "CheckoutPage#handleSubmit#(failed) document.id",
-            document.id,
-          ); // __AUTO_GENERATED_PRINT_VAR_END__
           await updateDocumentsMutation.mutateAsync({
             params: { path: { id: document.id } },
             body: { status: "FAILED" },
