@@ -171,7 +171,7 @@ export default function CheckoutPage() {
           <IonCardContent className="p-0!">
             <IonCardTitle>
               Printer Ready
-              <PulseIcon className="m-1 mt-0 align-middle"></PulseIcon>
+              <PulseIcon className="m-1 mt-0 align-middle" status={"online"} />
             </IonCardTitle>
             <IonCardSubtitle color={"medium"}>
               Galgotias University, Greater Noida, UP

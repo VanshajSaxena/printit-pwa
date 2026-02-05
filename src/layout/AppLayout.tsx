@@ -27,7 +27,7 @@ export default function Applayout() {
               <Route exact path="/home">
                 <HomePage />
               </Route>
-              <Route exact path="/home/printer/:id">
+              <Route exact path="/home/printer/:selector">
                 <SelectedPrinterPage />
               </Route>
               <Route exact path="/home/printer">

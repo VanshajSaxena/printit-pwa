@@ -94,6 +94,41 @@
         "tags": ["Vendor"]
       }
     },
+    "/api/v1/vendors/{selector}/presence": {
+      "get": {
+        "operationId": "VendorController_vendorPresent_v1",
+        "parameters": [
+          {
+            "name": "selector",
+            "required": true,
+            "in": "path",
+            "description": "The unique identifier",
+            "examples": {
+              "id": { "summary": "Internal ID", "value": 999 },
+              "slug": { "summary": "Slug", "value": "xi28b2sg8d" },
+              "username": { "summary": "Username", "value": "@username" }
+            },
+            "schema": {
+              "oneOf": [
+                { "type": "string", "description": "Slug or Username" },
+                { "type": "integer", "description": "Internal Database ID" }
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/VendorPresenceDto" }
+              }
+            }
+          }
+        },
+        "tags": ["Vendor"]
+      }
+    },
     "/api/v1/vendors/{id}": {
       "patch": {
         "operationId": "VendorController_update_v1",
@@ -541,9 +576,9 @@
         "tags": ["Document"]
       }
     },
-    "/api/job": {
+    "/api/v1/jobs": {
       "post": {
-        "operationId": "JobController_create",
+        "operationId": "JobController_create_v1",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -568,7 +603,7 @@
         "tags": ["Job"]
       },
       "get": {
-        "operationId": "JobController_findAll",
+        "operationId": "JobController_findAll_v1",
         "parameters": [],
         "responses": {
           "200": {
@@ -588,9 +623,9 @@
         "tags": ["Job"]
       }
     },
-    "/api/job/{id}": {
+    "/api/v1/jobs/{id}": {
       "get": {
-        "operationId": "JobController_findOne",
+        "operationId": "JobController_findOne_v1",
         "parameters": [
           {
             "name": "id",
@@ -614,7 +649,7 @@
         "tags": ["Job"]
       },
       "patch": {
-        "operationId": "JobController_update",
+        "operationId": "JobController_update_v1",
         "parameters": [
           {
             "name": "id",
@@ -646,7 +681,7 @@
         "tags": ["Job"]
       },
       "delete": {
-        "operationId": "JobController_remove",
+        "operationId": "JobController_remove_v1",
         "parameters": [
           {
             "name": "id",
@@ -776,6 +811,13 @@
           "address",
           "slug"
         ]
+      },
+      "VendorPresenceDto": {
+        "type": "object",
+        "properties": {
+          "status": { "type": "string", "enum": ["online", "offline", "away"] }
+        },
+        "required": ["status"]
       },
       "UpdateVendorDto": { "type": "object", "properties": {} },
       "CreatePrinterDto": {

@@ -1,4 +1,11 @@
-export function PulseIcon(props: React.SVGProps<SVGSVGElement>) {
+export function PulseIcon(
+  props: React.SVGProps<SVGSVGElement> & {
+    status: "online" | "offline" | "away";
+  },
+) {
+  const { status } = props;
+  const isOnline = status === "online";
+
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -7,23 +14,46 @@ export function PulseIcon(props: React.SVGProps<SVGSVGElement>) {
       height="32"
       {...props}
     >
-      <circle cx="12" cy="12" r="3" className="fill-green-500" />
-      <circle cx="12" cy="12" r="0" className="fill-green-500">
+      <circle
+        cx="12"
+        cy="12"
+        r="3"
+        className={
+          isOnline
+            ? "fill-green-500"
+            : status === "away"
+              ? "fill-yellow-500"
+              : "fill-red-500"
+        }
+      />
+
+      <circle
+        cx="12"
+        cy="12"
+        r="0"
+        className={
+          isOnline
+            ? "fill-green-500"
+            : status === "away"
+              ? "fill-yellow-500"
+              : "fill-red-500"
+        }
+      >
         <animate
           attributeName="r"
           calcMode="spline"
-          dur="2s"
           keySplines=".52,.6,.25,.99"
-          repeatCount="indefinite"
-          values="0;11"
+          dur={isOnline ? "2s" : "0s"}
+          repeatCount={isOnline ? "indefinite" : "0"}
+          values={isOnline ? "0;11" : "11;11"}
         />
         <animate
           attributeName="opacity"
           calcMode="spline"
-          dur="2s"
           keySplines=".52,.6,.25,.99"
-          repeatCount="indefinite"
-          values="1;0"
+          dur={isOnline ? "2s" : "0s"}
+          repeatCount={isOnline ? "indefinite" : "0"}
+          values={isOnline ? "1;0" : "0.4;1"}
         />
       </circle>
     </svg>

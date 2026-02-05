@@ -30,17 +30,20 @@ import { UpdateProvider } from "@context/UpdateProvider";
 import AppLayout from "@layout/AppLayout";
 import "./theme/variables.css";
 import { QueryClientProvider } from "@tanstack/react-query";
-import { queryClient } from "./api/client";
+import { baseUrl, queryClient } from "@api/client";
+import { SocketProvider } from "@context/SocketProvider";
 
 setupIonicReact();
 
 const App: React.FC = () => (
   <QueryClientProvider client={queryClient}>
-    <UpdateProvider>
-      <IonApp>
-        <AppLayout />
-      </IonApp>
-    </UpdateProvider>
+    <SocketProvider url={baseUrl}>
+      <UpdateProvider>
+        <IonApp>
+          <AppLayout />
+        </IonApp>
+      </UpdateProvider>
+    </SocketProvider>
   </QueryClientProvider>
 );
 

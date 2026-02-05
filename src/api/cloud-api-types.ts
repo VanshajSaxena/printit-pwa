@@ -4,38 +4,6 @@
  */
 
 export interface paths {
-  "/api/job": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations["JobController_findAll"];
-    put?: never;
-    post: operations["JobController_create"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/job/{id}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations["JobController_findOne"];
-    put?: never;
-    post?: never;
-    delete: operations["JobController_remove"];
-    options?: never;
-    head?: never;
-    patch: operations["JobController_update"];
-    trace?: never;
-  };
   "/api/v1/documents": {
     parameters: {
       query?: never;
@@ -98,6 +66,38 @@ export interface paths {
     options?: never;
     head?: never;
     patch?: never;
+    trace?: never;
+  };
+  "/api/v1/jobs": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["JobController_findAll_v1"];
+    put?: never;
+    post: operations["JobController_create_v1"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/jobs/{id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["JobController_findOne_v1"];
+    put?: never;
+    post?: never;
+    delete: operations["JobController_remove_v1"];
+    options?: never;
+    head?: never;
+    patch: operations["JobController_update_v1"];
     trace?: never;
   };
   "/api/v1/ping": {
@@ -220,6 +220,22 @@ export interface paths {
       cookie?: never;
     };
     get: operations["VendorController_findOne_v1"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/vendors/{selector}/presence": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["VendorController_vendorPresent_v1"];
     put?: never;
     post?: never;
     delete?: never;
@@ -363,6 +379,10 @@ export interface components {
       id: number;
       url: string;
     };
+    VendorPresenceDto: {
+      /** @enum {string} */
+      status: "online" | "offline" | "away";
+    };
     VendorResponseDto: {
       address: string;
       firstName: string;
@@ -421,118 +441,10 @@ export type UploadFileBatchResponseDto =
   components["schemas"]["UploadFileBatchResponseDto"];
 export type UploadFileResponseDto =
   components["schemas"]["UploadFileResponseDto"];
+export type VendorPresenceDto = components["schemas"]["VendorPresenceDto"];
 export type VendorResponseDto = components["schemas"]["VendorResponseDto"];
 export type $defs = Record<string, never>;
 export interface operations {
-  JobController_findAll: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["CreateJobResponseDto"][];
-        };
-      };
-    };
-  };
-  JobController_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["CreateJobRequestDto"];
-      };
-    };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["CreateJobResponseDto"];
-        };
-      };
-    };
-  };
-  JobController_findOne: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["CreateJobResponseDto"];
-        };
-      };
-    };
-  };
-  JobController_remove: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["CreateJobResponseDto"];
-        };
-      };
-    };
-  };
-  JobController_update: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["UpdateJobDto"];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["CreateJobResponseDto"];
-        };
-      };
-    };
-  };
   DocumentController_findAll_v1: {
     parameters: {
       query?: never;
@@ -684,6 +596,115 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["UploadFileBatchResponseDto"];
+        };
+      };
+    };
+  };
+  JobController_findAll_v1: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["CreateJobResponseDto"][];
+        };
+      };
+    };
+  };
+  JobController_create_v1: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateJobRequestDto"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["CreateJobResponseDto"];
+        };
+      };
+    };
+  };
+  JobController_findOne_v1: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["CreateJobResponseDto"];
+        };
+      };
+    };
+  };
+  JobController_remove_v1: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["CreateJobResponseDto"];
+        };
+      };
+    };
+  };
+  JobController_update_v1: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UpdateJobDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["CreateJobResponseDto"];
         };
       };
     };
@@ -1033,6 +1054,28 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["VendorResponseDto"];
+        };
+      };
+    };
+  };
+  VendorController_vendorPresent_v1: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description The unique identifier */
+        selector: string | number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["VendorPresenceDto"];
         };
       };
     };
