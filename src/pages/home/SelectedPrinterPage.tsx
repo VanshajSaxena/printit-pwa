@@ -13,9 +13,9 @@ import {
   IonHeader,
   IonIcon,
   IonLabel,
-  IonLoading,
   IonNote,
   IonPage,
+  IonSpinner,
   IonText,
   IonTitle,
   IonToolbar,
@@ -26,7 +26,7 @@ import AppContent from "@layout/AppContent";
 import { useDraftStore } from "@store/draftStore";
 import { cloudUploadOutline } from "ionicons/icons";
 import { ChangeEvent, useRef } from "react";
-import { useParams } from "react-router";
+import { Redirect, useParams } from "react-router";
 
 interface SelectedPrinterPageProps {
   selector: string;
@@ -75,12 +75,8 @@ export default function SelectedPrinterPage() {
     fileInputRef.current?.click();
   };
 
-  if (status === "pending") {
-    return <IonLoading />;
-  }
-
   if (status === "error") {
-    return null;
+    return <Redirect to={"/home"} />;
   }
 
   return (
@@ -98,57 +94,63 @@ export default function SelectedPrinterPage() {
         scrollY={true}
         className="ion-padding flex min-h-full flex-col items-center justify-between"
       >
-        <IonCard className="max-w-full min-w-full">
-          <IonCardHeader className="p-4">
-            <div className="flex items-center gap-8">
-              <PrinterGraphic />
-              <div>
-                <IonCardTitle className="flex items-center justify-start gap-2">
-                  Printer Ready
-                  <PulseIcon
-                    className="mt-0 min-h-8 min-w-8"
-                    status={data.status}
-                  />
-                </IonCardTitle>
-                <IonCardSubtitle>A&T Stationary</IonCardSubtitle>
-              </div>
+        {status === "pending" ? (
+          <IonSpinner />
+        ) : (
+          <>
+            <IonCard className="max-w-full min-w-full">
+              <IonCardHeader className="p-4">
+                <div className="flex items-center gap-8">
+                  <PrinterGraphic />
+                  <div>
+                    <IonCardTitle className="flex items-center justify-start gap-2">
+                      Printer Ready
+                      <PulseIcon
+                        className="mt-0 min-h-8 min-w-8"
+                        status={data.status}
+                      />
+                    </IonCardTitle>
+                    <IonCardSubtitle>A&T Stationary</IonCardSubtitle>
+                  </div>
+                </div>
+              </IonCardHeader>
+              <IonCardContent className="p-4">
+                <div className="flex min-w-full justify-end">
+                  <IonLabel>Last Online: just now</IonLabel>
+                </div>
+              </IonCardContent>
+            </IonCard>
+            <div className="flex w-full max-w-full flex-col gap-4">
+              <IonButton
+                fill="solid"
+                expand="block"
+                size="large"
+                color={"primary"}
+                onClick={() => {
+                  pickFiles();
+                }}
+                className="m-0"
+              >
+                <IonIcon icon={cloudUploadOutline} slot="start"></IonIcon>
+                <IonLabel>Upload Files</IonLabel>
+              </IonButton>
+              <IonNote className="mx-auto text-center">
+                Your files are deleted after printing.{" "}
+                <IonText>Learn More.</IonText>
+              </IonNote>
             </div>
-          </IonCardHeader>
-          <IonCardContent className="p-4">
-            <div className="flex min-w-full justify-end">
-              <IonLabel>Last Online: just now</IonLabel>
-            </div>
-          </IonCardContent>
-        </IonCard>
-        <div className="flex w-full max-w-full flex-col gap-4">
-          <IonButton
-            fill="solid"
-            expand="block"
-            size="large"
-            color={"primary"}
-            onClick={() => {
-              pickFiles();
-            }}
-            className="m-0"
-          >
-            <IonIcon icon={cloudUploadOutline} slot="start"></IonIcon>
-            <IonLabel>Upload Files</IonLabel>
-          </IonButton>
-          <IonNote className="mx-auto text-center">
-            Your files are deleted after printing.{" "}
-            <IonText>Learn More.</IonText>
-          </IonNote>
-        </div>
-        <input
-          type="file"
-          ref={fileInputRef}
-          onChange={(event) => {
-            void handleFileChange(event);
-          }}
-          style={{ display: "none" }}
-          multiple
-          accept=".pdf"
-        />
+            <input
+              type="file"
+              ref={fileInputRef}
+              onChange={(event) => {
+                void handleFileChange(event);
+              }}
+              style={{ display: "none" }}
+              multiple
+              accept=".pdf"
+            />
+          </>
+        )}
       </AppContent>
     </IonPage>
   );
