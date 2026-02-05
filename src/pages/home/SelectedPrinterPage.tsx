@@ -1,6 +1,6 @@
+import { client } from "@api/client";
 import { PrinterGraphic } from "@components/graphics/PrinterGraphic";
 import { PulseIcon } from "@components/graphics/PulseIcon";
-import { useSocket } from "@hooks/useSocket";
 import {
   IonBackButton,
   IonButton,
@@ -13,6 +13,7 @@ import {
   IonHeader,
   IonIcon,
   IonLabel,
+  IonLoading,
   IonNote,
   IonPage,
   IonText,
@@ -24,18 +25,21 @@ import {
 import AppContent from "@layout/AppContent";
 import { useDraftStore } from "@store/draftStore";
 import { cloudUploadOutline } from "ionicons/icons";
-import { ChangeEvent, useEffect, useRef } from "react";
+import { ChangeEvent, useRef } from "react";
 import { useParams } from "react-router";
 
 interface SelectedPrinterPageProps {
-  id: string;
+  selector: string;
 }
 
 export default function SelectedPrinterPage() {
-  const { connect, isConnected } = useSocket();
+  const { selector } = useParams<SelectedPrinterPageProps>();
+  const { data, status } = client.useQuery(
+    "get",
+    "/api/v1/vendors/{selector}/presence",
+    { params: { path: { selector: selector } } },
+  );
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const { id } = useParams<SelectedPrinterPageProps>();
-  console.log(id);
   const router = useIonRouter();
   const [present, dismiss] = useIonLoading();
 
@@ -67,15 +71,17 @@ export default function SelectedPrinterPage() {
     router.push("/home/checkout");
   };
 
-  useEffect(() => {
-    connect();
-  });
-
-  console.log("isConnected: ", isConnected);
-
   const pickFiles = () => {
     fileInputRef.current?.click();
   };
+
+  if (status === "pending") {
+    return <IonLoading />;
+  }
+
+  if (status === "error") {
+    return null;
+  }
 
   return (
     <IonPage>
@@ -97,9 +103,12 @@ export default function SelectedPrinterPage() {
             <div className="flex items-center gap-8">
               <PrinterGraphic />
               <div>
-                <IonCardTitle className="flex items-center justify-start">
+                <IonCardTitle className="flex items-center justify-start gap-2">
                   Printer Ready
-                  <PulseIcon className="mt-0 min-h-8 min-w-8" />
+                  <PulseIcon
+                    className="mt-0 min-h-8 min-w-8"
+                    status={data.status}
+                  />
                 </IonCardTitle>
                 <IonCardSubtitle>A&T Stationary</IonCardSubtitle>
               </div>
