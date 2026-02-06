@@ -24,9 +24,9 @@ import {
 } from "@ionic/react";
 import AppContent from "@layout/AppContent";
 import { useDraftStore } from "@store/draftStore";
-import { usePresenceStore } from "@store/presenceStore";
+import { PresenceData, usePresenceStore } from "@store/presenceStore";
 import { cloudUploadOutline } from "ionicons/icons";
-import { ChangeEvent, useEffect, useRef } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { Redirect, useParams } from "react-router";
 
 interface SelectedPrinterPageProps {
@@ -35,18 +35,26 @@ interface SelectedPrinterPageProps {
 
 export default function SelectedPrinterPage() {
   const { selector } = useParams<SelectedPrinterPageProps>();
-  const setPresence = usePresenceStore((store) => store.setPresence);
-  const { status: vendorPresence, id: vendorId } = usePresenceStore(
-    (store) => store.vendors[selector],
-  );
-
   const { data, status } = client.useQuery(
     "get",
     "/api/v1/vendors/{selector}/presence",
     { params: { path: { selector: selector } } },
     { refetchOnWindowFocus: false },
   );
+  const [vendorPresence, setVendorPresence] = useState<PresenceData>({
+    status: "offline",
+    id: -1,
+  });
 
+  const vendor = usePresenceStore((store) => store.vendors[selector]);
+
+  useEffect(() => {
+    if (vendor) {
+      setVendorPresence(vendor);
+    }
+  }, [vendor]);
+
+  const setPresence = usePresenceStore((store) => store.setPresence);
   useEffect(() => {
     if (!data) return;
 
@@ -66,6 +74,9 @@ export default function SelectedPrinterPage() {
   );
 
   const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
+    if (!vendor) {
+      return;
+    }
     const eventTargetFiles = event.target.files;
     if (!eventTargetFiles || eventTargetFiles.length === 0) {
       return;
@@ -77,7 +88,7 @@ export default function SelectedPrinterPage() {
     );
 
     await present();
-    const transactionId = await createDraftTransaction(onlyPdfFiles, vendorId);
+    const transactionId = await createDraftTransaction(onlyPdfFiles, vendor.id);
 
     setCurrentDraftTransactionId(transactionId);
     await dismiss();
@@ -118,7 +129,7 @@ export default function SelectedPrinterPage() {
                   <PrinterGraphic />
                   <div>
                     <IonCardTitle className="flex items-center justify-start gap-2">
-                      {vendorPresence === "online" ? (
+                      {vendorPresence.status === "online" ? (
                         <>Printer Ready</>
                       ) : (
                         <>Printer Offline</>
@@ -126,7 +137,7 @@ export default function SelectedPrinterPage() {
 
                       <PulseIcon
                         className="mt-0 min-h-8 min-w-8"
-                        status={vendorPresence}
+                        status={vendorPresence.status}
                       />
                     </IonCardTitle>
                     <IonCardSubtitle>A&T Stationary</IonCardSubtitle>
