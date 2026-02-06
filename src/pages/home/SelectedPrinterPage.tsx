@@ -36,18 +36,21 @@ interface SelectedPrinterPageProps {
 export default function SelectedPrinterPage() {
   const { selector } = useParams<SelectedPrinterPageProps>();
   const setPresence = usePresenceStore((store) => store.setPresence);
-  const vendorPresence = usePresenceStore((store) => store.vendors[selector]);
+  const { status: vendorPresence, id: vendorId } = usePresenceStore(
+    (store) => store.vendors[selector],
+  );
 
   const { data, status } = client.useQuery(
     "get",
     "/api/v1/vendors/{selector}/presence",
     { params: { path: { selector: selector } } },
+    { refetchOnWindowFocus: false },
   );
 
   useEffect(() => {
     if (!data) return;
 
-    setPresence(selector, data.status);
+    setPresence(selector, data);
   }, [selector, data, setPresence]);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -74,7 +77,7 @@ export default function SelectedPrinterPage() {
     );
 
     await present();
-    const transactionId = await createDraftTransaction(onlyPdfFiles);
+    const transactionId = await createDraftTransaction(onlyPdfFiles, vendorId);
 
     setCurrentDraftTransactionId(transactionId);
     await dismiss();

@@ -27,6 +27,7 @@ export interface DraftJob extends TimeAndIdentifierType {
 }
 
 export interface DraftTransaction extends TimeAndIdentifierType {
+  vendorId: number;
   jobs: DraftJob[];
 }
 
@@ -37,7 +38,7 @@ export interface DraftStore {
   };
   hydrated: boolean;
   setHydrated: () => void;
-  createDraftTransaction: (files: File[]) => Promise<string>;
+  createDraftTransaction: (files: File[], vendorId: number) => Promise<string>;
   setCurrentDraftTransactionId: (id: string) => void;
   getCurrentDraftTransactionId: () => string | null;
 }
@@ -55,7 +56,7 @@ export const useDraftStore = create<DraftStore>()(
           store.hydrated = true;
         });
       },
-      createDraftTransaction: async (files) => {
+      createDraftTransaction: async (files, vendorId) => {
         const now = new Date().toISOString();
         const documents = await Promise.all(
           files.map(async (file) => {
@@ -82,6 +83,7 @@ export const useDraftStore = create<DraftStore>()(
           } satisfies DraftJob;
         });
         const transaction = {
+          vendorId,
           id: getUUID(),
           createdAt: now,
           updatedAt: now,

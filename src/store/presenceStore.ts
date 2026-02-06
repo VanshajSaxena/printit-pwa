@@ -1,11 +1,14 @@
 import { create } from "zustand";
 
-export type PresenceStatus = "online" | "offline" | "away";
+export interface PresenceData {
+  status: "online" | "offline" | "away";
+  id: number;
+}
 
 interface PresenceStore {
-  vendors: Record<string, PresenceStatus>;
-  setPresence: (vendorId: string, status: PresenceStatus) => void;
-  bulkUpdate: (updates: Record<string, PresenceStatus>) => void;
+  vendors: Record<string, PresenceData>;
+  setPresence: (vendorId: string, status: PresenceData) => void;
+  bulkUpdate: (updates: Record<string, PresenceData>) => void;
   clear: () => void;
 }
 
