@@ -69,9 +69,8 @@ export default function ScanPage() {
             const decodedText = result.getText();
             try {
               const url = new URL(decodedText);
-              const hostname = url.hostname;
-              if (hostname !== deployPrimeUrl) {
-                alert(`hostname: ${hostname}\n url: ${deployPrimeUrl}`);
+              const origin = url.origin;
+              if (origin !== deployPrimeUrl) {
                 setIsAlertOpen(true);
                 return;
               }
