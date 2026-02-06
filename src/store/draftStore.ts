@@ -1,9 +1,9 @@
+import { getUUID } from "@utils/getUUID";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
-import { createIdbStorage } from "./createIdbStorage";
 import { getPdfPageCount } from "../utils/getPdfPageCount";
-import { getUUID } from "@utils/getUUID";
+import { createIdbStorage } from "./createIdbStorage";
 
 export type OutputColor = "COLOR" | "MONOCHROME" | "GRAYSCALE";
 
