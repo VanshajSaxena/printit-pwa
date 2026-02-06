@@ -380,6 +380,7 @@ export interface components {
       url: string;
     };
     VendorPresenceDto: {
+      id: number;
       /** @enum {string} */
       status: "online" | "offline" | "away";
     };

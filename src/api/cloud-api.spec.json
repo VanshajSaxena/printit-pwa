@@ -815,9 +815,10 @@
       "VendorPresenceDto": {
         "type": "object",
         "properties": {
-          "status": { "type": "string", "enum": ["online", "offline", "away"] }
+          "status": { "type": "string", "enum": ["online", "offline", "away"] },
+          "id": { "type": "number" }
         },
-        "required": ["status"]
+        "required": ["status", "id"]
       },
       "UpdateVendorDto": { "type": "object", "properties": {} },
       "CreatePrinterDto": {
