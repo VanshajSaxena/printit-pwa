@@ -70,8 +70,8 @@ export default function ScanPage() {
               const url = new URL(decodedText);
               const hostname = url.hostname;
               if (
-                hostname !== "app.print-ly.ink" &&
-                hostname !== "testing--printly-app.netlify.app"
+                hostname !== "printit.ink" &&
+                hostname !== "dev--printit-ink.netlify.app"
               ) {
                 setIsAlertOpen(true);
                 return;
