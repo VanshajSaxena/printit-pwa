@@ -16,6 +16,7 @@ export default function ScanPage() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const controlRef = useRef<IScannerControls | null>(null);
   const readerRef = useRef<BrowserQRCodeReader | null>(null);
+  const deployPrimeUrl = import.meta.env.VITE_DEPLOY_PRIME_URL;
 
   const alertDefinion = {
     header: "Invalid QR Code",
@@ -69,10 +70,7 @@ export default function ScanPage() {
             try {
               const url = new URL(decodedText);
               const hostname = url.hostname;
-              if (
-                hostname !== "printit.ink" &&
-                hostname !== "dev--printit-ink.netlify.app"
-              ) {
+              if (hostname !== deployPrimeUrl) {
                 setIsAlertOpen(true);
                 return;
               }
