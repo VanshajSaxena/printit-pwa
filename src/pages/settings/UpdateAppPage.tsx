@@ -30,16 +30,24 @@ export default function UpdateAppPage() {
         <IonList inset className="py-0!">
           <IonItem>
             <IonLabel>Current version</IonLabel>
-            {/* This gets replaced during build process. */}
             <IonLabel slot="end">{import.meta.env.VITE_APP_VERSION}</IonLabel>
           </IonItem>
-          <IonItem>
-            <IonLabel>Context</IonLabel>
-            {/* This gets replaced during build process. */}
-            <IonLabel slot="end">
-              {import.meta.env.VITE_NETLIFY_CONTEXT}
-            </IonLabel>
-          </IonItem>
+          {import.meta.env.VITE_NETLIFY_CONTEXT !== "production" && (
+            <>
+              <IonItem>
+                <IonLabel>Context</IonLabel>
+                <IonLabel slot="end">
+                  {import.meta.env.VITE_NETLIFY_CONTEXT}
+                </IonLabel>
+              </IonItem>
+              <IonItem>
+                <IonLabel>Commit</IonLabel>
+                <IonLabel slot="end">
+                  {import.meta.env.VITE_COMMIT_REF}
+                </IonLabel>
+              </IonItem>
+            </>
+          )}
         </IonList>
         {needRefresh[0] ? (
           <IonList inset className="py-0!">

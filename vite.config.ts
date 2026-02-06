@@ -12,6 +12,15 @@ import pkg from "./package.json";
 export default defineConfig({
   define: {
     "import.meta.env.VITE_APP_VERSION": JSON.stringify(pkg.version),
+    "import.meta.env.VITE_NETLIFY_CONTEXT": JSON.stringify(
+      process.env.CONTEXT ?? "dev",
+    ),
+    "import.meta.env.VITE_COMMIT_REF": JSON.stringify(
+      process.env.COMMIT_REF ?? "local",
+    ),
+    "import.meta.env.VITE_DEPLOY_PRIME_URL": JSON.stringify(
+      process.env.DEPLOY_PRIME_URL ?? "localhost",
+    ),
   },
   plugins: [
     react(),
