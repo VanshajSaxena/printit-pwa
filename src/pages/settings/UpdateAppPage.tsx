@@ -43,7 +43,13 @@ export default function UpdateAppPage() {
               <IonItem>
                 <IonLabel>Commit</IonLabel>
                 <IonLabel slot="end">
-                  {import.meta.env.VITE_COMMIT_REF}
+                  {import.meta.env.VITE_COMMIT_REF.substring(0, 7)}
+                </IonLabel>
+              </IonItem>
+              <IonItem>
+                <IonLabel>Deploy URL</IonLabel>
+                <IonLabel slot="end" color={"secondary"}>
+                  {import.meta.env.VITE_DEPLOY_PRIME_URL}
                 </IonLabel>
               </IonItem>
             </>
