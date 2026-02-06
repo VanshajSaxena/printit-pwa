@@ -24,8 +24,9 @@ import {
 } from "@ionic/react";
 import AppContent from "@layout/AppContent";
 import { useDraftStore } from "@store/draftStore";
+import { usePresenceStore } from "@store/presenceStore";
 import { cloudUploadOutline } from "ionicons/icons";
-import { ChangeEvent, useRef } from "react";
+import { ChangeEvent, useEffect, useRef } from "react";
 import { Redirect, useParams } from "react-router";
 
 interface SelectedPrinterPageProps {
@@ -34,11 +35,21 @@ interface SelectedPrinterPageProps {
 
 export default function SelectedPrinterPage() {
   const { selector } = useParams<SelectedPrinterPageProps>();
+  const setPresence = usePresenceStore((store) => store.setPresence);
+  const vendorPresence = usePresenceStore((store) => store.vendors[selector]);
+
   const { data, status } = client.useQuery(
     "get",
     "/api/v1/vendors/{selector}/presence",
     { params: { path: { selector: selector } } },
   );
+
+  useEffect(() => {
+    if (!data) return;
+
+    setPresence(selector, data.status);
+  }, [selector, data, setPresence]);
+
   const fileInputRef = useRef<HTMLInputElement>(null);
   const router = useIonRouter();
   const [present, dismiss] = useIonLoading();
@@ -104,10 +115,15 @@ export default function SelectedPrinterPage() {
                   <PrinterGraphic />
                   <div>
                     <IonCardTitle className="flex items-center justify-start gap-2">
-                      Printer Ready
+                      {vendorPresence === "online" ? (
+                        <>Printer Ready</>
+                      ) : (
+                        <>Printer Offline</>
+                      )}
+
                       <PulseIcon
                         className="mt-0 min-h-8 min-w-8"
-                        status={data.status}
+                        status={vendorPresence}
                       />
                     </IonCardTitle>
                     <IonCardSubtitle>A&T Stationary</IonCardSubtitle>
