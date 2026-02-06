@@ -71,6 +71,7 @@ export default function ScanPage() {
               const url = new URL(decodedText);
               const hostname = url.hostname;
               if (hostname !== deployPrimeUrl) {
+                alert(`hostname: ${hostname}\n url: ${deployPrimeUrl}`);
                 setIsAlertOpen(true);
                 return;
               }
