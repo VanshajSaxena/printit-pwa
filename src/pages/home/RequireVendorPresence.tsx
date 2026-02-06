@@ -1,5 +1,5 @@
 import { client } from "@api/client";
-import { Redirect, useParams } from "react-router";
+import { useParams } from "react-router";
 
 interface RequireVendorPresence {
   selector: string;
@@ -15,8 +15,5 @@ export function RequireVendorPresence({
     params: { path: { selector } },
   });
 
-  if (!currentDraftTransactionId) {
-    return <Redirect to={"/home"}></Redirect>;
-  }
   return children;
 }
