@@ -75,6 +75,10 @@ export default function ScanPage() {
                 return;
               }
               const paths = url.pathname.split("/");
+              // __AUTO_GENERATED_PRINT_VAR_START__
+              alert(
+                `ScanPage#startScanning#(anon)#if paths: ${paths.toString()}`,
+              ); // __AUTO_GENERATED_PRINT_VAR_END__
               if (paths[2]) {
                 stopScanning();
                 router.push(`/home/printer/${paths[2]}`);
@@ -133,7 +137,7 @@ export default function ScanPage() {
             className="--padding-start-0 --padding-end-0 absolute top-6 right-6 size-12"
             onClick={() => {
               stopScanning();
-              router.goBack();
+              router.push("/home", "back", "pop");
             }}
           >
             <IonIcon slot="icon-only" icon={close} size={"small"}></IonIcon>
