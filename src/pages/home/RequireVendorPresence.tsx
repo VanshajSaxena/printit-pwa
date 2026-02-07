@@ -5,7 +5,6 @@ import {
   IonIcon,
   IonNote,
   IonPage,
-  IonSpinner,
   IonTitle,
   IonToolbar,
   useIonRouter,
@@ -35,17 +34,19 @@ export function RequireVendorPresence({
     },
     { refetchOnWindowFocus: false, retry: false },
   );
-  const { setCurrentVendorId, setPresence } = usePresenceStore((store) => ({
-    setCurrentVendorId: store.setCurrentVendorId,
-    setPresence: store.setPresence,
-  }));
+  const setCurrentVendorId = usePresenceStore(
+    (store) => store.setCurrentVendorId,
+  );
 
   useEffect(() => {
     if (data?.id) {
-      setPresence(data.id, "offline");
       setCurrentVendorId(data.id);
     }
-  }, [data, setCurrentVendorId, setPresence]);
+  });
+
+  if (isLoading) {
+    return null;
+  }
 
   if (!error && data) {
     return children;
@@ -85,7 +86,6 @@ export function RequireVendorPresence({
             </IonButton>
           </div>
         )}
-        {isLoading && <IonSpinner />}
       </AppContent>
     </IonPage>
   );

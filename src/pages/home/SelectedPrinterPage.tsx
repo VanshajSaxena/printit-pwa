@@ -35,7 +35,7 @@ interface SelectedPrinterPageProps {
 
 export default function SelectedPrinterPage() {
   const { selector } = useParams<SelectedPrinterPageProps>();
-  const { data, status, isLoading } = client.useQuery(
+  const { data, status } = client.useQuery(
     "get",
     "/api/v1/vendors/{selector}/presence",
     { params: { path: { selector: selector } } },
