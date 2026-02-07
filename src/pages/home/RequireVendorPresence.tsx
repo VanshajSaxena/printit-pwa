@@ -45,17 +45,21 @@ export function RequireVendorPresence({
     },
   );
 
-  // Set current vendor ID when data is available
-  useEffect(() => {
-    if (data?.id) {
+  // Set current vendor ID BEFORE rendering children
+  // This must happen synchronously, not in useEffect
+  if (data?.id) {
+    const currentId = usePresenceStore.getState().currentVendorId;
+    if (currentId !== data.id) {
       setCurrentVendorId(data.id);
     }
+  }
 
-    // Cleanup: clear current vendor ID when component unmounts
+  // Cleanup: clear current vendor ID when component unmounts
+  useEffect(() => {
     return () => {
       setCurrentVendorId(null);
     };
-  }, [data?.id, setCurrentVendorId]);
+  }, [setCurrentVendorId]);
 
   // Loading state
   if (isLoading) {
@@ -70,7 +74,7 @@ export function RequireVendorPresence({
           fullscreen
           className="ion-padding flex min-h-full items-center justify-center"
         >
-          <IonSpinner name="crescent" />
+          <IonSpinner />
         </AppContent>
       </IonPage>
     );
