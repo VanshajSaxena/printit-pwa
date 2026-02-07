@@ -41,6 +41,7 @@ export interface DraftStore {
   createDraftTransaction: (files: File[], vendorId: number) => Promise<string>;
   setCurrentDraftTransactionId: (id: string) => void;
   getCurrentDraftTransactionId: () => string | null;
+  clearCurrentDraftTransactionId: () => void;
 }
 
 export const useDraftStore = create<DraftStore>()(
@@ -101,6 +102,9 @@ export const useDraftStore = create<DraftStore>()(
       },
       getCurrentDraftTransactionId: () => {
         return get().state.currentDraftTransactionId;
+      },
+      clearCurrentDraftTransactionId: () => {
+        set((store) => (store.state.currentDraftTransactionId = null));
       },
     })),
     {

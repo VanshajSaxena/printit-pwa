@@ -171,7 +171,7 @@ export default function SelectedPrinterPage() {
         <input
           type="file"
           ref={fileInputRef}
-          onChange={() => void handleFileChange}
+          onChange={(event) => void handleFileChange(event)}
           style={{ display: "none" }}
           multiple
           accept=".pdf"
