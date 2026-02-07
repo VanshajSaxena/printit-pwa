@@ -19,7 +19,6 @@ import {
   IonTitle,
   IonToolbar,
   useIonRouter,
-  useIonToast,
   useIonLoading,
 } from "@ionic/react";
 import AppContent from "@layout/AppContent";
@@ -32,15 +31,12 @@ import { useState } from "react";
 
 export default function CheckoutPage() {
   const router = useIonRouter();
-  const [presentToast] = useIonToast();
   const [presentLoading, dismissLoading] = useIonLoading();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Get current vendor info
   const currentVendorId = usePresenceStore((store) => store.currentVendorId);
   const vendorStatus = useCurrentVendorPresence();
 
-  // Draft transaction state
   const getCurrentDraftTransactionId = useDraftStore(
     (store) => store.getCurrentDraftTransactionId,
   );
@@ -61,7 +57,6 @@ export default function CheckoutPage() {
     return store.state.transactions[currentDraftTransactionId];
   });
 
-  // API mutations
   const createDocumentsMutation = client.useMutation(
     "post",
     "/api/v1/documents",
@@ -77,22 +72,8 @@ export default function CheckoutPage() {
   const filesMutation = client.useMutation("post", "/api/v1/files/upload");
 
   const handleSubmit = async () => {
-    // Validate vendor is online
-    if (vendorStatus !== "online") {
-      await presentToast({
-        message: "Cannot print - printer is currently offline",
-        duration: 3000,
-        color: "danger",
-      });
-      return;
-    }
-
     if (!currentVendorId) {
-      await presentToast({
-        message: "No printer selected",
-        duration: 3000,
-        color: "danger",
-      });
+      console.error("currentVendorId is null.");
       return;
     }
 
@@ -100,7 +81,6 @@ export default function CheckoutPage() {
     await presentLoading({ message: "Preparing your documents..." });
 
     try {
-      // Step 1: Create document records
       const draftDocuments = currentDraftTransaction.jobs.map(
         ({ document: draft }) => ({
           filename: draft.filename,
@@ -116,12 +96,10 @@ export default function CheckoutPage() {
       await dismissLoading();
       await presentLoading({ message: "Uploading files..." });
 
-      // Step 2: Get signed URLs for upload
       const { signedUrls } = await filesMutation.mutateAsync({
         body: { ids: documents.map((document) => document.id) },
       });
 
-      // Step 3: Upload files to signed URLs
       try {
         await Promise.all(
           signedUrls.map(async ({ url, id }) => {
@@ -153,7 +131,6 @@ export default function CheckoutPage() {
           }),
         );
 
-        // Step 4: Mark documents as uploaded
         await Promise.all(
           documents.map(async (document) => {
             await updateDocumentsMutation.mutateAsync({
@@ -165,7 +142,6 @@ export default function CheckoutPage() {
       } catch (uploadError) {
         console.error("Upload failed:", uploadError);
 
-        // Mark documents as failed
         await Promise.all(
           documents.map(async (document) => {
             await updateDocumentsMutation.mutateAsync({
@@ -181,7 +157,6 @@ export default function CheckoutPage() {
       await dismissLoading();
       await presentLoading({ message: "Creating print job..." });
 
-      // Step 5: Create transaction with jobs
       const jobs = currentDraftTransaction.jobs.map((job) => {
         const documentId = documents.find(
           (document) => job.document.id === document.draftId,
@@ -204,37 +179,18 @@ export default function CheckoutPage() {
         body: { jobs, vendorId: currentVendorId },
       });
 
-      // Step 6: Save transaction and cleanup
       createTransaction(transactionResponse);
       clearCurrentDraftTransactionId();
 
       await dismissLoading();
-      await presentToast({
-        message: "Print job submitted successfully!",
-        duration: 3000,
-        color: "success",
-      });
-
-      // Navigate to home or transaction detail page
-      router.push("/home", "root", "replace");
     } catch (error) {
       console.error("Transaction creation failed:", error);
-
       await dismissLoading();
-      await presentToast({
-        message:
-          error instanceof Error
-            ? error.message
-            : "Failed to submit print job. Please try again.",
-        duration: 4000,
-        color: "danger",
-      });
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  // Calculate total pages
   const totalPages = currentDraftTransaction.jobs.reduce(
     (total, job) => total + job.document.pageCount * job.copyCount,
     0,
@@ -307,7 +263,10 @@ export default function CheckoutPage() {
                   <IonIcon icon={document} className="invisible text-xl" />
                 </IonCol>
                 <IonCol className="min-w-0 flex-1 pl-2">
-                  <IonText color="medium" className="text-sm font-medium">
+                  <IonText
+                    color="medium"
+                    className="invisible text-sm font-medium"
+                  >
                     Filename
                   </IonText>
                 </IonCol>
@@ -323,7 +282,6 @@ export default function CheckoutPage() {
                 </IonCol>
               </IonRow>
 
-              {/* Document rows */}
               {currentDraftTransaction.jobs.map((job) => (
                 <IonRow key={job.id} className="p-1.25">
                   <IonCol
