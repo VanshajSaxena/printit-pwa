@@ -11,34 +11,55 @@ export const SocketProvider = ({
   children,
 }: React.PropsWithChildren<SocketProviderProps>) => {
   const socketRef = useRef<Socket | null>(null);
-
   const [isConnected, setIsConnected] = useState(false);
-
   const connectCallbacks = useRef(new Set<() => void>());
   const disconnectCallbacks = useRef(new Set<(reason: string) => void>());
+
+  const isMountedRef = useRef(true);
 
   useEffect(() => {
     const socket = io(url, {
       autoConnect: false,
+      reconnection: true,
+      reconnectionAttempts: 5,
+      reconnectionDelay: 1000,
     });
 
     socketRef.current = socket;
 
-    socket.on("connect", () => {
-      setIsConnected(true);
-      connectCallbacks.current.forEach((cb) => {
-        cb();
-      });
-    });
+    const handleConnect = () => {
+      if (isMountedRef.current) {
+        setIsConnected(true);
+        connectCallbacks.current.forEach((cb) => {
+          try {
+            cb();
+          } catch (error) {
+            console.error("Error in connect callback:", error);
+          }
+        });
+      }
+    };
 
-    socket.on("disconnect", (reason) => {
-      setIsConnected(false);
-      disconnectCallbacks.current.forEach((cb) => {
-        cb(reason);
-      });
-    });
+    const handleDisconnect = (reason: string) => {
+      if (isMountedRef.current) {
+        setIsConnected(false);
+        disconnectCallbacks.current.forEach((cb) => {
+          try {
+            cb(reason);
+          } catch (error) {
+            console.error("Error in disconnect callback:", error);
+          }
+        });
+      }
+    };
+
+    socket.on("connect", handleConnect);
+    socket.on("disconnect", handleDisconnect);
 
     return () => {
+      isMountedRef.current = false;
+      socket.off("connect", handleConnect);
+      socket.off("disconnect", handleDisconnect);
       socket.removeAllListeners();
       socket.disconnect();
       socketRef.current = null;
@@ -55,26 +76,30 @@ export const SocketProvider = ({
 
   const onConnect = useCallback((cb: () => void) => {
     connectCallbacks.current.add(cb);
-    return () => connectCallbacks.current.delete(cb);
+    return () => {
+      connectCallbacks.current.delete(cb);
+    };
   }, []);
 
   const onDisconnect = useCallback((cb: (reason: string) => void) => {
     disconnectCallbacks.current.add(cb);
-    return () => disconnectCallbacks.current.delete(cb);
+    return () => {
+      disconnectCallbacks.current.delete(cb);
+    };
   }, []);
 
+  const contextValue = {
+    socket: socketRef.current,
+    isConnected,
+    connect,
+    disconnect,
+    onConnect,
+    onDisconnect,
+  };
+
   return (
-    <SocketContext
-      value={{
-        socket: socketRef.current,
-        isConnected,
-        connect,
-        disconnect,
-        onConnect,
-        onDisconnect,
-      }}
-    >
+    <SocketContext.Provider value={contextValue}>
       {children}
-    </SocketContext>
+    </SocketContext.Provider>
   );
 };

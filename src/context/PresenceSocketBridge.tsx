@@ -1,31 +1,61 @@
 import { useSocket } from "@hooks/useSocket";
 import { PresenceStatus, usePresenceStore } from "@store/presenceStore";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 export function PresenceSocketBridge() {
-  const { socket } = useSocket();
+  const { socket, isConnected } = useSocket();
+  const isInitializedRef = useRef(false);
 
   useEffect(() => {
     if (!socket) return;
 
     const { setPresence, bulkUpdate, clear } = usePresenceStore.getState();
 
-    socket.on(
-      "presence:update",
-      ({ vendorId, status }: { vendorId: number; status: PresenceStatus }) => {
-        setPresence(vendorId, status);
-      },
-    );
-
-    socket.on("presence:bulk", bulkUpdate);
-    socket.on("disconnect", clear);
-
-    return () => {
-      socket.off("presence:update");
-      socket.off("presence:bulk");
-      socket.off("disconnect");
+    const handlePresenceUpdate = ({
+      vendorId,
+      status,
+    }: {
+      vendorId: number;
+      status: PresenceStatus;
+    }) => {
+      setPresence(vendorId, status);
     };
-  }, [socket]);
+
+    const handlePresenceBulk = (
+      presences: { vendorId: number; status: PresenceStatus }[],
+    ) => {
+      bulkUpdate(presences);
+    };
+
+    const handleDisconnect = () => {
+      clear();
+    };
+
+    // Register event listeners
+    socket.on("presence:update", handlePresenceUpdate);
+    socket.on("presence:bulk", handlePresenceBulk);
+    socket.on("disconnect", handleDisconnect);
+
+    // Request initial presence data when connected
+    if (isConnected && !isInitializedRef.current) {
+      socket.emit("presence:request");
+      isInitializedRef.current = true;
+    }
+
+    // Cleanup function
+    return () => {
+      socket.off("presence:update", handlePresenceUpdate);
+      socket.off("presence:bulk", handlePresenceBulk);
+      socket.off("disconnect", handleDisconnect);
+    };
+  }, [socket, isConnected]);
+
+  // Reset initialization flag on disconnect
+  useEffect(() => {
+    if (!isConnected) {
+      isInitializedRef.current = false;
+    }
+  }, [isConnected]);
 
   return null;
 }

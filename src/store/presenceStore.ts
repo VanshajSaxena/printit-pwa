@@ -1,42 +1,62 @@
 import { create } from "zustand";
-import { immer } from "zustand/middleware/immer";
 
-export type PresenceStatus = "online" | "offline" | "away";
+export type PresenceStatus = "online" | "offline" | "busy" | "away";
 
-interface PresenceStore {
+interface PresenceState {
+  // Map of vendorId to their presence status
+  presenceMap: Map<number, PresenceStatus>;
+
+  // Currently selected vendor ID
   currentVendorId: number | null;
-  setCurrentVendorId: (vendorId: number | null) => void;
 
-  vendors: Record<number, PresenceStatus>;
+  // Actions
   setPresence: (vendorId: number, status: PresenceStatus) => void;
-  bulkUpdate: (updates: Record<number, PresenceStatus>) => void;
+  bulkUpdate: (
+    presences: { vendorId: number; status: PresenceStatus }[],
+  ) => void;
   clear: () => void;
+  setCurrentVendorId: (vendorId: number | null) => void;
+  getPresence: (vendorId: number) => PresenceStatus | undefined;
+  getCurrentVendorPresence: () => PresenceStatus | undefined;
 }
-export const usePresenceStore = create<PresenceStore>()(
-  immer((set) => ({
-    vendors: {},
-    currentVendorId: null,
 
-    setCurrentVendorId: (vendorId) => {
-      set((state) => {
-        state.currentVendorId = vendorId;
+export const usePresenceStore = create<PresenceState>((set, get) => ({
+  presenceMap: new Map(),
+  currentVendorId: null,
+
+  setPresence: (vendorId, status) => {
+    set((state) => {
+      const newMap = new Map(state.presenceMap);
+      newMap.set(vendorId, status);
+      return { presenceMap: newMap };
+    });
+  },
+
+  bulkUpdate: (presences) => {
+    set((state) => {
+      const newMap = new Map(state.presenceMap);
+      presences.forEach(({ vendorId, status }) => {
+        newMap.set(vendorId, status);
       });
-    },
-    setPresence: (vendorId, status) => {
-      set((state) => {
-        state.vendors[vendorId] = status;
-      });
-    },
-    bulkUpdate: (updates) => {
-      set((state) => {
-        Object.assign(state.vendors, updates);
-      });
-    },
-    clear: () => {
-      set((state) => {
-        state.vendors = {};
-        state.currentVendorId = null;
-      });
-    },
-  })),
-);
+      return { presenceMap: newMap };
+    });
+  },
+
+  clear: () => {
+    set({
+      presenceMap: new Map(),
+    });
+  },
+
+  setCurrentVendorId: (vendorId) => {
+    set({ currentVendorId: vendorId });
+  },
+
+  getPresence: (vendorId) => get().presenceMap.get(vendorId),
+
+  getCurrentVendorPresence: () => {
+    const { currentVendorId, presenceMap } = get();
+    if (currentVendorId === null) return undefined;
+    return presenceMap.get(currentVendorId);
+  },
+}));
