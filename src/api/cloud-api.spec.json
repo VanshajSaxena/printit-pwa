@@ -89,6 +89,14 @@
                 "schema": { "$ref": "#/components/schemas/VendorResponseDto" }
               }
             }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/NotFoundErrorDto" }
+              }
+            }
           }
         },
         "tags": ["Vendor"]
@@ -812,12 +820,22 @@
           "slug"
         ]
       },
+      "NotFoundErrorDto": {
+        "type": "object",
+        "properties": {
+          "statusCode": { "type": "number", "example": 404 },
+          "message": { "type": "string", "example": "Entity not found" },
+          "error": { "type": "string", "example": "Not Found" }
+        },
+        "required": ["statusCode", "message", "error"]
+      },
       "VendorPresenceDto": {
         "type": "object",
         "properties": {
-          "status": { "type": "string", "enum": ["online", "offline", "away"] }
+          "status": { "type": "string", "enum": ["online", "offline", "away"] },
+          "id": { "type": "number" }
         },
-        "required": ["status"]
+        "required": ["status", "id"]
       },
       "UpdateVendorDto": { "type": "object", "properties": {} },
       "CreatePrinterDto": {

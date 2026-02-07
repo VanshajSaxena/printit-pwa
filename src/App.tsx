@@ -32,6 +32,7 @@ import "./theme/variables.css";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { baseUrl, queryClient } from "@api/client";
 import { SocketProvider } from "@context/SocketProvider";
+import { PresenceSocketBridge } from "@context/PresenceSocketBridge";
 
 setupIonicReact();
 
@@ -40,6 +41,8 @@ const App: React.FC = () => (
     <SocketProvider url={baseUrl}>
       <UpdateProvider>
         <IonApp>
+          {/* headless components, runs effets that registers socket events related to presence. */}
+          <PresenceSocketBridge />
           <AppLayout />
         </IonApp>
       </UpdateProvider>

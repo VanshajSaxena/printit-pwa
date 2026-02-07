@@ -1,6 +1,8 @@
+import { PresenceStatus } from "@store/presenceStore";
+
 export function PulseIcon(
   props: React.SVGProps<SVGSVGElement> & {
-    status: "online" | "offline" | "away";
+    status: PresenceStatus | undefined;
   },
 ) {
   const { status } = props;

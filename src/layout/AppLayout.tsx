@@ -12,6 +12,7 @@ import SettingsPage from "@pages/settings/SettingsPage";
 import UpdateAppPage from "@pages/settings/UpdateAppPage";
 import { Redirect, Route } from "react-router-dom";
 import AppTabBar from "./AppTabBar";
+import { RequireVendorPresence } from "@pages/home/RequireVendorPresence";
 
 export default function Applayout() {
   return (
@@ -28,7 +29,9 @@ export default function Applayout() {
                 <HomePage />
               </Route>
               <Route exact path="/home/printer/:selector">
-                <SelectedPrinterPage />
+                <RequireVendorPresence>
+                  <SelectedPrinterPage />
+                </RequireVendorPresence>
               </Route>
               <Route exact path="/home/printer">
                 <Redirect to="/home" />

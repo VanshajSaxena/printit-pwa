@@ -16,6 +16,7 @@ export default function ScanPage() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const controlRef = useRef<IScannerControls | null>(null);
   const readerRef = useRef<BrowserQRCodeReader | null>(null);
+  const deploymentUrl = import.meta.env.VITE_DEPLOY_PRIME_URL;
 
   const alertDefinion = {
     header: "Invalid QR Code",
@@ -68,19 +69,24 @@ export default function ScanPage() {
             const decodedText = result.getText();
             try {
               const url = new URL(decodedText);
-              const hostname = url.hostname;
-              if (
-                hostname !== "app.print-ly.ink" &&
-                hostname !== "testing--printly-app.netlify.app"
-              ) {
+              const origin = url.origin;
+              if (origin !== deploymentUrl) {
                 setIsAlertOpen(true);
                 return;
               }
               const paths = url.pathname.split("/");
-              if (paths[2]) {
-                stopScanning();
-                router.push(`/home/printer/${paths[2]}`);
+              const selector =
+                paths.findIndex((path) => path === "printer") + 1;
+              if (selector === -1) {
+                setIsAlertOpen(true);
+                return;
               }
+              stopScanning();
+              router.push(
+                `/home/printer/${paths[selector]}`,
+                "forward",
+                "replace",
+              );
             } catch {
               setIsAlertOpen(true);
             }
@@ -134,7 +140,6 @@ export default function ScanPage() {
             shape={"round"}
             className="--padding-start-0 --padding-end-0 absolute top-6 right-6 size-12"
             onClick={() => {
-              stopScanning();
               router.goBack();
             }}
           >
