@@ -5,12 +5,15 @@ import {
   IonIcon,
   IonNote,
   IonPage,
+  IonSpinner,
   IonTitle,
   IonToolbar,
   useIonRouter,
 } from "@ionic/react";
 import AppContent from "@layout/AppContent";
+import { usePresenceStore } from "@store/presenceStore";
 import { arrowBackOutline, printOutline } from "ionicons/icons";
+import { useEffect } from "react";
 import { useParams } from "react-router";
 
 interface RequireVendorPresence {
@@ -32,10 +35,17 @@ export function RequireVendorPresence({
     },
     { refetchOnWindowFocus: false, retry: false },
   );
+  const { setCurrentVendorId, setPresence } = usePresenceStore((store) => ({
+    setCurrentVendorId: store.setCurrentVendorId,
+    setPresence: store.setPresence,
+  }));
 
-  if (isLoading) {
-    return null;
-  }
+  useEffect(() => {
+    if (data?.id) {
+      setPresence(data.id, "offline");
+      setCurrentVendorId(data.id);
+    }
+  }, [data, setCurrentVendorId, setPresence]);
 
   if (!error && data) {
     return children;
@@ -52,27 +62,30 @@ export function RequireVendorPresence({
         fullscreen
         className="ion-padding flex min-h-full flex-col justify-evenly"
       >
-        <div>
-          <IonIcon icon={printOutline} className="text-5xl" />
-          <p className="my-2 text-lg font-semibold">
-            Oops! That printer isn’t here.
-          </p>
-          <IonNote color={"medium"}>
-            It might have been removed or isn’t available anymore.
-          </IonNote>
+        {error && (
+          <div>
+            <IonIcon icon={printOutline} className="text-5xl" />
+            <p className="my-2 text-lg font-semibold">
+              Oops! That printer isn’t here.
+            </p>
+            <IonNote color={"medium"}>
+              It might have been removed or isn’t available anymore.
+            </IonNote>
 
-          <IonButton
-            expand="block"
-            fill="solid"
-            className="my-8"
-            onClick={() => {
-              router.push("/home", "back", "pop");
-            }}
-          >
-            <IonIcon icon={arrowBackOutline} slot="start" />
-            Go Back
-          </IonButton>
-        </div>
+            <IonButton
+              expand="block"
+              fill="solid"
+              className="my-8"
+              onClick={() => {
+                router.push("/home", "back", "pop");
+              }}
+            >
+              <IonIcon icon={arrowBackOutline} slot="start" />
+              Go Back
+            </IonButton>
+          </div>
+        )}
+        {isLoading && <IonSpinner />}
       </AppContent>
     </IonPage>
   );

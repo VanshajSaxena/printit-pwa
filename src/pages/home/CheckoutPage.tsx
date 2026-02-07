@@ -37,7 +37,7 @@ export default function CheckoutPage() {
 
   if (!currentDraftTransactionId) {
     // This should never happen because we have a guard.
-    throw Error("CurrentDraftTransactionId doesn't exist");
+    throw new Error("CurrentDraftTransactionId doesn't exist");
   }
 
   const currentDraftTransaction = useDraftStore((store) => {

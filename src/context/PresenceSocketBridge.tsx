@@ -1,5 +1,5 @@
 import { useSocket } from "@hooks/useSocket";
-import { PresenceData, usePresenceStore } from "@store/presenceStore";
+import { PresenceStatus, usePresenceStore } from "@store/presenceStore";
 import { useEffect } from "react";
 
 export function PresenceSocketBridge() {
@@ -12,7 +12,7 @@ export function PresenceSocketBridge() {
 
     socket.on(
       "presence:update",
-      ({ vendorId, status }: { vendorId: string; status: PresenceData }) => {
+      ({ vendorId, status }: { vendorId: number; status: PresenceStatus }) => {
         setPresence(vendorId, status);
       },
     );

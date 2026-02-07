@@ -1,31 +1,42 @@
 import { create } from "zustand";
+import { immer } from "zustand/middleware/immer";
 
 export type PresenceStatus = "online" | "offline" | "away";
-export interface PresenceData {
-  status: PresenceStatus;
-  id: number;
-}
 
 interface PresenceStore {
-  vendors: Record<string, PresenceData | undefined>;
-  setPresence: (vendorId: string, status: PresenceData) => void;
-  bulkUpdate: (updates: Record<string, PresenceData>) => void;
+  currentVendorId: number | null;
+  setCurrentVendorId: (vendorId: number | null) => void;
+
+  vendors: Record<number, PresenceStatus>;
+  setPresence: (vendorId: number, status: PresenceStatus) => void;
+  bulkUpdate: (updates: Record<number, PresenceStatus>) => void;
   clear: () => void;
 }
+export const usePresenceStore = create<PresenceStore>()(
+  immer((set) => ({
+    vendors: {},
+    currentVendorId: null,
 
-export const usePresenceStore = create<PresenceStore>((set) => ({
-  vendors: {},
-  setPresence: (vendorId, status) => {
-    set((state) => ({
-      vendors: { ...state.vendors, [vendorId]: status },
-    }));
-  },
-  bulkUpdate: (updates) => {
-    set((state) => ({
-      vendors: { ...state.vendors, ...updates },
-    }));
-  },
-  clear: () => {
-    set({ vendors: {} });
-  },
-}));
+    setCurrentVendorId: (vendorId) => {
+      set((state) => {
+        state.currentVendorId = vendorId;
+      });
+    },
+    setPresence: (vendorId, status) => {
+      set((state) => {
+        state.vendors[vendorId] = status;
+      });
+    },
+    bulkUpdate: (updates) => {
+      set((state) => {
+        Object.assign(state.vendors, updates);
+      });
+    },
+    clear: () => {
+      set((state) => {
+        state.vendors = {};
+        state.currentVendorId = null;
+      });
+    },
+  })),
+);

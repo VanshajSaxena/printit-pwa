@@ -24,9 +24,9 @@ import {
 } from "@ionic/react";
 import AppContent from "@layout/AppContent";
 import { useDraftStore } from "@store/draftStore";
-import { PresenceData, usePresenceStore } from "@store/presenceStore";
+import { usePresenceStore } from "@store/presenceStore";
 import { cloudUploadOutline } from "ionicons/icons";
-import { ChangeEvent, useEffect, useRef, useState } from "react";
+import { ChangeEvent, useEffect, useRef } from "react";
 import { Redirect, useParams } from "react-router";
 
 interface SelectedPrinterPageProps {
@@ -35,30 +35,29 @@ interface SelectedPrinterPageProps {
 
 export default function SelectedPrinterPage() {
   const { selector } = useParams<SelectedPrinterPageProps>();
-  const { data, status } = client.useQuery(
+  const { data, status, isLoading } = client.useQuery(
     "get",
     "/api/v1/vendors/{selector}/presence",
     { params: { path: { selector: selector } } },
     { refetchOnWindowFocus: false },
   );
-  const [vendorPresence, setVendorPresence] = useState<PresenceData>({
-    status: "offline",
-    id: -1,
-  });
 
-  const vendor = usePresenceStore((store) => store.vendors[selector]);
+  const vendorId = usePresenceStore((store) => store.currentVendorId);
 
-  useEffect(() => {
-    if (vendor) {
-      setVendorPresence(vendor);
-    }
-  }, [vendor]);
+  if (!vendorId) {
+    // This should never happen because we have a guard.
+    throw new Error("currentVendorId doesn't exist");
+  }
 
-  const setPresence = usePresenceStore((store) => store.setPresence);
+  const { setPresence, vendorStatus } = usePresenceStore((store) => ({
+    setPresence: store.setPresence,
+    vendorStatus: store.vendors[vendorId],
+  }));
+
   useEffect(() => {
     if (!data) return;
 
-    setPresence(selector, data);
+    setPresence(data.id, data.status);
   }, [selector, data, setPresence]);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -74,9 +73,6 @@ export default function SelectedPrinterPage() {
   );
 
   const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
-    if (!vendor) {
-      return;
-    }
     const eventTargetFiles = event.target.files;
     if (!eventTargetFiles || eventTargetFiles.length === 0) {
       return;
@@ -88,7 +84,7 @@ export default function SelectedPrinterPage() {
     );
 
     await present();
-    const transactionId = await createDraftTransaction(onlyPdfFiles, vendor.id);
+    const transactionId = await createDraftTransaction(onlyPdfFiles, vendorId);
 
     setCurrentDraftTransactionId(transactionId);
     await dismiss();
@@ -129,7 +125,7 @@ export default function SelectedPrinterPage() {
                   <PrinterGraphic />
                   <div>
                     <IonCardTitle className="flex items-center justify-start gap-2">
-                      {vendorPresence.status === "online" ? (
+                      {vendorStatus === "online" ? (
                         <>Printer Ready</>
                       ) : (
                         <>Printer Offline</>
@@ -137,7 +133,7 @@ export default function SelectedPrinterPage() {
 
                       <PulseIcon
                         className="mt-0 min-h-8 min-w-8"
-                        status={vendorPresence.status}
+                        status={vendorStatus}
                       />
                     </IonCardTitle>
                     <IonCardSubtitle>A&T Stationary</IonCardSubtitle>
