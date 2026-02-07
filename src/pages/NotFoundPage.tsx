@@ -40,7 +40,7 @@ export default function NotFoundPage() {
             fill="solid"
             className="my-8"
             onClick={() => {
-              router.push("/home", "back");
+              router.push("/home", "back", "pop");
             }}
           >
             <IonIcon icon={arrowBackOutline} slot="start" />
