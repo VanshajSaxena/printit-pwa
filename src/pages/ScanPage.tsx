@@ -82,7 +82,11 @@ export default function ScanPage() {
                 return;
               }
               stopScanning();
-              router.push(`/home/printer/${paths[selector]}`);
+              router.push(
+                `/home/printer/${paths[selector]}`,
+                "forward",
+                "replace",
+              );
             } catch {
               setIsAlertOpen(true);
             }

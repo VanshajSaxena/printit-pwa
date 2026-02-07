@@ -3,7 +3,6 @@ import { PrinterGraphic } from "@components/graphics/PrinterGraphic";
 import { PulseIcon } from "@components/graphics/PulseIcon";
 import { useCurrentVendorPresence } from "@hooks/usePresence";
 import {
-  IonBackButton,
   IonButton,
   IonButtons,
   IonCard,
@@ -25,7 +24,7 @@ import {
 import AppContent from "@layout/AppContent";
 import { useDraftStore } from "@store/draftStore";
 import { usePresenceStore } from "@store/presenceStore";
-import { cloudUploadOutline } from "ionicons/icons";
+import { arrowBack, cloudUploadOutline } from "ionicons/icons";
 import { ChangeEvent, useEffect, useRef } from "react";
 import { Redirect, useParams } from "react-router";
 
@@ -116,7 +115,10 @@ export default function SelectedPrinterPage() {
       <IonHeader translucent>
         <IonToolbar>
           <IonButtons slot="start">
-            <IonBackButton defaultHref="/home" text="Home" />
+            <IonButton routerLink="/home" routerDirection="back">
+              <IonIcon slot="start" icon={arrowBack} />
+              Home
+            </IonButton>
           </IonButtons>
           <IonTitle>Printer</IonTitle>
         </IonToolbar>
