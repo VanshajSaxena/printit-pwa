@@ -45,8 +45,6 @@ export function RequireVendorPresence({
     },
   );
 
-  // Set current vendor ID BEFORE rendering children
-  // This must happen synchronously, not in useEffect
   if (data?.id) {
     const currentId = usePresenceStore.getState().currentVendorId;
     if (currentId !== data.id) {
@@ -54,14 +52,12 @@ export function RequireVendorPresence({
     }
   }
 
-  // Cleanup: clear current vendor ID when component unmounts
   useEffect(() => {
     return () => {
       setCurrentVendorId(null);
     };
   }, [setCurrentVendorId]);
 
-  // Loading state
   if (isLoading) {
     return (
       <IonPage>
@@ -80,12 +76,10 @@ export function RequireVendorPresence({
     );
   }
 
-  // Success state - vendor found
   if (data && !error) {
     return <>{children}</>;
   }
 
-  // Error state - vendor not found
   return (
     <IonPage>
       <IonHeader translucent>

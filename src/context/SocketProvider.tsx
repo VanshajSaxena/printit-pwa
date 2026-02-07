@@ -97,9 +97,5 @@ export const SocketProvider = ({
     onDisconnect,
   };
 
-  return (
-    <SocketContext.Provider value={contextValue}>
-      {children}
-    </SocketContext.Provider>
-  );
+  return <SocketContext value={contextValue}>{children}</SocketContext>;
 };

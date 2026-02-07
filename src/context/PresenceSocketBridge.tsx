@@ -31,18 +31,15 @@ export function PresenceSocketBridge() {
       clear();
     };
 
-    // Register event listeners
     socket.on("presence:update", handlePresenceUpdate);
     socket.on("presence:bulk", handlePresenceBulk);
     socket.on("disconnect", handleDisconnect);
 
-    // Request initial presence data when connected
     if (isConnected && !isInitializedRef.current) {
       socket.emit("presence:request");
       isInitializedRef.current = true;
     }
 
-    // Cleanup function
     return () => {
       socket.off("presence:update", handlePresenceUpdate);
       socket.off("presence:bulk", handlePresenceBulk);
@@ -50,7 +47,6 @@ export function PresenceSocketBridge() {
     };
   }, [socket, isConnected]);
 
-  // Reset initialization flag on disconnect
   useEffect(() => {
     if (!isConnected) {
       isInitializedRef.current = false;
