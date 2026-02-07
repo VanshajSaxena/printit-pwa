@@ -13,7 +13,6 @@ import {
 import AppContent from "@layout/AppContent";
 import { usePresenceStore } from "@store/presenceStore";
 import { arrowBackOutline, printOutline } from "ionicons/icons";
-import { useEffect } from "react";
 import { useParams } from "react-router";
 
 interface RouteParams {
@@ -51,12 +50,6 @@ export function RequireVendorPresence({
       setCurrentVendorId(data.id);
     }
   }
-
-  useEffect(() => {
-    return () => {
-      setCurrentVendorId(null);
-    };
-  }, [setCurrentVendorId]);
 
   if (isLoading) {
     return (
