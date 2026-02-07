@@ -350,6 +350,14 @@ export interface components {
       /** @enum {string} */
       status: "PENDING" | "QUEUED" | "PRINTING" | "COMPLETED" | "ERROR";
     };
+    NotFoundErrorDto: {
+      /** @example Not Found */
+      error: string;
+      /** @example Entity not found */
+      message: string;
+      /** @example 404 */
+      statusCode: number;
+    };
     PrinterResponseDto: {
       /** Format: json */
       capabilities: string;
@@ -428,6 +436,7 @@ export type FindDocumentResponseDto =
 export type FindJobResponseDto = components["schemas"]["FindJobResponseDto"];
 export type FindTransactionResponseDto =
   components["schemas"]["FindTransactionResponseDto"];
+export type NotFoundErrorDto = components["schemas"]["NotFoundErrorDto"];
 export type PrinterResponseDto = components["schemas"]["PrinterResponseDto"];
 export type UpdateDocumentRequestDto =
   components["schemas"]["UpdateDocumentRequestDto"];
@@ -1055,6 +1064,14 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["VendorResponseDto"];
+        };
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["NotFoundErrorDto"];
         };
       };
     };
