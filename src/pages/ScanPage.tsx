@@ -75,14 +75,14 @@ export default function ScanPage() {
                 return;
               }
               const paths = url.pathname.split("/");
-              // __AUTO_GENERATED_PRINT_VAR_START__
-              alert(
-                `ScanPage#startScanning#(anon)#if paths: ${paths.toString()}`,
-              ); // __AUTO_GENERATED_PRINT_VAR_END__
-              if (paths[2]) {
-                stopScanning();
-                router.push(`/home/printer/${paths[2]}`);
+              const selector =
+                paths.findIndex((path) => path === "printer") + 1;
+              if (selector === -1) {
+                setIsAlertOpen(true);
+                return;
               }
+              stopScanning();
+              router.push(`/home/printer/${paths[selector]}`);
             } catch {
               setIsAlertOpen(true);
             }
@@ -136,8 +136,7 @@ export default function ScanPage() {
             shape={"round"}
             className="--padding-start-0 --padding-end-0 absolute top-6 right-6 size-12"
             onClick={() => {
-              stopScanning();
-              router.push("/home", "back", "pop");
+              router.goBack();
             }}
           >
             <IonIcon slot="icon-only" icon={close} size={"small"}></IonIcon>
