@@ -3,6 +3,7 @@
 
 interface ImportMetaEnv {
   readonly VITE_APP_VERSION: string;
+  readonly VITE_API_BASE_URL: string;
   readonly VITE_NETLIFY_CONTEXT:
     | "production"
     | "deploy-preview"
