@@ -64,7 +64,7 @@ export default function UpdateAppPage() {
           </IonList>
         ) : (
           <IonNote className="mt-8 flex items-center justify-center">
-            You are using the latest version of Printly.
+            You are using the latest version of Printit.
           </IonNote>
         )}
       </AppContent>

@@ -36,7 +36,7 @@ const HomePage: React.FC = () => {
           </IonButton>
 
           <IonNote className="text-center text-sm leading-relaxed">
-            You can find the QR code at your nearby Printly Shops. Tap to{" "}
+            You can find the QR code at your nearby Printit Shops. Tap to{" "}
             <span className="cursor-pointer font-medium">Learn More.</span>
           </IonNote>
         </div>

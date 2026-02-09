@@ -108,7 +108,7 @@ export const useDraftStore = create<DraftStore>()(
       },
     })),
     {
-      name: "printly-draft-storage",
+      name: "printit-draft-storage",
       storage: createIdbStorage<Pick<DraftStore, "state">>(),
       partialize: (store: DraftStore) => ({ state: store.state }),
       onRehydrateStorage: (store) => {

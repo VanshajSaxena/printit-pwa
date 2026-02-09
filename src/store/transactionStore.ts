@@ -46,7 +46,7 @@ export const useTransactionStore = create<TransactionStore>()(
       },
     })),
     {
-      name: "printly-transaction-store",
+      name: "printit-transaction-store",
       version: 1,
       storage: createIdbStorage<Pick<TransactionStore, "state">>(),
       partialize: (store: TransactionStore) => ({ state: store.state }),
