@@ -41,28 +41,28 @@ export default defineConfig({
         theme_color: "#FFFFFF",
         orientation: "portrait",
         categories: ["productivity", "education"],
-        start_url: "/",
+        start_url: "./",
         icons: [
           {
-            src: "/assets/pwa-192x192.png",
+            src: "/pwa-192x192.png",
             sizes: "192x192",
             type: "image/png",
             purpose: "any",
           },
           {
-            src: "/assets/pwa-512x512.png",
+            src: "/pwa-512x512.png",
             sizes: "512x512",
             type: "image/png",
             purpose: "any",
           },
           {
-            src: "/assets/pwa-maskable-192x192.png",
+            src: "/pwa-maskable-192x192.png",
             sizes: "192x192",
             type: "image/png",
             purpose: "maskable",
           },
           {
-            src: "/assets/pwa-maskable-512x512.png",
+            src: "/pwa-maskable-512x512.png",
             sizes: "512x512",
             type: "image/png",
             purpose: "maskable",
