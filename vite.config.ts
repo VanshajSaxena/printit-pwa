@@ -37,7 +37,7 @@ export default defineConfig({
         name: "Printit",
         short_name: "Printit",
         description: "Print, Instantly. Anywhere.",
-        background_color: "#FFFFFF",
+        background_color: "#F9F9FA",
         display: "standalone",
         theme_color: "#FFFFFF",
         orientation: "portrait",
