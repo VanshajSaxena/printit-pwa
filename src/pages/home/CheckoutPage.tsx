@@ -273,7 +273,8 @@ export default function CheckoutPage() {
             <IonButton
               fill="clear"
               size="small"
-              className="m-0 size-fit p-0"
+              className="m-0 p-0!"
+              shape="round"
               onClick={() => {
                 setIsModalOpen(true);
               }}
@@ -281,14 +282,15 @@ export default function CheckoutPage() {
               <IonIcon
                 icon={settingsOutline}
                 color="medium"
+                slot="icon-only"
                 className="text-2xl"
-              ></IonIcon>
+              />
             </IonButton>
           </IonCardTitle>
           <IonCardContent className="p-0!">
             <IonGrid>
               {/* Header row */}
-              <IonRow className="p-1.25">
+              <IonRow className="px-1.25 pt-1.25">
                 <IonCol
                   size="auto"
                   className="flex items-center justify-center"
