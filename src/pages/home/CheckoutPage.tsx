@@ -43,8 +43,6 @@ export default function CheckoutPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   console.log(isPlatform("ios"));
 
-  // --- FIX 1: Type Definition ---
-  // Initialize as undefined, not null, to satisfy Ionic props
   const pageRef = useRef<HTMLElement>(null);
   const [presentingElement, setPresentingElement] = useState<
     HTMLElement | undefined
@@ -53,8 +51,6 @@ export default function CheckoutPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
-    // --- FIX 2: Null Coalescing ---
-    // Ensure we convert null to undefined
     setPresentingElement(pageRef.current ?? undefined);
   }, []);
 
@@ -376,9 +372,6 @@ export default function CheckoutPage() {
 
         <IonModal
           isOpen={isModalOpen}
-          // --- FIX 3: Robust Platform Check ---
-          // 1. Check if the element exists (presentingElement !== undefined)
-          // 2. Check if platform is iOS OR if we are forcing the mode via config
           presentingElement={
             presentingElement && (isPlatform("ios") || window.location.href)
               ? presentingElement

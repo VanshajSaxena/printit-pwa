@@ -34,7 +34,7 @@ import { baseUrl, queryClient } from "@api/client";
 import { SocketProvider } from "@context/SocketProvider";
 import { PresenceSocketBridge } from "@context/PresenceSocketBridge";
 
-setupIonicReact({ mode: "ios" });
+setupIonicReact();
 
 const App: React.FC = () => (
   <QueryClientProvider client={queryClient}>

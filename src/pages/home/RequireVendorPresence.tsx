@@ -56,7 +56,7 @@ export function RequireVendorPresence({
       <IonPage>
         <IonHeader translucent>
           <IonToolbar>
-            <IonTitle>Loading...</IonTitle>
+            <IonTitle>Printer</IonTitle>
           </IonToolbar>
         </IonHeader>
         <AppContent
