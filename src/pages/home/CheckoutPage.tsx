@@ -344,7 +344,13 @@ export default function CheckoutPage() {
                     size="auto"
                     className="flex min-h-8 min-w-8 items-center justify-center"
                   >
-                    <IonIcon icon={document} className="text-xl" />
+                    <IonIcon
+                      icon={document}
+                      className="text-xl"
+                      color={
+                        job.outputColor === "COLOR" ? "secondary" : "medium"
+                      }
+                    />
                   </IonCol>
                   <IonCol className="flex min-w-0 flex-1 items-center pl-2">
                     <IonText
