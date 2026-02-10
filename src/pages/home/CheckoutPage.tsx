@@ -13,20 +13,29 @@ import {
   IonHeader,
   IonIcon,
   IonLabel,
+  IonModal,
   IonPage,
   IonRow,
   IonText,
   IonTitle,
   IonToolbar,
-  useIonRouter,
   useIonLoading,
+  useIonRouter,
 } from "@ionic/react";
+
+import { useCurrentVendorPresence } from "@hooks/usePresence";
 import AppContent from "@layout/AppContent";
 import { useDraftStore } from "@store/draftStore";
-import { useTransactionStore } from "@store/transactionStore";
 import { usePresenceStore } from "@store/presenceStore";
-import { useCurrentVendorPresence } from "@hooks/usePresence";
-import { document, printOutline, settingsOutline } from "ionicons/icons";
+import { useTransactionStore } from "@store/transactionStore";
+import {
+  add,
+  chevronForward,
+  document,
+  printOutline,
+  remove,
+  settingsOutline,
+} from "ionicons/icons";
 import { useState } from "react";
 
 export default function CheckoutPage() {
@@ -349,6 +358,61 @@ export default function CheckoutPage() {
             {isSubmitting ? "Processing..." : "Start Printing"}
           </IonLabel>
         </IonButton>
+        <IonModal>
+          <IonCard className="min-w-full">
+            <IonCardContent className="p-4!">
+              <IonGrid className="p-0">
+                <IonRow>
+                  <IonCol
+                    size="auto"
+                    className="flex items-center justify-center"
+                  >
+                    <IonIcon icon={document} className="text-2xl" />
+                  </IonCol>
+                  <IonCol className="flex min-w-0 flex-1 items-center pl-2">
+                    <IonText
+                      color={"dark"}
+                      className="block truncate font-medium"
+                    >
+                      Final Year Dissertation
+                    </IonText>
+                  </IonCol>
+                  <IonCol
+                    size="auto"
+                    className="flex items-center justify-center"
+                  >
+                    <IonIcon
+                      icon={chevronForward}
+                      className="text-xl"
+                    ></IonIcon>
+                  </IonCol>
+                </IonRow>
+                <IonRow className="mt-2">
+                  <IonCol className="flex items-center justify-between">
+                    <IonText color={"dark"}>Copies</IonText>
+                    <div className="flex items-center justify-between gap-4">
+                      <IonButton size="small" fill="solid" color={"light"}>
+                        <IonIcon
+                          icon={remove}
+                          className="text-xl"
+                          color="dark"
+                        ></IonIcon>
+                      </IonButton>
+                      <IonText color={"dark"}>1</IonText>
+                      <IonButton size="small" fill="solid" color={"light"}>
+                        <IonIcon
+                          icon={add}
+                          className="text-xl"
+                          color="dark"
+                        ></IonIcon>
+                      </IonButton>
+                    </div>
+                  </IonCol>
+                </IonRow>
+              </IonGrid>
+            </IonCardContent>
+          </IonCard>
+        </IonModal>
       </AppContent>
     </IonPage>
   );
