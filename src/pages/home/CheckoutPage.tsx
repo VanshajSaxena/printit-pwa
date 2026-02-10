@@ -260,9 +260,6 @@ export default function CheckoutPage() {
           size="default"
           fill="solid"
           color="primary"
-          onClick={() => {
-            setIsModalOpen(true);
-          }}
           className="m-0 min-w-full"
           disabled={isSubmitting}
         >
@@ -271,7 +268,23 @@ export default function CheckoutPage() {
         </IonButton>
 
         <IonCard className="my-6 max-w-full min-w-full">
-          <IonCardTitle className="px-5 pt-5">Documents</IonCardTitle>
+          <IonCardTitle className="flex items-center justify-between px-5 pt-5">
+            <IonLabel>Documents</IonLabel>
+            <IonButton
+              fill="clear"
+              size="small"
+              className="m-0 size-fit p-0"
+              onClick={() => {
+                setIsModalOpen(true);
+              }}
+            >
+              <IonIcon
+                icon={settingsOutline}
+                color="medium"
+                className="text-3xl"
+              ></IonIcon>
+            </IonButton>
+          </IonCardTitle>
           <IonCardContent className="p-0!">
             <IonGrid>
               {/* Header row */}
