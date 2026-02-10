@@ -33,6 +33,7 @@ export default defineConfig({
         globPatterns: ["**/*.{js,css,html,ico,png,svg,woff2}"],
       },
       manifest: {
+        id: "/",
         name: "Printit",
         short_name: "Printit",
         description: "Print, Instantly. Anywhere.",
