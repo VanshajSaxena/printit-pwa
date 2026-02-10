@@ -406,7 +406,7 @@ export default function CheckoutPage() {
                     setIsModalOpen(false);
                   }}
                 >
-                  Done
+                  Close
                 </IonButton>
               </IonButtons>
             </IonToolbar>
