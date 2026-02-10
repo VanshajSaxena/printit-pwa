@@ -42,6 +42,11 @@ export interface DraftStore {
   setCurrentDraftTransactionId: (id: string) => void;
   getCurrentDraftTransactionId: () => string | null;
   clearCurrentDraftTransactionId: () => void;
+  updateDraftJob: (
+    transactionId: string,
+    jobId: string,
+    updates: Partial<DraftJob>,
+  ) => void;
 }
 
 export const useDraftStore = create<DraftStore>()(
@@ -79,8 +84,8 @@ export const useDraftStore = create<DraftStore>()(
             createdAt: now,
             updatedAt: now,
             document,
-            copyCount: 1, // we assume single copy by default
-            outputColor: "MONOCHROME", // we assume Monochrome by default
+            copyCount: 1,
+            outputColor: "MONOCHROME",
           } satisfies DraftJob;
         });
         const transaction = {
@@ -105,6 +110,16 @@ export const useDraftStore = create<DraftStore>()(
       },
       clearCurrentDraftTransactionId: () => {
         set((store) => (store.state.currentDraftTransactionId = null));
+      },
+      updateDraftJob: (transactionId, jobId, updates) => {
+        set((store) => {
+          const transaction = store.state.transactions[transactionId];
+
+          const job = transaction.jobs.find((j) => j.id === jobId);
+          if (job) {
+            Object.assign(job, updates);
+          }
+        });
       },
     })),
     {
