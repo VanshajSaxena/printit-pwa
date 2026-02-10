@@ -13,26 +13,48 @@ import {
   IonHeader,
   IonIcon,
   IonLabel,
+  IonModal,
   IonPage,
   IonRow,
+  IonSegment,
+  IonSegmentButton,
   IonText,
   IonTitle,
   IonToolbar,
-  useIonRouter,
+  isPlatform,
   useIonLoading,
 } from "@ionic/react";
-import AppContent from "@layout/AppContent";
-import { useDraftStore } from "@store/draftStore";
-import { useTransactionStore } from "@store/transactionStore";
-import { usePresenceStore } from "@store/presenceStore";
+
 import { useCurrentVendorPresence } from "@hooks/usePresence";
-import { document, printOutline, settingsOutline } from "ionicons/icons";
-import { useState } from "react";
+import AppContent from "@layout/AppContent";
+import { OutputColor, useDraftStore } from "@store/draftStore";
+import { usePresenceStore } from "@store/presenceStore";
+import { useTransactionStore } from "@store/transactionStore";
+import {
+  add,
+  colorPaletteOutline,
+  document,
+  printOutline,
+  remove,
+  settingsOutline,
+} from "ionicons/icons";
+import { useEffect, useRef, useState } from "react";
+import "./CheckoutPage.css";
 
 export default function CheckoutPage() {
-  const router = useIonRouter();
   const [presentLoading, dismissLoading] = useIonLoading();
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const pageRef = useRef<HTMLElement>(null);
+  const [presentingElement, setPresentingElement] = useState<
+    HTMLElement | undefined
+  >(undefined);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  useEffect(() => {
+    setPresentingElement(pageRef.current ?? undefined);
+  }, []);
 
   const currentVendorId = usePresenceStore((store) => store.currentVendorId);
   const vendorStatus = useCurrentVendorPresence();
@@ -46,6 +68,7 @@ export default function CheckoutPage() {
   const clearCurrentDraftTransactionId = useDraftStore(
     (store) => store.clearCurrentDraftTransactionId,
   );
+  const updateDraftJob = useDraftStore((store) => store.updateDraftJob);
 
   const currentDraftTransactionId = getCurrentDraftTransactionId();
 
@@ -70,6 +93,25 @@ export default function CheckoutPage() {
     "/api/v1/transactions",
   );
   const filesMutation = client.useMutation("post", "/api/v1/files/upload");
+
+  const handleIncrementCopy = (jobId: string, currentCopyCount: number) => {
+    updateDraftJob(currentDraftTransactionId, jobId, {
+      copyCount: currentCopyCount + 1,
+    });
+  };
+
+  const handleDecrementCopy = (jobId: string, currentCopyCount: number) => {
+    if (currentCopyCount <= 1) return;
+    updateDraftJob(currentDraftTransactionId, jobId, {
+      copyCount: currentCopyCount - 1,
+    });
+  };
+
+  const handleColorChange = (jobId: string, value: OutputColor) => {
+    updateDraftJob(currentDraftTransactionId, jobId, {
+      outputColor: value,
+    });
+  };
 
   const handleSubmit = async () => {
     if (!currentVendorId) {
@@ -199,7 +241,7 @@ export default function CheckoutPage() {
   const isOnline = vendorStatus === "online";
 
   return (
-    <IonPage>
+    <IonPage ref={pageRef}>
       <IonHeader translucent>
         <IonToolbar>
           <IonButtons slot="start">
@@ -229,7 +271,6 @@ export default function CheckoutPage() {
               />
             </IonCardTitle>
             <IonCardSubtitle color="medium">
-              {/* TODO: Get vendor location from API */}
               Galgotias University, Greater Noida, UP
             </IonCardSubtitle>
           </IonCardContent>
@@ -240,9 +281,6 @@ export default function CheckoutPage() {
           size="default"
           fill="solid"
           color="primary"
-          onClick={() => {
-            router.push("/home/checkout/print-settings");
-          }}
           className="m-0 min-w-full"
           disabled={isSubmitting}
         >
@@ -251,11 +289,29 @@ export default function CheckoutPage() {
         </IonButton>
 
         <IonCard className="my-6 max-w-full min-w-full">
-          <IonCardTitle className="px-5 pt-5">Documents</IonCardTitle>
+          <IonCardTitle className="flex items-center justify-between px-5 pt-4 text-lg">
+            <IonLabel>Documents</IonLabel>
+            <IonButton
+              fill="clear"
+              size="small"
+              className="m-0 p-0!"
+              shape="round"
+              onClick={() => {
+                setIsModalOpen(true);
+              }}
+            >
+              <IonIcon
+                icon={settingsOutline}
+                color="medium"
+                slot="icon-only"
+                className="text-2xl"
+              />
+            </IonButton>
+          </IonCardTitle>
           <IonCardContent className="p-0!">
             <IonGrid>
               {/* Header row */}
-              <IonRow className="p-1.25">
+              <IonRow className="px-1.25 pt-1.25">
                 <IonCol
                   size="auto"
                   className="flex items-center justify-center"
@@ -349,6 +405,149 @@ export default function CheckoutPage() {
             {isSubmitting ? "Processing..." : "Start Printing"}
           </IonLabel>
         </IonButton>
+
+        <IonModal
+          isOpen={isModalOpen}
+          presentingElement={
+            presentingElement && (isPlatform("ios") || window.location.href)
+              ? presentingElement
+              : undefined
+          }
+          canDismiss={true}
+          onDidDismiss={() => {
+            setIsModalOpen(false);
+          }}
+        >
+          <IonHeader>
+            <IonToolbar>
+              <IonTitle>Quick Settings</IonTitle>
+              <IonButtons slot="end">
+                <IonButton
+                  onClick={() => {
+                    setIsModalOpen(false);
+                  }}
+                >
+                  Done
+                </IonButton>
+              </IonButtons>
+            </IonToolbar>
+          </IonHeader>
+          <AppContent
+            fullscreen
+            className="ion-padding flex min-h-full flex-col items-center justify-start gap-0"
+          >
+            {currentDraftTransaction.jobs.map((job) => (
+              <IonCard
+                key={job.id}
+                className="m-0 mb-4 min-w-full pt-2 shadow-sm"
+              >
+                <IonCardContent className="p-3!">
+                  <div className="mb-3 flex items-center gap-3 pb-3">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg">
+                      <IonIcon
+                        icon={document}
+                        className="text-xl"
+                        color={
+                          job.outputColor === "COLOR" ? "secondary" : "medium"
+                        }
+                      />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <IonText
+                        color="dark"
+                        className="block truncate text-base font-semibold"
+                      >
+                        {job.document.filename}
+                      </IonText>
+                      <IonText color="medium" className="text-xs">
+                        {job.document.pageCount} pages •{" "}
+                        {job.document.contentType
+                          .split("/")[1]
+                          ?.toUpperCase() || "FILE"}
+                      </IonText>
+                    </div>
+                  </div>
+
+                  {/* Settings Grid */}
+                  <IonGrid className="p-0">
+                    <IonRow className="ion-align-items-center">
+                      {/* Color Toggle */}
+                      <IonCol size="12" className="mb-3 pb-0">
+                        <IonSegment
+                          value={job.outputColor}
+                          onIonChange={(e) => {
+                            handleColorChange(
+                              job.id,
+                              e.detail.value as OutputColor,
+                            );
+                          }}
+                          mode="ios"
+                          className="w-full"
+                        >
+                          <IonSegmentButton value="MONOCHROME">
+                            <IonLabel>B&W</IonLabel>
+                          </IonSegmentButton>
+                          <IonSegmentButton value="COLOR">
+                            <IonLabel className="flex items-center gap-1">
+                              <IonIcon
+                                icon={colorPaletteOutline}
+                                size="small"
+                              />
+                              Color
+                            </IonLabel>
+                          </IonSegmentButton>
+                        </IonSegment>
+                      </IonCol>
+
+                      {/* Copies Control */}
+                      <IonCol
+                        size="12"
+                        className="flex items-center justify-between pt-2"
+                      >
+                        <IonText color="dark" className="font-medium">
+                          Copies
+                        </IonText>
+                        <div className="flex items-center gap-3 rounded-lg p-1">
+                          <IonButton
+                            size="small"
+                            fill="solid"
+                            color="light"
+                            className="m-0 h-8 w-10 shadow-none"
+                            onClick={() => {
+                              handleDecrementCopy(job.id, job.copyCount);
+                            }}
+                            disabled={job.copyCount <= 1}
+                          >
+                            <IonIcon icon={remove} size="small" color="dark" />
+                          </IonButton>
+
+                          <IonText
+                            color="dark"
+                            className="w-6 text-center text-lg font-semibold"
+                          >
+                            {job.copyCount}
+                          </IonText>
+
+                          <IonButton
+                            size="small"
+                            fill="solid"
+                            color="light"
+                            className="m-0 h-8 w-10 shadow-none"
+                            onClick={() => {
+                              handleIncrementCopy(job.id, job.copyCount);
+                            }}
+                          >
+                            <IonIcon icon={add} size="small" color="dark" />
+                          </IonButton>
+                        </div>
+                      </IonCol>
+                    </IonRow>
+                  </IonGrid>
+                </IonCardContent>
+              </IonCard>
+            ))}
+          </AppContent>
+        </IonModal>
       </AppContent>
     </IonPage>
   );

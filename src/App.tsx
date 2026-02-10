@@ -26,13 +26,13 @@ import "@ionic/react/css/text-transformation.css";
 import "@ionic/react/css/palettes/dark.system.css";
 
 /* Theme variables */
+import { baseUrl, queryClient } from "@api/client";
+import { PresenceSocketBridge } from "@context/PresenceSocketBridge";
+import { SocketProvider } from "@context/SocketProvider";
 import { UpdateProvider } from "@context/UpdateProvider";
 import AppLayout from "@layout/AppLayout";
-import "./theme/variables.css";
 import { QueryClientProvider } from "@tanstack/react-query";
-import { baseUrl, queryClient } from "@api/client";
-import { SocketProvider } from "@context/SocketProvider";
-import { PresenceSocketBridge } from "@context/PresenceSocketBridge";
+import "./theme/variables.css";
 
 setupIonicReact();
 
