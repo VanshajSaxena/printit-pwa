@@ -268,7 +268,7 @@ export default function CheckoutPage() {
         </IonButton>
 
         <IonCard className="my-6 max-w-full min-w-full">
-          <IonCardTitle className="flex items-center justify-between px-5 pt-5">
+          <IonCardTitle className="flex items-center justify-between px-5 pt-4 text-lg">
             <IonLabel>Documents</IonLabel>
             <IonButton
               fill="clear"
@@ -281,7 +281,7 @@ export default function CheckoutPage() {
               <IonIcon
                 icon={settingsOutline}
                 color="medium"
-                className="text-3xl"
+                className="text-2xl"
               ></IonIcon>
             </IonButton>
           </IonCardTitle>
