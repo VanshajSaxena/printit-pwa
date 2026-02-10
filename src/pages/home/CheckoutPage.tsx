@@ -288,7 +288,12 @@ export default function CheckoutPage() {
           <IonLabel>Change Settings</IonLabel>
         </IonButton>
 
-        <IonCard className="my-6 max-w-full min-w-full">
+        <IonCard
+          className="my-6 max-w-full min-w-full"
+          onClick={() => {
+            setIsModalOpen(true);
+          }}
+        >
           <IonCardTitle className="flex items-center justify-between px-5 pt-4 text-lg">
             <IonLabel>Documents</IonLabel>
             <IonButton
@@ -296,9 +301,6 @@ export default function CheckoutPage() {
               size="small"
               className="m-0 p-0!"
               shape="round"
-              onClick={() => {
-                setIsModalOpen(true);
-              }}
             >
               <IonIcon
                 icon={settingsOutline}
