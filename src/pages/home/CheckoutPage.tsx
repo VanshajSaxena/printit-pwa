@@ -452,7 +452,7 @@ export default function CheckoutPage() {
                     <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg">
                       <IonIcon
                         icon={document}
-                        className="text-xl"
+                        className="text-2xl"
                         color={
                           job.outputColor === "COLOR" ? "secondary" : "medium"
                         }
