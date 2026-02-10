@@ -19,8 +19,8 @@ import {
   IonText,
   IonTitle,
   IonToolbar,
+  isPlatform,
   useIonLoading,
-  useIonRouter,
 } from "@ionic/react";
 
 import { useCurrentVendorPresence } from "@hooks/usePresence";
@@ -36,12 +36,20 @@ import {
   remove,
   settingsOutline,
 } from "ionicons/icons";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function CheckoutPage() {
-  const router = useIonRouter();
   const [presentLoading, dismissLoading] = useIonLoading();
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const pageRef = useRef<HTMLElement>(null);
+  const [presentingElement, setPresentingElement] =
+    useState<HTMLElement | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  useEffect(() => {
+    setPresentingElement(pageRef.current);
+  }, []);
 
   const currentVendorId = usePresenceStore((store) => store.currentVendorId);
   const vendorStatus = useCurrentVendorPresence();
@@ -208,7 +216,7 @@ export default function CheckoutPage() {
   const isOnline = vendorStatus === "online";
 
   return (
-    <IonPage>
+    <IonPage ref={pageRef}>
       <IonHeader translucent>
         <IonToolbar>
           <IonButtons slot="start">
@@ -250,7 +258,7 @@ export default function CheckoutPage() {
           fill="solid"
           color="primary"
           onClick={() => {
-            router.push("/home/checkout/print-settings");
+            setIsModalOpen(true);
           }}
           className="m-0 min-w-full"
           disabled={isSubmitting}
@@ -358,60 +366,91 @@ export default function CheckoutPage() {
             {isSubmitting ? "Processing..." : "Start Printing"}
           </IonLabel>
         </IonButton>
-        <IonModal>
-          <IonCard className="min-w-full">
-            <IonCardContent className="p-4!">
-              <IonGrid className="p-0">
-                <IonRow>
-                  <IonCol
-                    size="auto"
-                    className="flex items-center justify-center"
-                  >
-                    <IonIcon icon={document} className="text-2xl" />
-                  </IonCol>
-                  <IonCol className="flex min-w-0 flex-1 items-center pl-2">
-                    <IonText
-                      color={"dark"}
-                      className="block truncate font-medium"
+
+        <IonModal
+          isOpen={isModalOpen}
+          presentingElement={
+            isPlatform("ios")
+              ? (presentingElement as HTMLElement | undefined)
+              : undefined
+          }
+          canDismiss={true}
+          onDidDismiss={() => {
+            setIsModalOpen(false);
+          }}
+        >
+          <IonHeader>
+            <IonToolbar>
+              <IonTitle>Quick Settings</IonTitle>
+              <IonButtons slot="end">
+                <IonButton
+                  onClick={() => {
+                    setIsModalOpen(false);
+                  }}
+                >
+                  Done
+                </IonButton>
+              </IonButtons>
+            </IonToolbar>
+          </IonHeader>
+          <AppContent
+            fullscreen
+            className="ion-padding flex min-h-full flex-col items-center justify-start gap-0"
+          >
+            <IonCard className="m-0 min-w-full pt-4 shadow-none">
+              <IonCardContent className="p-4!">
+                <IonGrid className="p-0">
+                  <IonRow>
+                    <IonCol
+                      size="auto"
+                      className="flex items-center justify-center"
                     >
-                      Final Year Dissertation
-                    </IonText>
-                  </IonCol>
-                  <IonCol
-                    size="auto"
-                    className="flex items-center justify-center"
-                  >
-                    <IonIcon
-                      icon={chevronForward}
-                      className="text-xl"
-                    ></IonIcon>
-                  </IonCol>
-                </IonRow>
-                <IonRow className="mt-2">
-                  <IonCol className="flex items-center justify-between">
-                    <IonText color={"dark"}>Copies</IonText>
-                    <div className="flex items-center justify-between gap-4">
-                      <IonButton size="small" fill="solid" color={"light"}>
-                        <IonIcon
-                          icon={remove}
-                          className="text-xl"
-                          color="dark"
-                        ></IonIcon>
-                      </IonButton>
-                      <IonText color={"dark"}>1</IonText>
-                      <IonButton size="small" fill="solid" color={"light"}>
-                        <IonIcon
-                          icon={add}
-                          className="text-xl"
-                          color="dark"
-                        ></IonIcon>
-                      </IonButton>
-                    </div>
-                  </IonCol>
-                </IonRow>
-              </IonGrid>
-            </IonCardContent>
-          </IonCard>
+                      <IonIcon icon={document} className="text-2xl" />
+                    </IonCol>
+                    <IonCol className="flex min-w-0 flex-1 items-center pl-2">
+                      <IonText
+                        color={"dark"}
+                        className="block truncate font-medium"
+                      >
+                        Final Year Dissertation
+                      </IonText>
+                    </IonCol>
+                    <IonCol
+                      size="auto"
+                      className="flex items-center justify-center"
+                    >
+                      <IonIcon
+                        icon={chevronForward}
+                        className="text-xl"
+                      ></IonIcon>
+                    </IonCol>
+                  </IonRow>
+                  <IonRow className="mt-2">
+                    <IonCol className="flex items-center justify-between">
+                      <IonText color={"dark"}>Copies</IonText>
+                      <div className="flex items-center justify-between gap-4">
+                        <IonButton size="small" fill="solid" color={"light"}>
+                          <IonIcon
+                            icon={remove}
+                            className="text-xl"
+                            color="dark"
+                          ></IonIcon>
+                        </IonButton>
+                        <IonText color={"dark"}>1</IonText>
+                        <IonButton size="small" fill="solid" color={"light"}>
+                          <IonIcon
+                            icon={add}
+                            className="text-xl"
+                            color="dark"
+                          ></IonIcon>
+                        </IonButton>
+                      </div>
+                    </IonCol>
+                  </IonRow>
+                </IonGrid>
+              </IonCardContent>
+            </IonCard>
+          </AppContent>
         </IonModal>
       </AppContent>
     </IonPage>
