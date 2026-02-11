@@ -14,6 +14,7 @@ import {
   IonLabel,
   IonNote,
   IonPage,
+  IonSpinner,
   IonText,
   IonTitle,
   IonToolbar,
@@ -23,9 +24,14 @@ import {
 import AppContent from "@layout/AppContent";
 import { useDraftStore } from "@store/draftStore";
 import { usePresenceStore } from "@store/presenceStore";
-import { arrowBack, cloudUploadOutline } from "ionicons/icons";
+import {
+  arrowBack,
+  arrowBackOutline,
+  cloudUploadOutline,
+  printOutline,
+} from "ionicons/icons";
 import { ChangeEvent, useEffect, useRef } from "react";
-import { Redirect, useParams } from "react-router";
+import { useParams } from "react-router";
 
 interface SelectedPrinterPageProps {
   selector: string;
@@ -37,26 +43,58 @@ export default function SelectedVendorPage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [present, dismiss] = useIonLoading();
 
+  const setPresence = usePresenceStore((store) => store.setPresence);
   const updatePresence = usePresenceStore((store) => store.updatePresence);
-  const vendorId = usePresenceStore((store) => store.selectorMap.get(selector));
+
   const vendorPresence = usePresenceStore((store) =>
-    store.getPresence(vendorId),
+    store.getPresence(selector),
   );
 
-  const { data, status } = client.useQuery(
+  const { data: presenceData } = client.useQuery(
     "get",
     "/api/v1/vendors/{selector}/presence",
     { params: { path: { selector } } },
+    { refetchOnWindowFocus: false },
+  );
+
+  const {
+    data: vendorData,
+    error,
+    isLoading,
+  } = client.useQuery(
+    "get",
+    "/api/v1/vendors/{selector}",
+    { params: { path: { selector } } },
     {
       refetchOnWindowFocus: false,
+      retry: false,
+      staleTime: 5 * 60 * 1000,
     },
   );
 
   useEffect(() => {
-    if (data?.id) {
-      updatePresence(data.id, data.status);
+    if (vendorData) {
+      const { firstName, lastName, givenName, id } = vendorData;
+      setPresence(
+        id,
+        {
+          firstName,
+          lastName,
+          givenName,
+          id,
+        },
+        selector,
+      );
     }
-  }, [data, updatePresence]);
+  }, [selector, setPresence, vendorData]);
+
+  useEffect(() => {
+    if (presenceData) {
+      const { status, id } = presenceData;
+
+      updatePresence(id, status);
+    }
+  }, [presenceData, updatePresence]);
 
   const createDraftTransaction = useDraftStore(
     (store) => store.createDraftTransaction,
@@ -66,7 +104,7 @@ export default function SelectedVendorPage() {
   );
 
   const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
-    if (!vendorId || !vendorPresence) {
+    if (!vendorPresence) {
       console.error("vendor didn't exist");
       return;
     }
@@ -105,11 +143,65 @@ export default function SelectedVendorPage() {
     fileInputRef.current?.click();
   };
 
-  if (status === "error") {
-    return <Redirect to="/home" />;
+  if (error) {
+    return (
+      <IonPage>
+        <IonHeader translucent>
+          <IonToolbar>
+            <IonTitle>Printer Not Found</IonTitle>
+          </IonToolbar>
+        </IonHeader>
+        <AppContent
+          fullscreen
+          className="ion-padding flex min-h-full flex-col justify-center"
+        >
+          <div className="text-center">
+            <IonIcon icon={printOutline} className="text-5xl" />
+            <p className="my-2 text-lg font-semibold">
+              Oops! That printer isn't here.
+            </p>
+            <IonNote color="medium">
+              It might have been removed or isn't available anymore.
+            </IonNote>
+            <IonButton
+              expand="block"
+              fill="solid"
+              className="my-8"
+              onClick={() => {
+                router.push("/home", "back", "pop");
+              }}
+            >
+              <IonIcon icon={arrowBackOutline} slot="start" />
+              Go Back
+            </IonButton>
+          </div>
+        </AppContent>
+      </IonPage>
+    );
   }
 
-  const isOnline = vendorPresence?.status === "online";
+  if (isLoading || !vendorPresence) {
+    return (
+      <IonPage>
+        <IonHeader translucent>
+          <IonToolbar>
+            <IonTitle>Printer</IonTitle>
+          </IonToolbar>
+        </IonHeader>
+        <AppContent
+          fullscreen
+          className="ion-padding flex min-h-full items-center justify-center"
+        >
+          <IonSpinner />
+        </AppContent>
+      </IonPage>
+    );
+  }
+
+  const isOnline = vendorPresence.status === "online";
+  const displayName =
+    vendorPresence.givenName ??
+    `${vendorPresence.firstName} ${vendorPresence.lastName}`;
 
   return (
     <IonPage>
@@ -138,16 +230,10 @@ export default function SelectedVendorPage() {
                   {isOnline ? "Printer Ready" : "Printer Offline"}
                   <PulseIcon
                     className="mt-0 min-h-8 min-w-8"
-                    status={vendorPresence?.status}
+                    status={vendorPresence.status}
                   />
                 </IonCardTitle>
-                <IonCardSubtitle>
-                  {vendorPresence?.givenName ??
-                    vendorPresence?.firstName.concat(
-                      " ",
-                      vendorPresence.lastName,
-                    )}
-                </IonCardSubtitle>
+                <IonCardSubtitle>{displayName}</IonCardSubtitle>
               </div>
             </div>
           </IonCardHeader>

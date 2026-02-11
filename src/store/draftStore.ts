@@ -44,7 +44,6 @@ export interface DraftStore {
     vendor: VendorObject,
   ) => Promise<string>;
   setCurrentDraftTransactionId: (id: string) => void;
-  getCurrentDraftTransactionId: () => string | null;
   clearCurrentDraftTransactionId: () => void;
   updateDraftJob: (
     transactionId: string,
@@ -55,7 +54,7 @@ export interface DraftStore {
 
 export const useDraftStore = create<DraftStore>()(
   persist(
-    immer((set, get) => ({
+    immer((set) => ({
       state: {
         transactions: {},
         currentDraftTransactionId: null,
@@ -108,9 +107,6 @@ export const useDraftStore = create<DraftStore>()(
         set((store) => {
           store.state.currentDraftTransactionId = id;
         });
-      },
-      getCurrentDraftTransactionId: () => {
-        return get().state.currentDraftTransactionId;
       },
       clearCurrentDraftTransactionId: () => {
         set((store) => (store.state.currentDraftTransactionId = null));

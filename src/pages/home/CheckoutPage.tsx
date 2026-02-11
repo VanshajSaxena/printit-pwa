@@ -55,9 +55,6 @@ export default function CheckoutPage() {
     setPresentingElement(pageRef.current ?? undefined);
   }, []);
 
-  const getCurrentDraftTransactionId = useDraftStore(
-    (store) => store.getCurrentDraftTransactionId,
-  );
   const createTransaction = useTransactionStore(
     (store) => store.createTransaction,
   );
@@ -66,7 +63,9 @@ export default function CheckoutPage() {
   );
   const updateDraftJob = useDraftStore((store) => store.updateDraftJob);
 
-  const currentDraftTransactionId = getCurrentDraftTransactionId();
+  const currentDraftTransactionId = useDraftStore(
+    (store) => store.state.currentDraftTransactionId,
+  );
 
   if (!currentDraftTransactionId) {
     throw new Error("CurrentDraftTransactionId doesn't exist");

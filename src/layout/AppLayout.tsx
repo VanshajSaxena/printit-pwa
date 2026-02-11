@@ -29,9 +29,7 @@ export default function Applayout() {
                 <HomePage />
               </Route>
               <Route exact path="/home/printer/:selector">
-                <RequireVendorPresence>
-                  <SelectedVendorPage />
-                </RequireVendorPresence>
+                <SelectedVendorPage />
               </Route>
               <Route exact path="/home/printer">
                 <Redirect to="/home" />
