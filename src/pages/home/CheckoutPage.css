@@ -11,7 +11,7 @@ ion-card {
   border-radius: 12px;
 }
 
-ion-toolbar::part(background) {
+ion-toolbar.transparent-toolbar::part(background) {
   background: transparent;
 }
 

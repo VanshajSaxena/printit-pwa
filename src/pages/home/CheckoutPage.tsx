@@ -9,6 +9,7 @@ import {
   IonCardSubtitle,
   IonCardTitle,
   IonCol,
+  IonContent,
   IonFooter,
   IonGrid,
   IonHeader,
@@ -453,11 +454,12 @@ export default function CheckoutPage() {
               : undefined
           }
           canDismiss={true}
+          expandToScroll={false}
           onDidDismiss={() => {
             setIsModalOpen(false);
           }}
         >
-          <IonHeader>
+          <IonHeader translucent>
             <IonToolbar>
               <IonTitle>Quick Settings</IonTitle>
               <IonButtons slot="end">
@@ -471,9 +473,9 @@ export default function CheckoutPage() {
               </IonButtons>
             </IonToolbar>
           </IonHeader>
-          <AppContent
+          <IonContent
             fullscreen
-            className="ion-padding flex min-h-full flex-col items-center justify-start gap-0"
+            className="ion-padding flex flex-col items-center justify-start gap-0"
           >
             {currentDraftTransaction.jobs.map((job) => (
               <IonCard
@@ -588,12 +590,12 @@ export default function CheckoutPage() {
                 </IonCardContent>
               </IonCard>
             ))}
-          </AppContent>
+          </IonContent>
         </IonModal>
       </AppContent>
 
       <IonFooter className="ion-no-border">
-        <IonToolbar>
+        <IonToolbar class="transparent-toolbar">
           <div className="ion-padding mx-auto w-full max-w-2xl">
             <IonButton
               expand="block"
