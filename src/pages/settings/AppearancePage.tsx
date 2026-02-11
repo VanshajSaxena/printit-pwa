@@ -25,8 +25,10 @@ export default function AppearancePage() {
 
   useEffect(() => {
     const applyTheme = (shouldBeDark: boolean) => {
-      document.body.classList.toggle("dark", shouldBeDark);
-      document.body.classList.toggle("light", !shouldBeDark);
+      document.documentElement.classList.toggle(
+        "ion-palette-dark",
+        shouldBeDark,
+      );
     };
 
     if (theme === "system") {

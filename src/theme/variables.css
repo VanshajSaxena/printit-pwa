@@ -7,29 +7,34 @@ http://ionicframework.com/docs/theming/ */
 
 /* =========================================
    DARK MODE
-   Active when body has class="dark"
+   Active when html has class="ion-palette-dark"
    ========================================= */
 
+/* FIX 1: Use :root.ion-palette-dark (Standard Ionic 8 selector)
+   FIX 2: Set background to a Dark Gray (e.g., #1c1c1d), NOT White (#ffffff)
+*/
+
 /* iOS Dark Mode Overrides */
-:root.ios body.dark ion-item {
-  --background: #ffffff;
+:root.ion-palette-dark.ios ion-item {
+  --background: #1c1c1d; /* Standard iOS Dark Item Color */
+}
+
+/* Material Design Dark Mode Overrides (Optional, if needed) */
+:root.ion-palette-dark.md ion-item {
+  --background: #1e1e1e;
 }
 
 /* =========================================
    LIGHT MODE
-   Active when body has class="light"
+   Default (no specific class needed usually, or explicit overrides)
    ========================================= */
 
-body.light {
-  --ion-background-color: #f4f5f8;
-}
-
 /* iOS Light Mode Overrides */
-:root.ios body.light ion-item {
+:root.ios ion-item {
   --background: #ffffff;
 }
 
 /* Android (Material Design) Light Mode Overrides */
-:root.md body.light ion-item {
+:root.md ion-item {
   --background: #ffffff;
 }

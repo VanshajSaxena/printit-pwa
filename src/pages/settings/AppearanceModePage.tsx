@@ -52,7 +52,6 @@ export default function AppearanceModePage() {
             }}
           >
             <IonItem>
-              {/* justify="space-between" pushes the checkmark to the end */}
               <IonRadio value="ios" justify="space-between">
                 Apple (iOS)
               </IonRadio>
