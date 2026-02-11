@@ -10,3 +10,11 @@ ion-card {
   border: 1px solid transparent;
   border-radius: 12px;
 }
+
+ion-toolbar::part(background) {
+  background: transparent;
+}
+
+ion-toolbar::part(container) {
+  padding: 0;
+}

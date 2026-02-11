@@ -9,6 +9,7 @@ import {
   IonCardSubtitle,
   IonCardTitle,
   IonCol,
+  IonFooter,
   IonGrid,
   IonHeader,
   IonIcon,
@@ -399,21 +400,6 @@ export default function CheckoutPage() {
           </IonCardContent>
         </IonCard>
 
-        <IonButton
-          expand="block"
-          size="large"
-          fill="solid"
-          color="primary"
-          className="mt-auto mb-0 min-w-full"
-          onClick={() => void handleSubmit()}
-          disabled={isSubmitting}
-        >
-          <IonIcon icon={printOutline} slot="start" />
-          <IonLabel>
-            {isSubmitting ? "Processing..." : "Start Printing"}
-          </IonLabel>
-        </IonButton>
-
         <IonModal
           isOpen={isModalOpen}
           presentingElement={
@@ -557,6 +543,27 @@ export default function CheckoutPage() {
           </AppContent>
         </IonModal>
       </AppContent>
+
+      <div className="ion-padding mx-auto w-full max-w-2xl">
+        <IonFooter className="ion-no-border">
+          <IonToolbar>
+            <IonButton
+              expand="block"
+              size="large"
+              fill="solid"
+              color="primary"
+              className="m-0 min-w-full"
+              onClick={() => void handleSubmit()}
+              disabled={isSubmitting}
+            >
+              <IonIcon icon={printOutline} slot="start" />
+              <IonLabel>
+                {isSubmitting ? "Processing..." : "Start Printing"}
+              </IonLabel>
+            </IonButton>
+          </IonToolbar>
+        </IonFooter>
+      </div>
     </IonPage>
   );
 }

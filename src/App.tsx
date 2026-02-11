@@ -34,7 +34,7 @@ import AppLayout from "@layout/AppLayout";
 import { QueryClientProvider } from "@tanstack/react-query";
 import "./theme/variables.css";
 
-setupIonicReact();
+setupIonicReact({ mode: "ios" });
 
 const App: React.FC = () => (
   <QueryClientProvider client={queryClient}>
