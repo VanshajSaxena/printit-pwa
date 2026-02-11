@@ -51,13 +51,16 @@ export default function AppearanceModePage() {
               setSelectedMode(e.detail.value as typeof currentMode);
             }}
           >
-            <IonItem button>
-              <IonLabel>Apple (iOS)</IonLabel>
-              <IonRadio slot="end" value="ios" />
+            <IonItem>
+              {/* justify="space-between" pushes the checkmark to the end */}
+              <IonRadio value="ios" justify="space-between">
+                Apple (iOS)
+              </IonRadio>
             </IonItem>
-            <IonItem button>
-              <IonLabel>Android (Material)</IonLabel>
-              <IonRadio slot="end" value="md" />
+            <IonItem>
+              <IonRadio value="md" justify="space-between">
+                Android (Material)
+              </IonRadio>
             </IonItem>
           </IonRadioGroup>
         </IonList>
