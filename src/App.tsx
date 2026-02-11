@@ -44,7 +44,7 @@ interface PersistedSettings {
 
 const savedSettings = localStorage.getItem("app-settings");
 let savedMode: "ios" | "md" = "ios";
-
+let savedTheme: "light" | "dark" | "system" = "system";
 if (savedSettings) {
   try {
     const parsed = JSON.parse(savedSettings) as unknown;
@@ -55,13 +55,22 @@ if (savedSettings) {
       "state" in parsed &&
       typeof (parsed as PersistedSettings).state.mode === "string"
     ) {
-      const mode = (parsed as PersistedSettings).state.mode;
+      const state = (parsed as PersistedSettings).state;
+      const mode = state.mode;
       savedMode = mode;
+
+      savedTheme = state.theme;
     }
   } catch (e) {
     console.error("Error parsing settings", e);
   }
 }
+const isDark =
+  savedTheme === "dark" ||
+  (savedTheme === "system" &&
+    window.matchMedia("(prefers-color-scheme: dark)").matches);
+
+document.documentElement.classList.toggle("ion-palette-dark", isDark);
 
 setupIonicReact({
   mode: savedMode,

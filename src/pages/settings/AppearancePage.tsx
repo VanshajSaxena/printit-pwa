@@ -79,7 +79,6 @@ export default function AppearancePage() {
             </IonLabel>
           </IonItem>
 
-          {/* Option 1: System Theme Toggle */}
           <IonItem>
             <IonLabel>Use System Theme</IonLabel>
             <IonToggle
@@ -95,7 +94,6 @@ export default function AppearancePage() {
             />
           </IonItem>
 
-          {/* Option 2: Manual Dark Mode Toggle */}
           <IonItem>
             <IonLabel>Dark Mode</IonLabel>
             <IonToggle
