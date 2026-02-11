@@ -39,7 +39,7 @@ import {
   colorPaletteOutline,
   contrastOutline,
   document,
-  optionsOutline,
+  options,
   printOutline,
   remove,
   settingsOutline,
@@ -282,6 +282,12 @@ export default function CheckoutPage() {
     0,
   );
 
+  const displayName =
+    currentDraftTransaction.vendor?.givenName ??
+    `${currentDraftTransaction.vendor?.firstName ?? ""} ${
+      currentDraftTransaction.vendor?.lastName ?? ""
+    }`.trim();
+
   return (
     <IonPage ref={pageRef}>
       <IonHeader translucent>
@@ -312,9 +318,7 @@ export default function CheckoutPage() {
                 status={displayStatus}
               />
             </IonCardTitle>
-            <IonCardSubtitle color="medium">
-              Galgotias University, Greater Noida, UP
-            </IonCardSubtitle>
+            <IonCardSubtitle color="medium">{displayName}</IonCardSubtitle>
           </IonCardContent>
         </IonCard>
 
@@ -329,7 +333,7 @@ export default function CheckoutPage() {
             setIsModalOpen(true);
           }}
         >
-          <IonIcon icon={optionsOutline} slot="start" />
+          <IonIcon icon={options} slot="start" />
           <IonLabel>Print Options</IonLabel>
         </IonButton>
 
@@ -340,7 +344,12 @@ export default function CheckoutPage() {
           }}
         >
           <IonCardTitle className="flex items-center justify-between px-5 pt-4 text-xl">
-            <IonLabel>Documents</IonLabel>
+            <IonLabel>
+              Documents{" "}
+              <IonLabel color={"medium"}>
+                ({currentDraftTransaction.jobs.length})
+              </IonLabel>
+            </IonLabel>
             <IonButton
               fill="clear"
               size="small"
