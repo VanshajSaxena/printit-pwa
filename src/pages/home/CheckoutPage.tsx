@@ -26,10 +26,8 @@ import {
   useIonLoading,
 } from "@ionic/react";
 
-import { useCurrentVendorPresence } from "@hooks/usePresence";
 import AppContent from "@layout/AppContent";
 import { OutputColor, useDraftStore } from "@store/draftStore";
-import { usePresenceStore } from "@store/presenceStore";
 import { useTransactionStore } from "@store/transactionStore";
 import {
   add,
@@ -56,9 +54,6 @@ export default function CheckoutPage() {
   useEffect(() => {
     setPresentingElement(pageRef.current ?? undefined);
   }, []);
-
-  const currentVendorId = usePresenceStore((store) => store.currentVendorId);
-  const vendorStatus = useCurrentVendorPresence();
 
   const getCurrentDraftTransactionId = useDraftStore(
     (store) => store.getCurrentDraftTransactionId,

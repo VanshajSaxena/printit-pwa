@@ -9,7 +9,7 @@ export function PresenceSocketBridge() {
   useEffect(() => {
     if (!socket) return;
 
-    const { setPresence, bulkUpdate, clear } = usePresenceStore.getState();
+    const { updatePresence, clear } = usePresenceStore.getState();
 
     const handlePresenceUpdate = ({
       vendorId,
@@ -18,13 +18,7 @@ export function PresenceSocketBridge() {
       vendorId: number;
       status: PresenceStatus;
     }) => {
-      setPresence(vendorId, status);
-    };
-
-    const handlePresenceBulk = (
-      presences: { vendorId: number; status: PresenceStatus }[],
-    ) => {
-      bulkUpdate(presences);
+      updatePresence(vendorId, status);
     };
 
     const handleDisconnect = () => {
@@ -32,7 +26,6 @@ export function PresenceSocketBridge() {
     };
 
     socket.on("presence:update", handlePresenceUpdate);
-    socket.on("presence:bulk", handlePresenceBulk);
     socket.on("disconnect", handleDisconnect);
 
     if (isConnected && !isInitializedRef.current) {
@@ -42,7 +35,6 @@ export function PresenceSocketBridge() {
 
     return () => {
       socket.off("presence:update", handlePresenceUpdate);
-      socket.off("presence:bulk", handlePresenceBulk);
       socket.off("disconnect", handleDisconnect);
     };
   }, [socket, isConnected]);

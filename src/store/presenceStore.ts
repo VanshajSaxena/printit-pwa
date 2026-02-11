@@ -14,9 +14,11 @@ interface PresenceState {
   presenceMap: Map<number, VendorObject>;
   selectorMap: Map<string, number>;
   setPresence: (id: number, vendor: VendorObject, selector?: string) => void;
-  bulkUpdate: (presences: { id: number; vendor: VendorObject }[]) => void;
+  updatePresence: (id: number, status: PresenceStatus) => void;
   clear: () => void;
-  getPresence: (selector: number | string) => VendorObject | undefined;
+  getPresence: (
+    selector: number | string | undefined,
+  ) => VendorObject | undefined;
 }
 
 export const usePresenceStore = create<PresenceState>((set, get) => ({
@@ -34,13 +36,17 @@ export const usePresenceStore = create<PresenceState>((set, get) => ({
       return { presenceMap: newPresenceMap, selectorMap: newSelectorMap };
     });
   },
-  bulkUpdate: (presences) => {
-    set((state) => {
-      const newMap = new Map(state.presenceMap);
-      presences.forEach(({ id: vendorId, vendor: status }) => {
-        newMap.set(vendorId, status);
-      });
-      return { presenceMap: newMap };
+  updatePresence: (id, status) => {
+    set((store) => {
+      const newPresenceMap = new Map(store.presenceMap);
+      const vendor = store.presenceMap.get(id);
+
+      if (vendor) {
+        const updatedVendor = { ...vendor, status };
+        newPresenceMap.set(id, updatedVendor);
+      }
+
+      return { presenceMap: newPresenceMap };
     });
   },
   clear: () => {
@@ -49,6 +55,9 @@ export const usePresenceStore = create<PresenceState>((set, get) => ({
     });
   },
   getPresence: (selector) => {
+    if (!selector) {
+      return undefined;
+    }
     if (typeof selector === "number") {
       return get().presenceMap.get(selector);
     }

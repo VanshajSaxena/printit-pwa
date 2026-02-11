@@ -39,7 +39,10 @@ export interface DraftStore {
   };
   hydrated: boolean;
   setHydrated: () => void;
-  createDraftTransaction: (files: File[], vendor: number) => Promise<string>;
+  createDraftTransaction: (
+    files: File[],
+    vendor: VendorObject,
+  ) => Promise<string>;
   setCurrentDraftTransactionId: (id: string) => void;
   getCurrentDraftTransactionId: () => string | null;
   clearCurrentDraftTransactionId: () => void;

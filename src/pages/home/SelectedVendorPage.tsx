@@ -1,7 +1,6 @@
 import { client } from "@api/client";
 import { PrinterGraphic } from "@components/graphics/PrinterGraphic";
 import { PulseIcon } from "@components/graphics/PulseIcon";
-import { useCurrentVendorPresence } from "@hooks/usePresence";
 import {
   IonButton,
   IonButtons,
@@ -38,11 +37,11 @@ export default function SelectedVendorPage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [present, dismiss] = useIonLoading();
 
-  const currentVendorId = usePresenceStore((store) => store.currentVendorId);
-
-  const vendorStatus = useCurrentVendorPresence();
-
-  const setPresence = usePresenceStore((store) => store.setPresence);
+  const updatePresence = usePresenceStore((store) => store.updatePresence);
+  const vendorId = usePresenceStore((store) => store.selectorMap.get(selector));
+  const vendorPresence = usePresenceStore((store) =>
+    store.getPresence(vendorId),
+  );
 
   const { data, status } = client.useQuery(
     "get",
@@ -50,15 +49,14 @@ export default function SelectedVendorPage() {
     { params: { path: { selector } } },
     {
       refetchOnWindowFocus: false,
-      enabled: !!currentVendorId,
     },
   );
 
   useEffect(() => {
     if (data?.id) {
-      setPresence(data.id, data.status);
+      updatePresence(data.id, data.status);
     }
-  }, [data, setPresence]);
+  }, [data, updatePresence]);
 
   const createDraftTransaction = useDraftStore(
     (store) => store.createDraftTransaction,
@@ -68,6 +66,10 @@ export default function SelectedVendorPage() {
   );
 
   const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
+    if (!vendorId || !vendorPresence) {
+      console.error("vendor didn't exist");
+      return;
+    }
     const eventTargetFiles = event.target.files;
     if (!eventTargetFiles || eventTargetFiles.length === 0) {
       return;
@@ -87,8 +89,7 @@ export default function SelectedVendorPage() {
     try {
       const transactionId = await createDraftTransaction(
         onlyPdfFiles,
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        currentVendorId!,
+        vendorPresence,
       );
       setCurrentDraftTransactionId(transactionId);
       await dismiss();
@@ -108,7 +109,7 @@ export default function SelectedVendorPage() {
     return <Redirect to="/home" />;
   }
 
-  const isOnline = vendorStatus === "online";
+  const isOnline = vendorPresence?.status === "online";
 
   return (
     <IonPage>
@@ -137,18 +138,20 @@ export default function SelectedVendorPage() {
                   {isOnline ? "Printer Ready" : "Printer Offline"}
                   <PulseIcon
                     className="mt-0 min-h-8 min-w-8"
-                    status={vendorStatus}
+                    status={vendorPresence?.status}
                   />
                 </IonCardTitle>
-                <IonCardSubtitle>A&T Stationary</IonCardSubtitle>
+                <IonCardSubtitle>
+                  {vendorPresence?.givenName ??
+                    vendorPresence?.firstName.concat(
+                      " ",
+                      vendorPresence.lastName,
+                    )}
+                </IonCardSubtitle>
               </div>
             </div>
           </IonCardHeader>
-          <IonCardContent className="p-4">
-            <div className="flex min-w-full justify-end">
-              <IonLabel>Last Online: just now</IonLabel>
-            </div>
-          </IonCardContent>
+          <IonCardContent className="p-4" />
         </IonCard>
 
         <div className="flex w-full max-w-full flex-col gap-4">

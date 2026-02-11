@@ -50,8 +50,6 @@ export function RequireVendorPresence({
   useEffect(() => {
     if (vendor?.id) {
       const { firstName, lastName, givenName, id } = vendor;
-      // __AUTO_GENERATED_PRINT_VAR_START__
-      console.log("RequireVendorPresence#(anon)#if id:", id); // __AUTO_GENERATED_PRINT_VAR_END__
       setPresence(
         vendor.id,
         {
