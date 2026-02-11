@@ -16,6 +16,7 @@ import {
   IonLabel,
   IonModal,
   IonPage,
+  IonRippleEffect,
   IonRow,
   IonSegment,
   IonSegmentButton,
@@ -35,7 +36,9 @@ import { getMany } from "idb-keyval"; // Import getMany for retrieving files
 import {
   add,
   colorPaletteOutline,
+  contrastOutline,
   document,
+  optionsOutline,
   printOutline,
   remove,
   settingsOutline,
@@ -325,17 +328,17 @@ export default function CheckoutPage() {
             setIsModalOpen(true);
           }}
         >
-          <IonIcon icon={settingsOutline} slot="start" />
-          <IonLabel>Change Settings</IonLabel>
+          <IonIcon icon={optionsOutline} slot="start" />
+          <IonLabel>Adjust Settings</IonLabel>
         </IonButton>
 
         <IonCard
-          className="my-6 max-w-full min-w-full"
+          className="ion-activatable ripple-parent rounded-rectangle my-6 max-w-full min-w-full"
           onClick={() => {
             setIsModalOpen(true);
           }}
         >
-          <IonCardTitle className="flex items-center justify-between px-5 pt-4 text-lg">
+          <IonCardTitle className="flex items-center justify-between px-5 pt-4 text-xl">
             <IonLabel>Documents</IonLabel>
             <IonButton
               fill="clear"
@@ -398,7 +401,7 @@ export default function CheckoutPage() {
                   <IonCol className="flex min-w-0 flex-1 items-center pl-2">
                     <IonText
                       color="dark"
-                      className="block truncate font-medium"
+                      className="block truncate align-middle font-medium"
                       title={job.document.filename}
                     >
                       {job.document.filename}
@@ -438,6 +441,7 @@ export default function CheckoutPage() {
               </IonRow>
             </IonGrid>
           </IonCardContent>
+          <IonRippleEffect />
         </IonCard>
 
         {/* Settings Modal */}
@@ -474,7 +478,7 @@ export default function CheckoutPage() {
             {currentDraftTransaction.jobs.map((job) => (
               <IonCard
                 key={job.id}
-                className="m-0 mb-4 min-w-full pt-2 shadow-sm"
+                className="m-0 mb-4 max-w-full min-w-full pt-2 shadow-sm"
               >
                 <IonCardContent className="p-3!">
                   <div className="mb-3 flex items-center gap-3 pb-3">
@@ -520,7 +524,10 @@ export default function CheckoutPage() {
                           className="w-full"
                         >
                           <IonSegmentButton value="MONOCHROME">
-                            <IonLabel>B&W</IonLabel>
+                            <IonLabel className="flex items-center gap-1">
+                              <IonIcon icon={contrastOutline} size="small" />
+                              B&W
+                            </IonLabel>
                           </IonSegmentButton>
                           <IonSegmentButton value="COLOR">
                             <IonLabel className="flex items-center gap-1">
