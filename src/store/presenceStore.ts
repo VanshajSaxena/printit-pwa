@@ -1,62 +1,63 @@
 import { create } from "zustand";
 
-export type PresenceStatus = "online" | "offline" | "busy" | "away";
+export type PresenceStatus = "online" | "offline" | "busy" | "away" | undefined;
+
+export interface VendorObject {
+  id: number;
+  firstName: string;
+  lastName: string;
+  givenName: string | null;
+  status: PresenceStatus;
+}
 
 interface PresenceState {
-  // Map of vendorId to their presence status
-  presenceMap: Map<number, PresenceStatus>;
-
-  // Currently selected vendor ID
-  currentVendorId: number | null;
-
-  // Actions
-  setPresence: (vendorId: number, status: PresenceStatus) => void;
-  bulkUpdate: (
-    presences: { vendorId: number; status: PresenceStatus }[],
-  ) => void;
+  presenceMap: Map<number, VendorObject>;
+  selectorMap: Map<string, number>;
+  setPresence: (id: number, vendor: VendorObject, selector?: string) => void;
+  bulkUpdate: (presences: { id: number; vendor: VendorObject }[]) => void;
   clear: () => void;
-  setCurrentVendorId: (vendorId: number | null) => void;
-  getPresence: (vendorId: number) => PresenceStatus | undefined;
-  getCurrentVendorPresence: () => PresenceStatus | undefined;
+  getPresence: (selector: number | string) => VendorObject | undefined;
 }
 
 export const usePresenceStore = create<PresenceState>((set, get) => ({
   presenceMap: new Map(),
-  currentVendorId: null,
-
-  setPresence: (vendorId, status) => {
+  selectorMap: new Map(),
+  setPresence: (id, vendor, selector?: string) => {
     set((state) => {
-      const newMap = new Map(state.presenceMap);
-      newMap.set(vendorId, status);
-      return { presenceMap: newMap };
+      const newPresenceMap = new Map(state.presenceMap);
+      newPresenceMap.set(id, vendor);
+      if (!selector) {
+        return { presenceMap: newPresenceMap };
+      }
+      const newSelectorMap = new Map(state.selectorMap);
+      newSelectorMap.set(selector, id);
+      return { presenceMap: newPresenceMap, selectorMap: newSelectorMap };
     });
   },
-
   bulkUpdate: (presences) => {
     set((state) => {
       const newMap = new Map(state.presenceMap);
-      presences.forEach(({ vendorId, status }) => {
+      presences.forEach(({ id: vendorId, vendor: status }) => {
         newMap.set(vendorId, status);
       });
       return { presenceMap: newMap };
     });
   },
-
   clear: () => {
     set({
       presenceMap: new Map(),
     });
   },
-
-  setCurrentVendorId: (vendorId) => {
-    set({ currentVendorId: vendorId });
-  },
-
-  getPresence: (vendorId) => get().presenceMap.get(vendorId),
-
-  getCurrentVendorPresence: () => {
-    const { currentVendorId, presenceMap } = get();
-    if (currentVendorId === null) return undefined;
-    return presenceMap.get(currentVendorId);
+  getPresence: (selector) => {
+    if (typeof selector === "number") {
+      return get().presenceMap.get(selector);
+    }
+    if (typeof selector === "string") {
+      const id = get().selectorMap.get(selector);
+      if (!id) {
+        return undefined;
+      }
+      return get().presenceMap.get(id);
+    }
   },
 }));

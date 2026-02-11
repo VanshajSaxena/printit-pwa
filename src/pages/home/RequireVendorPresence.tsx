@@ -13,6 +13,7 @@ import {
 import AppContent from "@layout/AppContent";
 import { usePresenceStore } from "@store/presenceStore";
 import { arrowBackOutline, printOutline } from "ionicons/icons";
+import { useEffect } from "react";
 import { useParams } from "react-router";
 
 interface RouteParams {
@@ -27,11 +28,13 @@ export function RequireVendorPresence({
   const router = useIonRouter();
   const { selector } = useParams<RouteParams>();
 
-  const setCurrentVendorId = usePresenceStore(
-    (store) => store.setCurrentVendorId,
-  );
+  const setPresence = usePresenceStore((store) => store.setPresence);
 
-  const { data, error, isLoading } = client.useQuery(
+  const {
+    data: vendor,
+    error,
+    isLoading,
+  } = client.useQuery(
     "get",
     "/api/v1/vendors/{selector}",
     {
@@ -40,16 +43,28 @@ export function RequireVendorPresence({
     {
       refetchOnWindowFocus: false,
       retry: false,
-      staleTime: 5 * 60 * 1000, // Consider data fresh for 5 minutes
+      staleTime: 5 * 60 * 1000,
     },
   );
 
-  if (data?.id) {
-    const currentId = usePresenceStore.getState().currentVendorId;
-    if (currentId !== data.id) {
-      setCurrentVendorId(data.id);
+  useEffect(() => {
+    if (vendor?.id) {
+      const { firstName, lastName, givenName, id } = vendor;
+      // __AUTO_GENERATED_PRINT_VAR_START__
+      console.log("RequireVendorPresence#(anon)#if id:", id); // __AUTO_GENERATED_PRINT_VAR_END__
+      setPresence(
+        vendor.id,
+        {
+          firstName,
+          lastName,
+          givenName,
+          id,
+          status: undefined,
+        },
+        selector,
+      );
     }
-  }
+  });
 
   if (isLoading) {
     return (
@@ -69,7 +84,7 @@ export function RequireVendorPresence({
     );
   }
 
-  if (data && !error) {
+  if (vendor && !error) {
     return <>{children}</>;
   }
 

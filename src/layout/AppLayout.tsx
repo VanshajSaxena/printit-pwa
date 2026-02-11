@@ -4,7 +4,7 @@ import { ChangePrintSettingsPage } from "@pages/home/ChangePrintSettingsPage";
 import CheckoutPage from "@pages/home/CheckoutPage";
 import HomePage from "@pages/home/HomePage";
 import { RequireCurrentTransaction } from "@pages/home/RequireCurrentTransaction";
-import SelectedPrinterPage from "@pages/home/SelectedPrinterPage";
+import SelectedVendorPage from "@pages/home/SelectedVendorPage";
 import NotFoundPage from "@pages/NotFoundPage";
 import PrintersPage from "@pages/printers/PrintersPage";
 import ScanPage from "@pages/ScanPage";
@@ -30,7 +30,7 @@ export default function Applayout() {
               </Route>
               <Route exact path="/home/printer/:selector">
                 <RequireVendorPresence>
-                  <SelectedPrinterPage />
+                  <SelectedVendorPage />
                 </RequireVendorPresence>
               </Route>
               <Route exact path="/home/printer">

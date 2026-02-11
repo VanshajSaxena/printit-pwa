@@ -32,7 +32,7 @@ interface SelectedPrinterPageProps {
   selector: string;
 }
 
-export default function SelectedPrinterPage() {
+export default function SelectedVendorPage() {
   const { selector } = useParams<SelectedPrinterPageProps>();
   const router = useIonRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
