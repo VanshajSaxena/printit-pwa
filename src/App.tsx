@@ -22,8 +22,8 @@ import "@ionic/react/css/text-transformation.css";
  */
 
 // import "@ionic/react/css/palettes/dark.always.css";
-// import "@ionic/react/css/palettes/dark.class.css";
-import "@ionic/react/css/palettes/dark.system.css";
+import "@ionic/react/css/palettes/dark.class.css";
+// import "@ionic/react/css/palettes/dark.system.css";
 
 /* Theme variables */
 import { baseUrl, queryClient } from "@api/client";
@@ -34,7 +34,38 @@ import AppLayout from "@layout/AppLayout";
 import { QueryClientProvider } from "@tanstack/react-query";
 import "./theme/variables.css";
 
-setupIonicReact({ mode: "ios" });
+interface PersistedSettings {
+  state: {
+    mode: "ios" | "md";
+    theme: "light" | "dark" | "system";
+  };
+  version: number;
+}
+
+const savedSettings = localStorage.getItem("app-settings");
+let savedMode: "ios" | "md" = "ios";
+
+if (savedSettings) {
+  try {
+    const parsed = JSON.parse(savedSettings) as unknown;
+
+    if (
+      typeof parsed === "object" &&
+      parsed !== null &&
+      "state" in parsed &&
+      typeof (parsed as PersistedSettings).state.mode === "string"
+    ) {
+      const mode = (parsed as PersistedSettings).state.mode;
+      savedMode = mode;
+    }
+  } catch (e) {
+    console.error("Error parsing settings", e);
+  }
+}
+
+setupIonicReact({
+  mode: savedMode,
+});
 
 const App: React.FC = () => (
   <QueryClientProvider client={queryClient}>
