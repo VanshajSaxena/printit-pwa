@@ -65,7 +65,7 @@ export default function AppearanceModePage() {
         </IonList>
 
         {hasChanged && (
-          <IonList inset className="animate-fade-in mt-4">
+          <IonList inset className="mt-4 py-0!">
             <IonItem button onClick={handleApplyChange}>
               <IonLabel>Apply Changes & Reload</IonLabel>
             </IonItem>

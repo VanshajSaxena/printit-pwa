@@ -9,7 +9,6 @@ import {
   IonCardSubtitle,
   IonCardTitle,
   IonCol,
-  IonContent,
   IonFooter,
   IonGrid,
   IonHeader,
@@ -481,8 +480,9 @@ export default function CheckoutPage() {
               </IonButtons>
             </IonToolbar>
           </IonHeader>
-          <IonContent
+          <AppContent
             fullscreen
+            scrollY={false}
             className="ion-padding flex flex-col items-center justify-start gap-0"
           >
             {currentDraftTransaction.jobs.map((job) => (
@@ -598,7 +598,7 @@ export default function CheckoutPage() {
                 </IonCardContent>
               </IonCard>
             ))}
-          </IonContent>
+          </AppContent>
         </IonModal>
       </AppContent>
 
