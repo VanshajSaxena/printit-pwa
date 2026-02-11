@@ -13,13 +13,18 @@ import {
 } from "@ionic/react";
 import AppContent from "@layout/AppContent";
 import { useSettingsStore } from "@store/settingsStore";
+import { useState } from "react";
 
 export default function AppearanceModePage() {
   const currentMode = useSettingsStore((state) => state.mode);
   const setMode = useSettingsStore((state) => state.setMode);
 
-  const handleModeChange = (mode: "ios" | "md") => {
-    setMode(mode);
+  const [selectedMode, setSelectedMode] = useState<"ios" | "md">(currentMode);
+
+  const hasChanged = selectedMode !== currentMode;
+
+  const handleApplyChange = () => {
+    setMode(selectedMode);
     setTimeout(() => {
       window.location.reload();
     }, 100);
@@ -41,21 +46,29 @@ export default function AppearanceModePage() {
       <AppContent fullscreen>
         <IonList inset className="py-0!">
           <IonRadioGroup
-            value={currentMode}
+            value={selectedMode}
             onIonChange={(e) => {
-              handleModeChange(e.detail.value as "ios" | "md");
+              setSelectedMode(e.detail.value as typeof currentMode);
             }}
           >
-            <IonItem>
+            <IonItem button>
               <IonLabel>Apple (iOS)</IonLabel>
               <IonRadio slot="end" value="ios" />
             </IonItem>
-            <IonItem>
+            <IonItem button>
               <IonLabel>Android (Material)</IonLabel>
               <IonRadio slot="end" value="md" />
             </IonItem>
           </IonRadioGroup>
         </IonList>
+
+        {hasChanged && (
+          <IonList inset className="animate-fade-in mt-4">
+            <IonItem button onClick={handleApplyChange}>
+              <IonLabel>Apply Changes & Reload</IonLabel>
+            </IonItem>
+          </IonList>
+        )}
       </AppContent>
     </IonPage>
   );

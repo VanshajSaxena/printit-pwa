@@ -5,26 +5,31 @@ http://ionicframework.com/docs/theming/ */
 @import "tailwindcss/theme.css" layer(theme);
 @import "tailwindcss/utilities.css" layer(utilities);
 
-@media (prefers-color-scheme: dark) {
-  :root.ios {
-    ion-item {
-      --background: #1c1c1d;
-    }
-  }
+/* =========================================
+   DARK MODE
+   Active when body has class="dark"
+   ========================================= */
+
+/* iOS Dark Mode Overrides */
+:root.ios body.dark ion-item {
+  --background: #ffffff;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    --ion-background-color: #f4f5f8;
-  }
-  :root.ios {
-    ion-item {
-      --background: #ffffff;
-    }
-  }
-  :root.md {
-    ion-item {
-      --background: #ffffff;
-    }
-  }
+/* =========================================
+   LIGHT MODE
+   Active when body has class="light"
+   ========================================= */
+
+body.light {
+  --ion-background-color: #f4f5f8;
+}
+
+/* iOS Light Mode Overrides */
+:root.ios body.light ion-item {
+  --background: #ffffff;
+}
+
+/* Android (Material Design) Light Mode Overrides */
+:root.md body.light ion-item {
+  --background: #ffffff;
 }
