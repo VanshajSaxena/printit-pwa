@@ -53,12 +53,12 @@ export default function AppearanceModePage() {
           >
             <IonItem>
               <IonRadio value="ios" justify="space-between">
-                Apple (iOS)
+                Apple
               </IonRadio>
             </IonItem>
             <IonItem>
               <IonRadio value="md" justify="space-between">
-                Android (Material)
+                Android
               </IonRadio>
             </IonItem>
           </IonRadioGroup>

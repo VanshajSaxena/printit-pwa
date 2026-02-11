@@ -29,6 +29,10 @@ http://ionicframework.com/docs/theming/ */
    Default (no specific class needed usually, or explicit overrides)
    ========================================= */
 
+:root {
+  --ion-background-color: #f4f5f8;
+}
+
 /* iOS Light Mode Overrides */
 :root.ios ion-item {
   --background: #ffffff;
