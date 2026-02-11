@@ -24,11 +24,15 @@ import {
   IonToolbar,
   isPlatform,
   useIonLoading,
+  useIonRouter,
+  useIonToast,
 } from "@ionic/react";
 
 import AppContent from "@layout/AppContent";
 import { OutputColor, useDraftStore } from "@store/draftStore";
+import { usePresenceStore } from "@store/presenceStore";
 import { useTransactionStore } from "@store/transactionStore";
+import { getMany } from "idb-keyval"; // Import getMany for retrieving files
 import {
   add,
   colorPaletteOutline,
@@ -41,7 +45,9 @@ import { useEffect, useRef, useState } from "react";
 import "./CheckoutPage.css";
 
 export default function CheckoutPage() {
+  const router = useIonRouter();
   const [presentLoading, dismissLoading] = useIonLoading();
+  const [presentToast] = useIonToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const pageRef = useRef<HTMLElement>(null);
@@ -74,6 +80,14 @@ export default function CheckoutPage() {
   const currentDraftTransaction = useDraftStore((store) => {
     return store.state.transactions[currentDraftTransactionId];
   });
+
+  const vendorId = currentDraftTransaction.vendor?.id;
+  const liveVendorPresence = usePresenceStore((store) =>
+    vendorId ? store.getPresence(vendorId) : undefined,
+  );
+
+  const displayStatus = liveVendorPresence?.status;
+  const isOnline = displayStatus === "online";
 
   const createDocumentsMutation = client.useMutation(
     "post",
@@ -109,15 +123,45 @@ export default function CheckoutPage() {
   };
 
   const handleSubmit = async () => {
-    if (!currentVendorId) {
-      console.error("currentVendorId is null.");
+    const currentVendor = currentDraftTransaction.vendor;
+
+    if (!currentVendor) {
+      await presentToast({
+        message: "No printer selected. Please go back and select a printer.",
+        duration: 3000,
+        color: "danger",
+        position: "top",
+      });
       return;
     }
 
     setIsSubmitting(true);
-    await presentLoading({ message: "Preparing your documents..." });
+    await presentLoading({ message: "Retrieving files..." });
 
     try {
+      const fileIds = currentDraftTransaction.jobs.map(
+        (job) => job.document.fileId,
+      );
+
+      const fileBlobs = await getMany(fileIds);
+      // __AUTO_GENERATED_PRINT_VAR_START__
+      console.log("CheckoutPage#handleSubmit fileBlobs:", fileBlobs); // __AUTO_GENERATED_PRINT_VAR_END__
+
+      if (fileBlobs.some((f) => !f)) {
+        throw new Error(
+          "One or more files could not be retrieved from device storage.",
+        );
+      }
+
+      const fileMap = new Map<string, File>();
+      currentDraftTransaction.jobs.forEach((job, index) => {
+        const file = fileBlobs[index] as File;
+        fileMap.set(job.document.id, file);
+      });
+
+      await dismissLoading();
+      await presentLoading({ message: "Registering documents..." });
+
       const draftDocuments = currentDraftTransaction.jobs.map(
         ({ document: draft }) => ({
           filename: draft.filename,
@@ -130,28 +174,27 @@ export default function CheckoutPage() {
         body: { documents: draftDocuments },
       });
 
-      await dismissLoading();
-      await presentLoading({ message: "Uploading files..." });
-
       const { signedUrls } = await filesMutation.mutateAsync({
         body: { ids: documents.map((document) => document.id) },
       });
 
+      await dismissLoading();
+      await presentLoading({ message: "Uploading files..." });
+
       try {
         await Promise.all(
           signedUrls.map(async ({ url, id }) => {
-            const document = documents.find((document) => document.id === id);
+            const document = documents.find((doc) => doc.id === id);
             if (!document) {
               throw new Error(`Document not found for id ${id.toString()}`);
             }
 
-            const file = currentDraftTransaction.jobs.find(
-              ({ document: draftDocument }) =>
-                draftDocument.id === document.draftId,
-            )?.document.file;
+            const file = fileMap.get(document.draftId);
 
             if (!file) {
-              throw new Error(`File not found for draftId ${document.draftId}`);
+              throw new Error(
+                `File binary not found for draftId ${document.draftId}`,
+              );
             }
 
             const uploadResponse = await fetch(url, {
@@ -213,16 +256,29 @@ export default function CheckoutPage() {
       });
 
       const transactionResponse = await createTransactionMutation.mutateAsync({
-        body: { jobs, vendorId: currentVendorId },
+        body: { jobs, vendorId: currentVendor.id },
       });
 
       createTransaction(transactionResponse);
       clearCurrentDraftTransactionId();
 
       await dismissLoading();
+
+      router.push("/home", "back", "replace");
+      await presentToast({
+        message: "Print job submitted successfully!",
+        duration: 3000,
+        color: "success",
+        position: "top",
+      });
     } catch (error) {
       console.error("Transaction creation failed:", error);
       await dismissLoading();
+      await presentToast({
+        message: "Failed to create transaction. Please try again.",
+        duration: 3000,
+        color: "danger",
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -233,8 +289,6 @@ export default function CheckoutPage() {
     0,
   );
 
-  const isOnline = vendorStatus === "online";
-
   return (
     <IonPage ref={pageRef}>
       <IonHeader translucent>
@@ -242,8 +296,8 @@ export default function CheckoutPage() {
           <IonButtons slot="start">
             <IonBackButton
               defaultHref={
-                currentVendorId
-                  ? `/home/printer/${currentVendorId.toString()}`
+                currentDraftTransaction.vendor
+                  ? `/home/printer/${currentDraftTransaction.vendor.id.toString()}`
                   : "/home"
               }
             />
@@ -262,7 +316,7 @@ export default function CheckoutPage() {
               {isOnline ? "Printer Ready" : "Printer Offline"}
               <PulseIcon
                 className="m-1 mt-0 align-middle"
-                status={vendorStatus}
+                status={displayStatus}
               />
             </IonCardTitle>
             <IonCardSubtitle color="medium">
@@ -278,6 +332,9 @@ export default function CheckoutPage() {
           color="primary"
           className="m-0 min-w-full"
           disabled={isSubmitting}
+          onClick={() => {
+            setIsModalOpen(true);
+          }}
         >
           <IonIcon icon={settingsOutline} slot="start" />
           <IonLabel>Change Settings</IonLabel>
@@ -394,6 +451,7 @@ export default function CheckoutPage() {
           </IonCardContent>
         </IonCard>
 
+        {/* Settings Modal */}
         <IonModal
           isOpen={isModalOpen}
           presentingElement={

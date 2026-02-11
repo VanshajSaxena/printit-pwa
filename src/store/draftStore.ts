@@ -27,7 +27,7 @@ export interface DraftJob extends TimeAndIdentifierType {
 }
 
 export interface DraftTransaction extends TimeAndIdentifierType {
-  vendor?: VendorObject;
+  vendor?: Omit<VendorObject, "status">;
   jobs: DraftJob[];
 }
 
@@ -121,7 +121,9 @@ export const useDraftStore = create<DraftStore>()(
         });
       },
       clearCurrentDraftTransactionId: () => {
-        set((store) => (store.state.currentDraftTransactionId = null));
+        set((store) => {
+          store.state.currentDraftTransactionId = null;
+        });
       },
       updateDraftJob: (transactionId, jobId, updates) => {
         set((store) => {
