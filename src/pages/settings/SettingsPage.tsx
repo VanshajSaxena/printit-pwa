@@ -37,6 +37,16 @@ const SettingsPage: React.FC = () => {
             {needRefresh[0] && <IonBadge color={"danger"}>1</IonBadge>}
           </IonItem>
         </IonList>
+        <IonList inset className="py-0!">
+          <IonItem
+            button
+            detail
+            routerLink="/settings/appearance"
+            routerDirection="forward"
+          >
+            <IonLabel>Appearance</IonLabel>
+          </IonItem>
+        </IonList>
       </AppContent>
     </IonPage>
   );

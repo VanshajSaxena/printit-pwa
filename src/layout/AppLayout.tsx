@@ -12,6 +12,8 @@ import SettingsPage from "@pages/settings/SettingsPage";
 import UpdateAppPage from "@pages/settings/UpdateAppPage";
 import { Redirect, Route } from "react-router-dom";
 import AppTabBar from "./AppTabBar";
+import AppearancePage from "@pages/settings/AppearancePage";
+import AppearanceModePage from "@pages/settings/AppearanceModePage";
 
 export default function Applayout() {
   return (
@@ -51,6 +53,12 @@ export default function Applayout() {
               </Route>
               <Route exact path="/settings/update">
                 <UpdateAppPage />
+              </Route>
+              <Route exact path="/settings/appearance">
+                <AppearancePage />
+              </Route>
+              <Route exact path="/settings/appearance/mode">
+                <AppearanceModePage />
               </Route>
               <Route exact path="/">
                 <Redirect to="/home" />

@@ -5,7 +5,6 @@ import {
   IonButton,
   IonButtons,
   IonCard,
-  IonCardContent,
   IonCardHeader,
   IonCardSubtitle,
   IonCardTitle,
@@ -268,7 +267,6 @@ export default function SelectedVendorPage() {
               </div>
             </div>
           </IonCardHeader>
-          <IonCardContent className="p-4" />
         </IonCard>
 
         <div className="flex w-full max-w-full flex-col gap-4">
