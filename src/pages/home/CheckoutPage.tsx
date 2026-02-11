@@ -544,9 +544,9 @@ export default function CheckoutPage() {
         </IonModal>
       </AppContent>
 
-      <div className="ion-padding mx-auto w-full max-w-2xl">
-        <IonFooter className="ion-no-border">
-          <IonToolbar>
+      <IonFooter className="ion-no-border">
+        <IonToolbar>
+          <div className="ion-padding mx-auto w-full max-w-2xl">
             <IonButton
               expand="block"
               size="large"
@@ -561,9 +561,9 @@ export default function CheckoutPage() {
                 {isSubmitting ? "Processing..." : "Start Printing"}
               </IonLabel>
             </IonButton>
-          </IonToolbar>
-        </IonFooter>
-      </div>
+          </div>
+        </IonToolbar>
+      </IonFooter>
     </IonPage>
   );
 }
