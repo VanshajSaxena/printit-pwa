@@ -33,7 +33,7 @@ import AppContent from "@layout/AppContent";
 import { OutputColor, useDraftStore } from "@store/draftStore";
 import { usePresenceStore } from "@store/presenceStore";
 import { useTransactionStore } from "@store/transactionStore";
-import { getMany } from "idb-keyval"; // Import getMany for retrieving files
+import { getMany } from "idb-keyval";
 import {
   add,
   colorPaletteOutline,
@@ -330,7 +330,7 @@ export default function CheckoutPage() {
           }}
         >
           <IonIcon icon={optionsOutline} slot="start" />
-          <IonLabel>Adjust Settings</IonLabel>
+          <IonLabel>Print Options</IonLabel>
         </IonButton>
 
         <IonCard
@@ -567,7 +567,7 @@ export default function CheckoutPage() {
 
                           <IonText
                             color="dark"
-                            className="w-6 text-center text-lg font-semibold"
+                            className="w-6 text-center text-lg"
                           >
                             {job.copyCount}
                           </IonText>
