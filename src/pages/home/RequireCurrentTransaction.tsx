@@ -6,11 +6,10 @@ export function RequireCurrentTransaction({
 }: {
   children: React.JSX.Element;
 }) {
-  const getCurrentDraftTransactionId = useDraftStore(
-    (store) => store.getCurrentDraftTransactionId,
+  const currentDraftTransactionId = useDraftStore(
+    (store) => store.state.currentDraftTransactionId,
   );
   const hydrated = useDraftStore((store) => store.hydrated);
-  const currentDraftTransactionId = getCurrentDraftTransactionId();
 
   if (!hydrated) {
     return null;

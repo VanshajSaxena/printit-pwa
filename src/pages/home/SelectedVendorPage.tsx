@@ -24,6 +24,9 @@ import {
 import AppContent from "@layout/AppContent";
 import { useDraftStore } from "@store/draftStore";
 import { usePresenceStore } from "@store/presenceStore";
+import { getPdfPageCount } from "@utils/getPdfPageCount";
+import { getUUID } from "@utils/getUUID";
+import { setMany } from "idb-keyval"; // Import setMany
 import {
   arrowBack,
   arrowBackOutline,
@@ -104,10 +107,6 @@ export default function SelectedVendorPage() {
   );
 
   const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
-    if (!vendorPresence) {
-      console.error("vendor didn't exist");
-      return;
-    }
     const eventTargetFiles = event.target.files;
     if (!eventTargetFiles || eventTargetFiles.length === 0) {
       return;
@@ -119,23 +118,48 @@ export default function SelectedVendorPage() {
     );
 
     if (onlyPdfFiles.length === 0) {
+      // Optional: Show a toast here saying "Only PDFs are supported"
       return;
     }
 
-    await present({ message: "Uploading files..." });
+    await present({ message: "Processing files..." });
 
     try {
-      const transactionId = await createDraftTransaction(
-        onlyPdfFiles,
+      const processedData = await Promise.all(
+        onlyPdfFiles.map(async (file) => {
+          const fileId = getUUID();
+          const pageCount = await getPdfPageCount(file);
+
+          return {
+            idbEntry: [fileId, file] as [string, File],
+            metadata: {
+              fileId,
+              filename: file.name,
+              contentType: file.type,
+              pageCount,
+            },
+          };
+        }),
+      );
+
+      const idbEntries = processedData.map((data) => data.idbEntry);
+      const documentsMetadata = processedData.map((data) => data.metadata);
+
+      await setMany(idbEntries);
+
+      const transactionId = createDraftTransaction(
+        documentsMetadata,
         vendorPresence,
       );
+
       setCurrentDraftTransactionId(transactionId);
+
       await dismiss();
       event.target.value = "";
       router.push("/home/checkout");
     } catch (error) {
+      console.error("Failed to process files:", error);
       await dismiss();
-      console.error("Failed to create draft transaction:", error);
     }
   };
 
