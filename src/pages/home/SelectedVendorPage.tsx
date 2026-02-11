@@ -129,9 +129,13 @@ export default function SelectedVendorPage() {
         onlyPdfFiles.map(async (file) => {
           const fileId = getUUID();
           const pageCount = await getPdfPageCount(file);
+          const fileObject = {
+            id: fileId,
+            file: file,
+          };
 
           return {
-            idbEntry: [fileId, file] as [string, File],
+            idbEntry: [fileId, fileObject] as [string, typeof fileObject],
             metadata: {
               fileId,
               filename: file.name,

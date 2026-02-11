@@ -24,7 +24,6 @@ import {
   IonToolbar,
   isPlatform,
   useIonLoading,
-  useIonRouter,
   useIonToast,
 } from "@ionic/react";
 
@@ -45,7 +44,6 @@ import { useEffect, useRef, useState } from "react";
 import "./CheckoutPage.css";
 
 export default function CheckoutPage() {
-  const router = useIonRouter();
   const [presentLoading, dismissLoading] = useIonLoading();
   const [presentToast] = useIonToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -143,21 +141,20 @@ export default function CheckoutPage() {
         (job) => job.document.fileId,
       );
 
-      const fileBlobs = await getMany(fileIds);
-      // __AUTO_GENERATED_PRINT_VAR_START__
-      console.log("CheckoutPage#handleSubmit fileBlobs:", fileBlobs); // __AUTO_GENERATED_PRINT_VAR_END__
-
-      if (fileBlobs.some((f) => !f)) {
-        throw new Error(
-          "One or more files could not be retrieved from device storage.",
-        );
-      }
+      const storedObjects: ({ id: string; file: File } | undefined)[] =
+        await getMany(fileIds);
 
       const fileMap = new Map<string, File>();
-      currentDraftTransaction.jobs.forEach((job, index) => {
-        const file = fileBlobs[index] as File;
-        fileMap.set(job.document.id, file);
+
+      storedObjects.forEach((obj) => {
+        if (!obj) return;
+
+        fileMap.set(obj.id, obj.file);
       });
+
+      if (fileMap.size !== fileIds.length) {
+        throw new Error("Some files could not be retrieved from storage.");
+      }
 
       await dismissLoading();
       await presentLoading({ message: "Registering documents..." });
@@ -263,14 +260,6 @@ export default function CheckoutPage() {
       clearCurrentDraftTransactionId();
 
       await dismissLoading();
-
-      router.push("/home", "back", "replace");
-      await presentToast({
-        message: "Print job submitted successfully!",
-        duration: 3000,
-        color: "success",
-        position: "top",
-      });
     } catch (error) {
       console.error("Transaction creation failed:", error);
       await dismissLoading();
