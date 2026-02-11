@@ -145,29 +145,28 @@ export default function CheckoutPage() {
         (job) => job.document.fileId,
       );
 
-      const storedObjects: ({ id: string; file: File } | undefined)[] =
-        await getMany(fileIds);
+      const fileBlobs = await getMany(fileIds);
+
+      if (fileBlobs.some((f) => !f)) {
+        throw new Error(
+          "One or more files could not be retrieved from device storage.",
+        );
+      }
 
       const fileMap = new Map<string, File>();
-
-      storedObjects.forEach((obj) => {
-        if (!obj) return;
-
-        fileMap.set(obj.id, obj.file);
+      currentDraftTransaction.jobs.forEach((job, index) => {
+        const file = fileBlobs[index] as File;
+        fileMap.set(job.document.id, file);
       });
-
-      if (fileMap.size !== fileIds.length) {
-        throw new Error("Some files could not be retrieved from storage.");
-      }
 
       await dismissLoading();
       await presentLoading({ message: "Registering documents..." });
 
       const draftDocuments = currentDraftTransaction.jobs.map(
-        ({ document: draft }) => ({
-          filename: draft.filename,
-          contentType: draft.contentType,
-          draftId: draft.id,
+        ({ document }) => ({
+          filename: document.filename,
+          contentType: document.contentType,
+          draftId: document.id,
         }),
       );
 
@@ -185,7 +184,7 @@ export default function CheckoutPage() {
       try {
         await Promise.all(
           signedUrls.map(async ({ url, id }) => {
-            const document = documents.find((doc) => doc.id === id);
+            const document = documents.find((document) => document.id === id);
             if (!document) {
               throw new Error(`Document not found for id ${id.toString()}`);
             }
@@ -296,7 +295,7 @@ export default function CheckoutPage() {
             <IonBackButton
               defaultHref={
                 currentDraftTransaction.vendor
-                  ? `/home/printer/${currentDraftTransaction.vendor.id.toString()}`
+                  ? `/home/printer/${currentDraftTransaction.vendor.username}`
                   : "/home"
               }
             />

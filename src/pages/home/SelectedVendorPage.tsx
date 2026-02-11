@@ -47,7 +47,9 @@ export default function SelectedVendorPage() {
   const [present, dismiss] = useIonLoading();
 
   const setPresence = usePresenceStore((store) => store.setPresence);
-  const updatePresence = usePresenceStore((store) => store.updatePresence);
+  const updatePresence = usePresenceStore(
+    (store) => store.updatePresenceStatus,
+  );
 
   const vendorPresence = usePresenceStore((store) =>
     store.getPresence(selector),
@@ -77,13 +79,14 @@ export default function SelectedVendorPage() {
 
   useEffect(() => {
     if (vendorData) {
-      const { firstName, lastName, givenName, id } = vendorData;
+      const { firstName, lastName, givenName, username, id } = vendorData;
       setPresence(
         id,
         {
           firstName,
           lastName,
           givenName,
+          username,
           id,
         },
         selector,

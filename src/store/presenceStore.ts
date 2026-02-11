@@ -11,6 +11,7 @@ export interface VendorObject {
   firstName: string;
   lastName: string;
   givenName: string | null;
+  username: string;
   status: PresenceStatus;
 }
 
@@ -22,7 +23,7 @@ interface PresenceState {
     vendor: Partial<VendorObject>,
     selector?: string,
   ) => void;
-  updatePresence: (id: number, status: PresenceStatus) => void;
+  updatePresenceStatus: (id: number, status: PresenceStatus) => void;
   clear: () => void;
   getPresence: (
     selector: number | string | undefined,
@@ -50,7 +51,7 @@ export const usePresenceStore = create<PresenceState>()(
       });
     },
 
-    updatePresence: (id, status) => {
+    updatePresenceStatus: (id, status) => {
       set((state) => {
         const vendor = state.presenceMap.get(id);
 

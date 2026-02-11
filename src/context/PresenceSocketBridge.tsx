@@ -9,7 +9,7 @@ export function PresenceSocketBridge() {
   useEffect(() => {
     if (!socket) return;
 
-    const { updatePresence, clear } = usePresenceStore.getState();
+    const { updatePresenceStatus, clear } = usePresenceStore.getState();
 
     const handlePresenceUpdate = ({
       vendorId,
@@ -18,7 +18,7 @@ export function PresenceSocketBridge() {
       vendorId: number;
       status: PresenceStatus;
     }) => {
-      updatePresence(vendorId, status);
+      updatePresenceStatus(vendorId, status);
     };
 
     const handleDisconnect = () => {
