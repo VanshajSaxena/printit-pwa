@@ -12,7 +12,6 @@ import SettingsPage from "@pages/settings/SettingsPage";
 import UpdateAppPage from "@pages/settings/UpdateAppPage";
 import { Redirect, Route } from "react-router-dom";
 import AppTabBar from "./AppTabBar";
-import { RequireVendorPresence } from "@pages/home/RequireVendorPresence";
 
 export default function Applayout() {
   return (
