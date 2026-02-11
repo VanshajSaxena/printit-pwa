@@ -309,7 +309,7 @@ export default function CheckoutPage() {
       >
         <IonCard className="m-0 min-w-full bg-transparent px-4 pt-2 pb-6 shadow-none">
           <IonCardContent className="p-0!">
-            <IonCardTitle>
+            <IonCardTitle className="flex gap-2">
               {isOnline ? "Printer Ready" : "Printer Offline"}
               <PulseIcon
                 className="m-1 mt-0 align-middle"
@@ -482,7 +482,6 @@ export default function CheckoutPage() {
           </IonHeader>
           <AppContent
             fullscreen
-            scrollY={false}
             className="ion-padding flex flex-col items-center justify-start gap-0"
           >
             {currentDraftTransaction.jobs.map((job) => (
