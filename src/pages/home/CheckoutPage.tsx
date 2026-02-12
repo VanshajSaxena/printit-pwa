@@ -154,8 +154,8 @@ export default function CheckoutPage() {
 
       const fileMap = new Map<string, File>();
       currentDraftTransaction.jobs.forEach((job, index) => {
-        const file = fileBlobs[index] as File;
-        fileMap.set(job.document.id, file);
+        const fileObj = fileBlobs[index] as { id: string; file: File };
+        fileMap.set(job.document.id, fileObj.file);
       });
 
       await dismissLoading();
