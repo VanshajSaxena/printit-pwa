@@ -1,23 +1,25 @@
-import React, { useState } from "react";
+import { client } from "@api/client";
 import {
-  IonHeader,
-  IonPage,
-  IonTitle,
-  IonToolbar,
-  IonSearchbar,
-  IonButtons,
   IonButton,
+  IonButtons,
+  IonCard,
+  IonCardContent,
+  IonCardHeader,
+  IonCardSubtitle,
+  IonCardTitle,
+  IonHeader,
   IonIcon,
   IonList,
-  IonItem,
-  IonLabel,
-  IonNote,
+  IonPage,
+  IonSearchbar,
   IonSpinner,
   IonText,
+  IonTitle,
+  IonToolbar,
 } from "@ionic/react";
-import { locateOutline, locationSharp } from "ionicons/icons";
 import AppContent from "@layout/AppContent";
-import { client } from "@api/client";
+import { locateOutline, locationSharp } from "ionicons/icons";
+import React, { useState } from "react";
 
 const PrintersPage: React.FC = () => {
   const [coordinates, setCoordinates] = useState<{
@@ -141,15 +143,50 @@ const PrintersPage: React.FC = () => {
 
         <IonList>
           {nearbyPrinters?.map((vendor) => (
-            <IonItem key={vendor.id} button>
-              <IonLabel>
-                <h2>
+            <IonCard
+              key={vendor.id}
+              button
+              routerLink={`/vendors/${vendor.slug}`}
+            >
+              <IonCardHeader>
+                <IonCardTitle>
                   {vendor.firstName} {vendor.lastName}
-                </h2>
-                <p>@{vendor.username}</p>
-                {vendor.address && <IonNote>{vendor.distance}</IonNote>}
-              </IonLabel>
-            </IonItem>
+                </IonCardTitle>
+                <IonCardSubtitle>@{vendor.username}</IonCardSubtitle>
+              </IonCardHeader>
+
+              <IonCardContent>
+                {vendor.address ? (
+                  <p>
+                    <strong>Address:</strong> {vendor.address}
+                  </p>
+                ) : (
+                  <p>
+                    <em>Address not provided</em>
+                  </p>
+                )}
+
+                {vendor.distance && (
+                  <p>
+                    <strong>Distance:</strong> {vendor.distance} km
+                  </p>
+                )}
+
+                {vendor.location && (
+                  <p>
+                    <strong>Coordinates:</strong>{" "}
+                    {vendor.location.latitude?.toFixed(4)},{" "}
+                    {vendor.location.longitude?.toFixed(4)}
+                  </p>
+                )}
+
+                {vendor.givenName && (
+                  <p>
+                    <strong>Given Name:</strong> {vendor.givenName}
+                  </p>
+                )}
+              </IonCardContent>
+            </IonCard>
           ))}
         </IonList>
       </AppContent>
