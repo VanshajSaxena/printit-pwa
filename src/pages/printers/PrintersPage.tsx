@@ -116,7 +116,6 @@ const PrintersPage: React.FC = () => {
           </IonToolbar>
         </IonHeader>
 
-        {/* Results Area */}
         {error && (
           <div className="ion-padding ion-text-center">
             <IonText color="danger">
@@ -125,7 +124,6 @@ const PrintersPage: React.FC = () => {
           </div>
         )}
 
-        {/* Loading State for the API call */}
         {isFetching && (
           <div className="ion-padding ion-text-center">
             <IonSpinner />
@@ -133,30 +131,23 @@ const PrintersPage: React.FC = () => {
           </div>
         )}
 
-        {/* Empty State */}
         {!isFetching && coordinates && nearbyPrinters?.length === 0 && (
           <div className="ion-padding ion-text-center">
             <IonText color="medium">
-              <p>No printers found within 5km.</p>
+              <p>No printers found around you.</p>
             </IonText>
           </div>
         )}
 
-        {/* List of Printers */}
         <IonList>
           {nearbyPrinters?.map((vendor) => (
-            <IonItem
-              key={vendor.id}
-              button
-              routerLink={`/vendors/${vendor.slug}`}
-            >
+            <IonItem key={vendor.id} button>
               <IonLabel>
                 <h2>
                   {vendor.firstName} {vendor.lastName}
                 </h2>
                 <p>@{vendor.username}</p>
-                {/* Optional: Show distance if your API returns it, otherwise just address */}
-                {vendor.address && <IonNote>{vendor.address}</IonNote>}
+                {vendor.address && <IonNote>{vendor.distance}</IonNote>}
               </IonLabel>
             </IonItem>
           ))}
