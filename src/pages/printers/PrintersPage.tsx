@@ -76,33 +76,24 @@ const PrintersPage: React.FC = () => {
           <IonTitle>Printers</IonTitle>
         </IonToolbar>
         <IonToolbar>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              paddingRight: "8px",
-            }}
-          >
+          <div className="mx-auto flex w-full max-w-2xl items-center">
             <IonSearchbar
               placeholder="Search printers..."
               animated={true}
-              style={{ paddingBottom: 0 }}
-            />
-            <IonButtons slot="end">
+              className="flex gap-2 pr-0! pl-4!"
+            ></IonSearchbar>
+            <IonButtons slot="end" className="px-1 pb-4">
               <IonButton
                 onClick={handleLocateMe}
                 disabled={isLocating || isFetching}
               >
                 {isLocating ? (
-                  <IonSpinner
-                    name="crescent"
-                    style={{ width: "24px", height: "24px" }}
-                  />
+                  <IonSpinner name="crescent" />
                 ) : (
                   <IonIcon
                     slot="icon-only"
                     icon={coordinates ? locationSharp : locateOutline}
-                    color={coordinates ? "primary" : "medium"}
+                    color={"medium"}
                   />
                 )}
               </IonButton>
@@ -112,12 +103,6 @@ const PrintersPage: React.FC = () => {
       </IonHeader>
 
       <AppContent fullscreen>
-        <IonHeader collapse="condense">
-          <IonToolbar>
-            <IonTitle size="large">Printers</IonTitle>
-          </IonToolbar>
-        </IonHeader>
-
         {error && (
           <div className="ion-padding ion-text-center">
             <IonText color="danger">
