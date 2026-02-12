@@ -59,6 +59,45 @@
         "tags": ["Vendor"]
       }
     },
+    "/api/v1/vendors/nearby": {
+      "get": {
+        "operationId": "VendorController_findNearby_v1",
+        "parameters": [
+          {
+            "name": "lat",
+            "required": true,
+            "in": "query",
+            "schema": { "type": "number" }
+          },
+          {
+            "name": "lng",
+            "required": true,
+            "in": "query",
+            "schema": { "type": "number" }
+          },
+          {
+            "name": "range",
+            "required": true,
+            "in": "query",
+            "schema": { "type": "number" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/VendorResponseDto" }
+                }
+              }
+            }
+          }
+        },
+        "tags": ["Vendor"]
+      }
+    },
     "/api/v1/vendors/{selector}": {
       "get": {
         "operationId": "VendorController_findOne_v1",
@@ -130,45 +169,6 @@
             "content": {
               "application/json": {
                 "schema": { "$ref": "#/components/schemas/VendorPresenceDto" }
-              }
-            }
-          }
-        },
-        "tags": ["Vendor"]
-      }
-    },
-    "/api/v1/vendors/nearby": {
-      "get": {
-        "operationId": "VendorController_findNearby_v1",
-        "parameters": [
-          {
-            "name": "lat",
-            "required": true,
-            "in": "query",
-            "schema": { "type": "number" }
-          },
-          {
-            "name": "lng",
-            "required": true,
-            "in": "query",
-            "schema": { "type": "number" }
-          },
-          {
-            "name": "range",
-            "required": true,
-            "in": "query",
-            "schema": { "type": "number" }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": { "$ref": "#/components/schemas/VendorResponseDto" }
-                }
               }
             }
           }
@@ -840,27 +840,46 @@
         },
         "required": ["firstName", "lastName", "username", "email"]
       },
+      "LocationDto": {
+        "type": "object",
+        "properties": {
+          "latitude": {
+            "type": "number",
+            "nullable": true,
+            "example": 12.9716
+          },
+          "longitude": {
+            "type": "number",
+            "nullable": true,
+            "example": 77.5946
+          }
+        },
+        "required": ["latitude", "longitude"]
+      },
       "VendorResponseDto": {
         "type": "object",
         "properties": {
+          "location": {
+            "nullable": true,
+            "allOf": [{ "$ref": "#/components/schemas/LocationDto" }]
+          },
           "id": { "type": "number" },
           "firstName": { "type": "string" },
           "lastName": { "type": "string" },
           "givenName": { "type": "string", "nullable": true },
           "username": { "type": "string" },
           "address": { "type": "string" },
-          "slug": { "type": "string" },
-          "location": { "type": "object" }
+          "slug": { "type": "string" }
         },
         "required": [
+          "location",
           "id",
           "firstName",
           "lastName",
           "givenName",
           "username",
           "address",
-          "slug",
-          "location"
+          "slug"
         ]
       },
       "NotFoundErrorDto": {

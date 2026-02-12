@@ -368,6 +368,12 @@ export interface components {
       /** @enum {string} */
       status: "PENDING" | "QUEUED" | "PRINTING" | "COMPLETED" | "ERROR";
     };
+    LocationDto: {
+      /** @example 12.9716 */
+      latitude: number | null;
+      /** @example 77.5946 */
+      longitude: number | null;
+    };
     NotFoundErrorDto: {
       /** @example Not Found */
       error: string;
@@ -416,7 +422,7 @@ export interface components {
       givenName: string | null;
       id: number;
       lastName: string;
-      location: Record<string, never>;
+      location: components["schemas"]["LocationDto"] | null;
       slug: string;
       username: string;
     };
@@ -455,6 +461,7 @@ export type FindDocumentResponseDto =
 export type FindJobResponseDto = components["schemas"]["FindJobResponseDto"];
 export type FindTransactionResponseDto =
   components["schemas"]["FindTransactionResponseDto"];
+export type LocationDto = components["schemas"]["LocationDto"];
 export type NotFoundErrorDto = components["schemas"]["NotFoundErrorDto"];
 export type PrinterResponseDto = components["schemas"]["PrinterResponseDto"];
 export type UpdateDocumentRequestDto =
