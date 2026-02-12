@@ -418,6 +418,7 @@ export interface components {
     };
     VendorResponseDto: {
       address: string;
+      distance: number;
       firstName: string;
       givenName: string | null;
       id: number;

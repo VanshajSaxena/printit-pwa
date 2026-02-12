@@ -859,27 +859,29 @@
       "VendorResponseDto": {
         "type": "object",
         "properties": {
-          "location": {
-            "nullable": true,
-            "allOf": [{ "$ref": "#/components/schemas/LocationDto" }]
-          },
           "id": { "type": "number" },
           "firstName": { "type": "string" },
           "lastName": { "type": "string" },
           "givenName": { "type": "string", "nullable": true },
           "username": { "type": "string" },
           "address": { "type": "string" },
-          "slug": { "type": "string" }
+          "slug": { "type": "string" },
+          "location": {
+            "nullable": true,
+            "allOf": [{ "$ref": "#/components/schemas/LocationDto" }]
+          },
+          "distance": { "type": "number" }
         },
         "required": [
-          "location",
           "id",
           "firstName",
           "lastName",
           "givenName",
           "username",
           "address",
-          "slug"
+          "slug",
+          "location",
+          "distance"
         ]
       },
       "NotFoundErrorDto": {
