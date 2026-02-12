@@ -75,34 +75,32 @@ const PrintersPage: React.FC = () => {
         <IonToolbar>
           <IonTitle>Printers</IonTitle>
         </IonToolbar>
-        <IonToolbar>
-          <div className="mx-auto flex w-full max-w-2xl items-center">
-            <IonSearchbar
-              placeholder="Search printers..."
-              animated={true}
-              className="flex gap-2 pr-0! pl-4!"
-            ></IonSearchbar>
-            <IonButtons slot="end" className="px-1 pb-4">
-              <IonButton
-                onClick={handleLocateMe}
-                disabled={isLocating || isFetching}
-              >
-                {isLocating ? (
-                  <IonSpinner name="crescent" />
-                ) : (
-                  <IonIcon
-                    slot="icon-only"
-                    icon={coordinates ? locationSharp : locateOutline}
-                    color={"medium"}
-                  />
-                )}
-              </IonButton>
-            </IonButtons>
-          </div>
-        </IonToolbar>
       </IonHeader>
 
-      <AppContent fullscreen>
+      <AppContent fullscreen className="ion-padding">
+        <div className="flex">
+          <IonSearchbar
+            placeholder="Search"
+            animated={true}
+            className="flex gap-2 py-0! pr-0! pl-4!"
+          ></IonSearchbar>
+          <IonButtons slot="end" className="px-1">
+            <IonButton
+              onClick={handleLocateMe}
+              disabled={isLocating || isFetching}
+            >
+              {isLocating ? (
+                <IonSpinner name="crescent" />
+              ) : (
+                <IonIcon
+                  slot="icon-only"
+                  icon={coordinates ? locationSharp : locateOutline}
+                  color={"medium"}
+                />
+              )}
+            </IonButton>
+          </IonButtons>
+        </div>
         {error && (
           <div className="ion-padding ion-text-center">
             <IonText color="danger">
