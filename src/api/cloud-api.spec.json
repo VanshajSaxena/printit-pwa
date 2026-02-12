@@ -137,6 +137,45 @@
         "tags": ["Vendor"]
       }
     },
+    "/api/v1/vendors/nearby": {
+      "get": {
+        "operationId": "VendorController_findNearby_v1",
+        "parameters": [
+          {
+            "name": "lat",
+            "required": true,
+            "in": "query",
+            "schema": { "type": "number" }
+          },
+          {
+            "name": "lng",
+            "required": true,
+            "in": "query",
+            "schema": { "type": "number" }
+          },
+          {
+            "name": "range",
+            "required": true,
+            "in": "query",
+            "schema": { "type": "number" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/VendorResponseDto" }
+                }
+              }
+            }
+          }
+        },
+        "tags": ["Vendor"]
+      }
+    },
     "/api/v1/vendors/{id}": {
       "patch": {
         "operationId": "VendorController_update_v1",
@@ -793,9 +832,11 @@
             "maxLength": 20,
             "pattern": "/^[a-zA-Z0-9_]+$/"
           },
+          "email": { "type": "string", "format": "email" },
           "givenName": { "type": "string" },
           "address": { "type": "string" },
-          "email": { "type": "string", "format": "email" }
+          "latitude": { "type": "number", "minimum": -90, "maximum": 90 },
+          "longitude": { "type": "number", "minimum": -180, "maximum": 180 }
         },
         "required": ["firstName", "lastName", "username", "email"]
       },
@@ -808,7 +849,8 @@
           "givenName": { "type": "string", "nullable": true },
           "username": { "type": "string" },
           "address": { "type": "string" },
-          "slug": { "type": "string" }
+          "slug": { "type": "string" },
+          "location": { "type": "object" }
         },
         "required": [
           "id",
@@ -817,7 +859,8 @@
           "givenName",
           "username",
           "address",
-          "slug"
+          "slug",
+          "location"
         ]
       },
       "NotFoundErrorDto": {
