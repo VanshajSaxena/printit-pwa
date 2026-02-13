@@ -86,12 +86,26 @@ export default function SelectedVendorPage() {
 
   useEffect(() => {
     if (vendorData) {
+      const {
+        id,
+        firstName,
+        lastName,
+        givenName,
+        username,
+        slug,
+        address,
+        location,
+      } = vendorData;
+
       upsertVendor({
-        id: vendorData.id,
-        firstName: vendorData.firstName,
-        lastName: vendorData.lastName,
-        givenName: vendorData.givenName,
-        username: vendorData.username,
+        id,
+        firstName,
+        lastName,
+        givenName,
+        username,
+        slug,
+        address,
+        location,
       });
     }
   }, [vendorData, upsertVendor]);

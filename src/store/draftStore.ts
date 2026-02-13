@@ -150,6 +150,7 @@ export const useDraftStore = create<DraftStore>()(
       partialize: (store: DraftStore) => ({ state: store.state }),
       onRehydrateStorage: (store) => {
         return () => {
+          console.log("printit-draft-storage: hydrated");
           store.setHydrated();
         };
       },
