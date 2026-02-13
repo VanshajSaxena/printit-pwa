@@ -32,6 +32,7 @@ import AppContent from "@layout/AppContent";
 import { OutputColor, useDraftStore } from "@store/draftStore";
 import { usePresenceStore } from "@store/presenceStore";
 import { useTransactionStore } from "@store/transactionStore";
+import { useVendorStore } from "@store/vendorStore";
 import { getMany } from "idb-keyval";
 import {
   add,
@@ -45,6 +46,13 @@ import {
 } from "ionicons/icons";
 import { useEffect, useRef, useState } from "react";
 import "./CheckoutPage.css";
+
+interface StoredFileWrapper {
+  id: string;
+  file: File;
+  filename?: string;
+  mimeType?: string;
+}
 
 export default function CheckoutPage() {
   const [presentLoading, dismissLoading] = useIonLoading();
@@ -82,13 +90,15 @@ export default function CheckoutPage() {
     return store.state.transactions[currentDraftTransactionId];
   });
 
-  const vendorId = currentDraftTransaction.vendor?.id;
-  const liveVendorPresence = usePresenceStore((store) =>
+  const vendorId = currentDraftTransaction.vendorId;
+
+  const vendorProfile = useVendorStore((store) => store.getVendor(vendorId));
+
+  const presenceStatus = usePresenceStore((store) =>
     vendorId ? store.getPresence(vendorId) : undefined,
   );
 
-  const displayStatus = liveVendorPresence?.status;
-  const isOnline = displayStatus === "online";
+  const isOnline = presenceStatus === "online";
 
   const createDocumentsMutation = client.useMutation(
     "post",
@@ -124,9 +134,7 @@ export default function CheckoutPage() {
   };
 
   const handleSubmit = async () => {
-    const currentVendor = currentDraftTransaction.vendor;
-
-    if (!currentVendor) {
+    if (!vendorId || !vendorProfile) {
       await presentToast({
         message: "No printer selected. Please go back and select a printer.",
         duration: 3000,
@@ -140,34 +148,40 @@ export default function CheckoutPage() {
     await presentLoading({ message: "Retrieving files..." });
 
     try {
-      const fileIds = currentDraftTransaction.jobs.map(
-        (job) => job.document.fileId,
-      );
+      const jobs = currentDraftTransaction.jobs;
+      const fileIds = jobs.map((job) => job.document.fileId);
 
-      const fileBlobs = await getMany(fileIds);
+      const fileObjects: (StoredFileWrapper | undefined)[] =
+        await getMany(fileIds);
 
-      if (fileBlobs.some((f) => !f)) {
+      if (fileObjects.some((f) => !f)) {
         throw new Error(
           "One or more files could not be retrieved from device storage.",
         );
       }
 
       const fileMap = new Map<string, File>();
-      currentDraftTransaction.jobs.forEach((job, index) => {
-        const fileObj = fileBlobs[index] as { id: string; file: File };
-        fileMap.set(job.document.id, fileObj.file);
+
+      jobs.forEach((job) => {
+        const wrapper = fileObjects.find((w) => w?.id === job.document.fileId);
+
+        if (wrapper?.file) {
+          fileMap.set(job.document.id, wrapper.file);
+        }
       });
+
+      if (fileMap.size !== jobs.length) {
+        throw new Error("Mismatch between jobs and retrieved files.");
+      }
 
       await dismissLoading();
       await presentLoading({ message: "Registering documents..." });
 
-      const draftDocuments = currentDraftTransaction.jobs.map(
-        ({ document }) => ({
-          filename: document.filename,
-          contentType: document.contentType,
-          draftId: document.id,
-        }),
-      );
+      const draftDocuments = jobs.map(({ document }) => ({
+        filename: document.filename,
+        contentType: document.contentType,
+        draftId: document.id,
+      }));
 
       const { documents } = await createDocumentsMutation.mutateAsync({
         body: { documents: draftDocuments },
@@ -236,15 +250,13 @@ export default function CheckoutPage() {
       await dismissLoading();
       await presentLoading({ message: "Creating print job..." });
 
-      const jobs = currentDraftTransaction.jobs.map((job) => {
+      const finalJobs = jobs.map((job) => {
         const documentId = documents.find(
           (document) => job.document.id === document.draftId,
         )?.id;
 
         if (!documentId) {
-          throw new Error(
-            `Missing document id from documents received from backend`,
-          );
+          throw new Error("Missing document id");
         }
 
         return {
@@ -255,13 +267,20 @@ export default function CheckoutPage() {
       });
 
       const transactionResponse = await createTransactionMutation.mutateAsync({
-        body: { jobs, vendorId: currentVendor.id },
+        body: { jobs: finalJobs, vendorId: vendorId },
       });
 
       createTransaction(transactionResponse);
       clearCurrentDraftTransactionId();
 
       await dismissLoading();
+
+      await presentToast({
+        message: "Print job submitted successfully!",
+        duration: 3000,
+        color: "success",
+        position: "top",
+      });
     } catch (error) {
       console.error("Transaction creation failed:", error);
       await dismissLoading();
@@ -281,23 +300,19 @@ export default function CheckoutPage() {
   );
 
   const displayName =
-    currentDraftTransaction.vendor?.givenName ??
-    `${currentDraftTransaction.vendor?.firstName ?? ""} ${
-      currentDraftTransaction.vendor?.lastName ?? ""
-    }`.trim();
+    vendorProfile?.givenName ??
+    `${vendorProfile?.firstName ?? ""} ${vendorProfile?.lastName ?? ""}`.trim();
+
+  const backLink = vendorProfile?.username
+    ? `/home/printer/${vendorProfile.username}`
+    : "/home";
 
   return (
     <IonPage ref={pageRef}>
       <IonHeader translucent>
         <IonToolbar>
           <IonButtons slot="start">
-            <IonBackButton
-              defaultHref={
-                currentDraftTransaction.vendor
-                  ? `/home/printer/${currentDraftTransaction.vendor.username}`
-                  : "/home"
-              }
-            />
+            <IonBackButton defaultHref={backLink} />
           </IonButtons>
           <IonTitle>Checkout</IonTitle>
         </IonToolbar>
@@ -313,10 +328,13 @@ export default function CheckoutPage() {
               {isOnline ? "Printer Ready" : "Printer Offline"}
               <PulseIcon
                 className="m-1 mt-0 align-middle"
-                status={displayStatus}
+                status={presenceStatus}
               />
             </IonCardTitle>
-            <IonCardSubtitle color="medium">{displayName}</IonCardSubtitle>
+            <IonCardSubtitle color="medium">
+              {/* Display Name from Vendor Store */}
+              {displayName || "Unknown Printer"}
+            </IonCardSubtitle>
           </IonCardContent>
         </IonCard>
 
@@ -364,7 +382,6 @@ export default function CheckoutPage() {
           </IonCardTitle>
           <IonCardContent className="p-0!">
             <IonGrid>
-              {/* Header row */}
               <IonRow className="px-1.25 pt-1.25">
                 <IonCol
                   size="auto"
@@ -427,7 +444,6 @@ export default function CheckoutPage() {
                 </IonRow>
               ))}
 
-              {/* Total row */}
               <IonRow className="ion-align-items-center p-1.25 pt-4">
                 <IonCol
                   size="auto"
@@ -452,7 +468,6 @@ export default function CheckoutPage() {
           <IonRippleEffect />
         </IonCard>
 
-        {/* Settings Modal */}
         <IonModal
           isOpen={isModalOpen}
           presentingElement={
@@ -515,11 +530,8 @@ export default function CheckoutPage() {
                       </IonText>
                     </div>
                   </div>
-
-                  {/* Settings Grid */}
                   <IonGrid className="p-0">
                     <IonRow className="ion-align-items-center">
-                      {/* Color Toggle */}
                       <IonCol size="12" className="mb-3 pb-0">
                         <IonSegment
                           value={job.outputColor}
@@ -549,8 +561,6 @@ export default function CheckoutPage() {
                           </IonSegmentButton>
                         </IonSegment>
                       </IonCol>
-
-                      {/* Copies Control */}
                       <IonCol
                         size="12"
                         className="flex items-center justify-between pt-2"
@@ -571,14 +581,12 @@ export default function CheckoutPage() {
                           >
                             <IonIcon icon={remove} size="small" color="dark" />
                           </IonButton>
-
                           <IonText
                             color="dark"
                             className="w-6 text-center text-lg"
                           >
                             {job.copyCount}
                           </IonText>
-
                           <IonButton
                             size="small"
                             fill="solid"
