@@ -5,8 +5,8 @@ ion-fab {
 
 .custom-fab {
   bottom: calc(
-    var(--ion-safe-area-bottom, env(safe-area-inset-bottom, 0px)) + 32px
+    var(--ion-safe-area-bottom, env(safe-area-inset-bottom, 0px)) + 16px
   );
 
-  right: 28px;
+  right: 12px;
 }

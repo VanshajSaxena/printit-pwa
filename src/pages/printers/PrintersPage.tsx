@@ -82,6 +82,7 @@ const PrintersPage: React.FC = () => {
 
       <AppContent
         fullscreen
+        forceOverscroll={false}
         fixed={
           <IonFab
             slot="fixed"
