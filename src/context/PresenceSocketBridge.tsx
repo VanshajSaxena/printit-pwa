@@ -4,12 +4,13 @@ import { useEffect, useRef } from "react";
 
 export function PresenceSocketBridge() {
   const { socket, isConnected } = useSocket();
+
   const isInitializedRef = useRef(false);
 
   useEffect(() => {
     if (!socket) return;
 
-    const { updatePresenceStatus, clear } = usePresenceStore.getState();
+    const { setPresence, clear } = usePresenceStore.getState();
 
     const handlePresenceUpdate = ({
       vendorId,
@@ -18,7 +19,7 @@ export function PresenceSocketBridge() {
       vendorId: number;
       status: PresenceStatus;
     }) => {
-      updatePresenceStatus(vendorId, status);
+      setPresence(vendorId, status);
     };
 
     const handleDisconnect = () => {

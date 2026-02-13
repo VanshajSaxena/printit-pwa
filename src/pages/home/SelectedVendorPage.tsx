@@ -23,9 +23,10 @@ import {
 import AppContent from "@layout/AppContent";
 import { useDraftStore } from "@store/draftStore";
 import { usePresenceStore } from "@store/presenceStore";
+import { useVendorStore } from "@store/vendorStore";
 import { getPdfPageCount } from "@utils/getPdfPageCount";
 import { getUUID } from "@utils/getUUID";
-import { setMany } from "idb-keyval"; // Import setMany
+import { setMany } from "idb-keyval";
 import {
   arrowBack,
   arrowBackOutline,
@@ -45,20 +46,20 @@ export default function SelectedVendorPage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [present, dismiss] = useIonLoading();
 
+  const upsertVendor = useVendorStore((store) => store.upsertVendor);
   const setPresence = usePresenceStore((store) => store.setPresence);
-  const updatePresence = usePresenceStore(
-    (store) => store.updatePresenceStatus,
+  const createDraftTransaction = useDraftStore(
+    (store) => store.createDraftTransaction,
+  );
+  const setCurrentDraftTransactionId = useDraftStore(
+    (store) => store.setCurrentDraftTransactionId,
   );
 
-  const vendorPresence = usePresenceStore((store) =>
-    store.getPresence(selector),
-  );
+  const vendorProfile = useVendorStore((store) => store.getVendor(selector));
 
-  const { data: presenceData } = client.useQuery(
-    "get",
-    "/api/v1/vendors/{selector}/presence",
-    { params: { path: { selector } } },
-    { refetchOnWindowFocus: false },
+  const vendorId = vendorProfile?.id;
+  const presenceStatus = usePresenceStore((store) =>
+    vendorId ? store.getPresence(vendorId) : undefined,
   );
 
   const {
@@ -76,53 +77,60 @@ export default function SelectedVendorPage() {
     },
   );
 
+  const { data: presenceData } = client.useQuery(
+    "get",
+    "/api/v1/vendors/{selector}/presence",
+    { params: { path: { selector } } },
+    { refetchOnWindowFocus: false },
+  );
+
   useEffect(() => {
     if (vendorData) {
-      const { firstName, lastName, givenName, username, id } = vendorData;
-      setPresence(
+      const {
         id,
-        {
-          firstName,
-          lastName,
-          givenName,
-          username,
-          id,
-        },
-        selector,
-      );
+        firstName,
+        lastName,
+        givenName,
+        username,
+        slug,
+        address,
+        location,
+      } = vendorData;
+
+      upsertVendor({
+        id,
+        firstName,
+        lastName,
+        givenName,
+        username,
+        slug,
+        address,
+        location,
+      });
     }
-  }, [selector, setPresence, vendorData]);
+  }, [vendorData, upsertVendor]);
 
   useEffect(() => {
-    if (presenceData) {
-      const { status, id } = presenceData;
-
-      updatePresence(id, status);
+    if (presenceData && vendorData) {
+      setPresence(vendorData.id, presenceData.status);
     }
-  }, [presenceData, updatePresence]);
-
-  const createDraftTransaction = useDraftStore(
-    (store) => store.createDraftTransaction,
-  );
-  const setCurrentDraftTransactionId = useDraftStore(
-    (store) => store.setCurrentDraftTransactionId,
-  );
+  }, [presenceData, vendorData, setPresence]);
 
   const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
-    const eventTargetFiles = event.target.files;
-    if (!eventTargetFiles || eventTargetFiles.length === 0) {
+    if (!vendorId) {
+      console.error("Vendor not loaded yet");
       return;
     }
+
+    const eventTargetFiles = event.target.files;
+    if (!eventTargetFiles || eventTargetFiles.length === 0) return;
 
     const selectedFiles = Array.from(eventTargetFiles);
     const onlyPdfFiles = selectedFiles.filter(
       (file) => file.type === "application/pdf",
     );
 
-    if (onlyPdfFiles.length === 0) {
-      // Optional: Show a toast here saying "Only PDFs are supported"
-      return;
-    }
+    if (onlyPdfFiles.length === 0) return;
 
     await present({ message: "Processing files..." });
 
@@ -131,13 +139,16 @@ export default function SelectedVendorPage() {
         onlyPdfFiles.map(async (file) => {
           const fileId = getUUID();
           const pageCount = await getPdfPageCount(file);
-          const fileObject = {
+
+          const storageObject = {
             id: fileId,
             file: file,
+            filename: file.name,
+            mimeType: file.type,
           };
 
           return {
-            idbEntry: [fileId, fileObject] as [string, typeof fileObject],
+            idbEntry: [fileId, storageObject] as [string, typeof storageObject],
             metadata: {
               fileId,
               filename: file.name,
@@ -153,10 +164,7 @@ export default function SelectedVendorPage() {
 
       await setMany(idbEntries);
 
-      const transactionId = createDraftTransaction(
-        documentsMetadata,
-        vendorPresence,
-      );
+      const transactionId = createDraftTransaction(documentsMetadata, vendorId);
 
       setCurrentDraftTransactionId(transactionId);
 
@@ -210,7 +218,7 @@ export default function SelectedVendorPage() {
     );
   }
 
-  if (isLoading || !vendorPresence) {
+  if (isLoading && !vendorProfile) {
     return (
       <IonPage>
         <IonHeader translucent>
@@ -228,10 +236,10 @@ export default function SelectedVendorPage() {
     );
   }
 
-  const isOnline = vendorPresence.status === "online";
+  const isOnline = presenceStatus === "online";
   const displayName =
-    vendorPresence.givenName ??
-    `${vendorPresence.firstName} ${vendorPresence.lastName}`;
+    vendorProfile?.givenName ??
+    `${vendorProfile?.firstName ?? ""} ${vendorProfile?.lastName ?? ""}`.trim();
 
   return (
     <IonPage>
@@ -260,7 +268,7 @@ export default function SelectedVendorPage() {
                   {isOnline ? "Printer Ready" : "Printer Offline"}
                   <PulseIcon
                     className="mt-0 min-h-8 min-w-8"
-                    status={vendorPresence.status}
+                    status={presenceStatus}
                   />
                 </IonCardTitle>
                 <IonCardSubtitle>{displayName}</IonCardSubtitle>

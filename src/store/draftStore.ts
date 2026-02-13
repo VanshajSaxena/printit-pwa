@@ -1,9 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unnecessary-condition */
 import { getUUID } from "@utils/getUUID";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 import { createIdbStorage } from "./createIdbStorage";
-import { VendorObject } from "./presenceStore";
 
 export type OutputColor = "COLOR" | "MONOCHROME" | "GRAYSCALE";
 
@@ -27,7 +27,7 @@ export interface DraftJob extends TimeAndIdentifierType {
 }
 
 export interface DraftTransaction extends TimeAndIdentifierType {
-  vendor?: Omit<VendorObject, "status">;
+  vendorId?: number; // CHANGED: Now stores ID only
   jobs: DraftJob[];
 }
 
@@ -48,20 +48,19 @@ export interface DraftStore {
 
   createDraftTransaction: (
     documents: DocumentMetadata[],
-    vendor?: VendorObject,
+    vendorId?: number,
   ) => string;
+
   setCurrentDraftTransactionId: (id: string) => void;
   clearCurrentDraftTransactionId: () => void;
+
   updateDraftJob: (
     transactionId: string,
     jobId: string,
     updates: Partial<DraftJob>,
   ) => void;
 
-  updateTransactionVendor: (
-    transactionId: string,
-    vendor: VendorObject,
-  ) => void;
+  updateTransactionVendor: (transactionId: string, vendorId: number) => void;
 }
 
 export const useDraftStore = create<DraftStore>()(
@@ -77,7 +76,7 @@ export const useDraftStore = create<DraftStore>()(
           store.hydrated = true;
         });
       },
-      createDraftTransaction: (documentsMetadata, vendor) => {
+      createDraftTransaction: (documentsMetadata, vendorId) => {
         const now = new Date().toISOString();
 
         const documents: DraftDocument[] = documentsMetadata.map((meta) => ({
@@ -102,7 +101,7 @@ export const useDraftStore = create<DraftStore>()(
         });
 
         const transaction: DraftTransaction = {
-          vendor,
+          vendorId,
           id: getUUID(),
           createdAt: now,
           updatedAt: now,
@@ -128,6 +127,7 @@ export const useDraftStore = create<DraftStore>()(
       updateDraftJob: (transactionId, jobId, updates) => {
         set((store) => {
           const transaction = store.state.transactions[transactionId];
+          if (!transaction) return;
 
           const job = transaction.jobs.find((j) => j.id === jobId);
           if (job) {
@@ -135,10 +135,12 @@ export const useDraftStore = create<DraftStore>()(
           }
         });
       },
-      updateTransactionVendor: (transactionId, vendor) => {
+      updateTransactionVendor: (transactionId, vendorId) => {
         set((store) => {
           const transaction = store.state.transactions[transactionId];
-          transaction.vendor = vendor;
+          if (transaction) {
+            transaction.vendorId = vendorId;
+          }
         });
       },
     })),
@@ -148,6 +150,7 @@ export const useDraftStore = create<DraftStore>()(
       partialize: (store: DraftStore) => ({ state: store.state }),
       onRehydrateStorage: (store) => {
         return () => {
+          console.log("printit-draft-storage: hydrated");
           store.setHydrated();
         };
       },
