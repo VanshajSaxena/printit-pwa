@@ -1,7 +1,5 @@
 import { client } from "@api/client";
 import {
-  IonButton,
-  IonButtons,
   IonCard,
   IonCardContent,
   IonCardHeader,
@@ -20,7 +18,7 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import AppContent from "@layout/AppContent";
-import { locateOutline, locationSharp } from "ionicons/icons";
+import { locationSharp } from "ionicons/icons";
 import React, { useState } from "react";
 import "./PrintersPage.css";
 
@@ -34,7 +32,7 @@ const PrintersPage: React.FC = () => {
   const {
     data: nearbyPrinters,
     isFetching,
-    error,
+    isError,
   } = client.useQuery(
     "get",
     "/api/v1/vendors/nearby",
@@ -55,7 +53,6 @@ const PrintersPage: React.FC = () => {
 
   const handleLocateMe = () => {
     setIsLocating(true);
-
     navigator.geolocation.getCurrentPosition(
       (position) => {
         setIsLocating(false);
@@ -69,7 +66,15 @@ const PrintersPage: React.FC = () => {
         console.error("Error getting location:", error);
         alert("Unable to retrieve your location");
       },
+      { enableHighAccuracy: true, timeout: 10000 },
     );
+  };
+
+  const formatDistance = (meters: number) => {
+    if (meters < 1000) {
+      return `${Math.round(meters).toString()} m`;
+    }
+    return `${(meters / 1000).toFixed(1)} km`;
   };
 
   return (
@@ -82,7 +87,6 @@ const PrintersPage: React.FC = () => {
 
       <AppContent
         fullscreen
-        forceOverscroll={false}
         fixed={
           <IonFab
             slot="fixed"
@@ -90,47 +94,23 @@ const PrintersPage: React.FC = () => {
             horizontal="end"
             className="custom-fab"
           >
-            <IonFabButton>
-              <IonIcon icon={locationSharp}></IonIcon>
+            <IonFabButton onClick={handleLocateMe} disabled={isLocating}>
+              {isFetching || isLocating ? (
+                <IonSpinner name="crescent" color="light" />
+              ) : (
+                <IonIcon icon={locationSharp} />
+              )}
             </IonFabButton>
           </IonFab>
         }
       >
-        <div className="flex">
-          <IonSearchbar
-            placeholder="Search"
-            animated={true}
-            className="flex gap-2 py-4! pr-0! pl-4!"
-          ></IonSearchbar>
-          <IonButtons slot="end" className="px-1">
-            <IonButton
-              onClick={handleLocateMe}
-              disabled={isLocating || isFetching}
-            >
-              {isLocating ? (
-                <IonSpinner name="crescent" />
-              ) : (
-                <IonIcon
-                  slot="icon-only"
-                  icon={coordinates ? locationSharp : locateOutline}
-                  color={"medium"}
-                />
-              )}
-            </IonButton>
-          </IonButtons>
-        </div>
-        {error && (
+        <IonSearchbar placeholder="Search printers..." className="p-4!" />
+
+        {isError && (
           <div className="ion-padding ion-text-center">
             <IonText color="danger">
               <p>Failed to load nearby printers.</p>
             </IonText>
-          </div>
-        )}
-
-        {isFetching && (
-          <div className="ion-padding ion-text-center">
-            <IonSpinner />
-            <p>Finding printers near you...</p>
           </div>
         )}
 
@@ -142,14 +122,10 @@ const PrintersPage: React.FC = () => {
           </div>
         )}
 
-        {nearbyPrinters?.length && nearbyPrinters.length > 0 && (
+        {nearbyPrinters && nearbyPrinters.length > 0 && (
           <IonList>
             {nearbyPrinters.map((vendor) => (
-              <IonCard
-                key={vendor.id}
-                button
-                routerLink={`/vendors/${vendor.slug}`}
-              >
+              <IonCard key={vendor.id} button>
                 <IonCardHeader>
                   <IonCardTitle>
                     {vendor.firstName} {vendor.lastName}
@@ -169,22 +145,17 @@ const PrintersPage: React.FC = () => {
                   )}
 
                   {vendor.distance && (
-                    <p>
-                      <strong>Distance:</strong> {vendor.distance} km
-                    </p>
-                  )}
-
-                  {vendor.location && (
-                    <p>
-                      <strong>Coordinates:</strong>{" "}
-                      {vendor.location.latitude?.toFixed(4)},{" "}
-                      {vendor.location.longitude?.toFixed(4)}
-                    </p>
-                  )}
-
-                  {vendor.givenName && (
-                    <p>
-                      <strong>Given Name:</strong> {vendor.givenName}
+                    <p
+                      style={{
+                        marginTop: "8px",
+                        color: "var(--ion-color-primary)",
+                      }}
+                    >
+                      <IonIcon
+                        icon={locationSharp}
+                        style={{ verticalAlign: "middle", marginRight: "4px" }}
+                      />
+                      <strong>{formatDistance(vendor.distance)}</strong> away
                     </p>
                   )}
                 </IonCardContent>
