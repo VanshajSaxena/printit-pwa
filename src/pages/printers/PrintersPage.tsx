@@ -123,9 +123,9 @@ const PrintersPage: React.FC = () => {
         )}
 
         {nearbyPrinters && nearbyPrinters.length > 0 && (
-          <IonList>
+          <IonList inset className="bg-transparent! py-0!">
             {nearbyPrinters.map((vendor) => (
-              <IonCard key={vendor.id} button>
+              <IonCard key={vendor.id} button className="m-0 border-none!">
                 <IonCardHeader>
                   <IonCardTitle>
                     {vendor.firstName} {vendor.lastName}
