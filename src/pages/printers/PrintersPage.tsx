@@ -83,7 +83,12 @@ const PrintersPage: React.FC = () => {
       <AppContent
         fullscreen
         fixed={
-          <IonFab slot="fixed" vertical="bottom" horizontal="end">
+          <IonFab
+            slot="fixed"
+            vertical="bottom"
+            horizontal="end"
+            className="custom-fab"
+          >
             <IonFabButton>
               <IonIcon icon={locationSharp}></IonIcon>
             </IonFabButton>
