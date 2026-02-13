@@ -1,3 +1,4 @@
+import { useUpdate } from "@hooks/useUpdate";
 import {
   IonBadge,
   IonIcon,
@@ -5,8 +6,7 @@ import {
   IonTabBar,
   IonTabButton,
 } from "@ionic/react";
-import { home, print, settings } from "ionicons/icons";
-import { useUpdate } from "@hooks/useUpdate";
+import { documents, home, print, settings } from "ionicons/icons";
 export default function AppTabBar() {
   const { needRefresh } = useUpdate();
   return (
@@ -14,6 +14,10 @@ export default function AppTabBar() {
       <IonTabButton tab="home" href="/home">
         <IonIcon aria-hidden="true" icon={home} />
         <IonLabel>Home</IonLabel>
+      </IonTabButton>
+      <IonTabButton tab="documents" href="/documents">
+        <IonIcon aria-hidden="true" icon={documents} />
+        <IonLabel>Documents</IonLabel>
       </IonTabButton>
       <IonTabButton tab="printers" href="/printers">
         <IonIcon aria-hidden="true" icon={print} />
