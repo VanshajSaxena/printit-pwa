@@ -11,7 +11,7 @@ const DocumentsPage: React.FC = () => {
         </IonToolbar>
       </IonHeader>
 
-      <AppContent fullscreen className="ion-padding">
+      <AppContent fullscreen>
         <IonHeader collapse="condense">
           <IonToolbar>
             <IonTitle size="large">Documents</IonTitle>

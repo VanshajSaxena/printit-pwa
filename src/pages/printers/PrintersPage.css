@@ -1,0 +1,4 @@
+ion-fab {
+  margin-top: var(--ion-safe-area-top, env(safe-area-inset-top, 0));
+  margin-bottom: var(--ion-safe-area-bottom, env(safe-area-inset-bottom, 0));
+}

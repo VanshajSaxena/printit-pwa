@@ -14,13 +14,18 @@ export const MaxWidthContainer: React.FC<
 
 export default function AppContent({
   children,
+  fixed,
   fullscreen = false,
   className,
   ...rest
-}: React.ComponentProps<typeof IonContent>) {
+}: React.ComponentProps<typeof IonContent> & {
+  fixed?: React.ReactNode;
+}) {
   return (
     <IonContent fullscreen={fullscreen} {...rest}>
       <MaxWidthContainer className={className}>{children}</MaxWidthContainer>
+
+      {fixed}
     </IonContent>
   );
 }

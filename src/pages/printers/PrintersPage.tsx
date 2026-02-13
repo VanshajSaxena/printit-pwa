@@ -7,6 +7,8 @@ import {
   IonCardHeader,
   IonCardSubtitle,
   IonCardTitle,
+  IonFab,
+  IonFabButton,
   IonHeader,
   IonIcon,
   IonList,
@@ -20,6 +22,7 @@ import {
 import AppContent from "@layout/AppContent";
 import { locateOutline, locationSharp } from "ionicons/icons";
 import React, { useState } from "react";
+import "./PrintersPage.css";
 
 const PrintersPage: React.FC = () => {
   const [coordinates, setCoordinates] = useState<{
@@ -77,12 +80,21 @@ const PrintersPage: React.FC = () => {
         </IonToolbar>
       </IonHeader>
 
-      <AppContent fullscreen className="ion-padding">
+      <AppContent
+        fullscreen
+        fixed={
+          <IonFab slot="fixed" vertical="bottom" horizontal="end">
+            <IonFabButton>
+              <IonIcon icon={locationSharp}></IonIcon>
+            </IonFabButton>
+          </IonFab>
+        }
+      >
         <div className="flex">
           <IonSearchbar
             placeholder="Search"
             animated={true}
-            className="flex gap-2 py-0! pr-0! pl-4!"
+            className="flex gap-2 py-4! pr-0! pl-4!"
           ></IonSearchbar>
           <IonButtons slot="end" className="px-1">
             <IonButton
@@ -124,54 +136,56 @@ const PrintersPage: React.FC = () => {
           </div>
         )}
 
-        <IonList>
-          {nearbyPrinters?.map((vendor) => (
-            <IonCard
-              key={vendor.id}
-              button
-              routerLink={`/vendors/${vendor.slug}`}
-            >
-              <IonCardHeader>
-                <IonCardTitle>
-                  {vendor.firstName} {vendor.lastName}
-                </IonCardTitle>
-                <IonCardSubtitle>@{vendor.username}</IonCardSubtitle>
-              </IonCardHeader>
+        {nearbyPrinters?.length && nearbyPrinters.length > 0 && (
+          <IonList>
+            {nearbyPrinters.map((vendor) => (
+              <IonCard
+                key={vendor.id}
+                button
+                routerLink={`/vendors/${vendor.slug}`}
+              >
+                <IonCardHeader>
+                  <IonCardTitle>
+                    {vendor.firstName} {vendor.lastName}
+                  </IonCardTitle>
+                  <IonCardSubtitle>@{vendor.username}</IonCardSubtitle>
+                </IonCardHeader>
 
-              <IonCardContent>
-                {vendor.address ? (
-                  <p>
-                    <strong>Address:</strong> {vendor.address}
-                  </p>
-                ) : (
-                  <p>
-                    <em>Address not provided</em>
-                  </p>
-                )}
+                <IonCardContent>
+                  {vendor.address ? (
+                    <p>
+                      <strong>Address:</strong> {vendor.address}
+                    </p>
+                  ) : (
+                    <p>
+                      <em>Address not provided</em>
+                    </p>
+                  )}
 
-                {vendor.distance && (
-                  <p>
-                    <strong>Distance:</strong> {vendor.distance} km
-                  </p>
-                )}
+                  {vendor.distance && (
+                    <p>
+                      <strong>Distance:</strong> {vendor.distance} km
+                    </p>
+                  )}
 
-                {vendor.location && (
-                  <p>
-                    <strong>Coordinates:</strong>{" "}
-                    {vendor.location.latitude?.toFixed(4)},{" "}
-                    {vendor.location.longitude?.toFixed(4)}
-                  </p>
-                )}
+                  {vendor.location && (
+                    <p>
+                      <strong>Coordinates:</strong>{" "}
+                      {vendor.location.latitude?.toFixed(4)},{" "}
+                      {vendor.location.longitude?.toFixed(4)}
+                    </p>
+                  )}
 
-                {vendor.givenName && (
-                  <p>
-                    <strong>Given Name:</strong> {vendor.givenName}
-                  </p>
-                )}
-              </IonCardContent>
-            </IonCard>
-          ))}
-        </IonList>
+                  {vendor.givenName && (
+                    <p>
+                      <strong>Given Name:</strong> {vendor.givenName}
+                    </p>
+                  )}
+                </IonCardContent>
+              </IonCard>
+            ))}
+          </IonList>
+        )}
       </AppContent>
     </IonPage>
   );
