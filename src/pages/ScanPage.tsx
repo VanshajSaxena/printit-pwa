@@ -4,7 +4,6 @@ import {
   IonContent,
   IonIcon,
   IonPage,
-  IonSpinner,
   useIonRouter,
   useIonViewWillEnter,
   useIonViewWillLeave,
@@ -102,12 +101,6 @@ export default function ScanPage() {
     <IonPage>
       <IonContent scrollY={false}>
         <div className="relative h-screen w-screen overflow-hidden bg-black">
-          {isLoading && (
-            <div className="absolute inset-0 z-20 flex items-center justify-center">
-              <IonSpinner name="crescent" color="light" />
-            </div>
-          )}
-
           <video
             ref={videoRef}
             className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-300 ${
