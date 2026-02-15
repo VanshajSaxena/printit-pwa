@@ -1,4 +1,13 @@
-ion-button.back-button {
-  margin-top: var(--ion-safe-area-top, env(safe-area-inset-top, 0));
-  margin-left: var(--ion-safe-area-left, env(safe-area-inset-left, 0));
+.scan-back-button-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 50;
+
+  padding-top: calc(
+    16px + var(--ion-safe-area-top, env(safe-area-inset-top, 0px))
+  );
+  padding-left: calc(
+    16px + var(--ion-safe-area-left, env(safe-area-inset-left, 0px))
+  );
 }
