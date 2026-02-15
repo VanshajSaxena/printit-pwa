@@ -77,7 +77,7 @@
           },
           {
             "name": "range",
-            "required": true,
+            "required": false,
             "in": "query",
             "schema": { "type": "number" }
           }

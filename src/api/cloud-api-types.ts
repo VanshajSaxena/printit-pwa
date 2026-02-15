@@ -1130,7 +1130,7 @@ export interface operations {
       query: {
         lat: number;
         lng: number;
-        range: number;
+        range?: number;
       };
       header?: never;
       path?: never;
