@@ -2,6 +2,7 @@ import { client } from "@api/client";
 import { PrinterGraphic } from "@components/graphics/PrinterGraphic";
 import { PulseIcon } from "@components/graphics/PulseIcon";
 import {
+  IonBackButton,
   IonButton,
   IonButtons,
   IonCard,
@@ -246,10 +247,9 @@ export default function SelectedVendorPage() {
       <IonHeader translucent>
         <IonToolbar>
           <IonButtons slot="start">
-            <IonButton routerLink="/home" routerDirection="back">
+            <IonBackButton defaultHref="/home">
               <IonIcon slot="start" icon={arrowBack} />
-              Home
-            </IonButton>
+            </IonBackButton>
           </IonButtons>
           <IonTitle>Printer</IonTitle>
         </IonToolbar>

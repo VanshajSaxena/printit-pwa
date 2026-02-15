@@ -16,6 +16,7 @@ import {
   IonText,
   IonTitle,
   IonToolbar,
+  useIonRouter,
 } from "@ionic/react";
 import AppContent from "@layout/AppContent";
 import { locationSharp } from "ionicons/icons";
@@ -23,6 +24,7 @@ import React, { useState } from "react";
 import "./PrintersPage.css";
 
 const PrintersPage: React.FC = () => {
+  const router = useIonRouter();
   const [coordinates, setCoordinates] = useState<{
     lat: number;
     lng: number;
@@ -77,6 +79,10 @@ const PrintersPage: React.FC = () => {
     return `${(meters / 1000).toFixed(1)} km`;
   };
 
+  const handleSelectPrinter = (id: string) => {
+    router.push(`/printers/${id}`);
+  };
+
   return (
     <IonPage>
       <IonHeader translucent>
@@ -125,7 +131,14 @@ const PrintersPage: React.FC = () => {
         {nearbyPrinters && nearbyPrinters.length > 0 && (
           <IonList inset className="mt-0! bg-transparent! py-0!">
             {nearbyPrinters.map((vendor) => (
-              <IonCard key={vendor.id} button className="m-0 border-none!">
+              <IonCard
+                key={vendor.id}
+                button
+                className="m-0 border-none!"
+                onClick={() => {
+                  handleSelectPrinter(`@${vendor.username}`);
+                }}
+              >
                 <IonCardHeader>
                   <IonCardTitle>
                     {vendor.givenName ??

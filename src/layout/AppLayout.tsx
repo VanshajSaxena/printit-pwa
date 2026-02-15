@@ -57,6 +57,9 @@ export default function Applayout() {
               <Route exact path="/printers">
                 <PrintersPage />
               </Route>
+              <Route exact path="/printers/:selector">
+                <SelectedVendorPage />
+              </Route>
               <Route exact path="/settings">
                 <SettingsPage />
               </Route>
