@@ -14,7 +14,7 @@ import { Redirect, Route } from "react-router-dom";
 import AppTabBar from "./AppTabBar";
 import AppearancePage from "@pages/settings/AppearancePage";
 import AppearanceModePage from "@pages/settings/AppearanceModePage";
-import DocumentsPage from "@pages/documents/DocumentsPage";
+import YourPrintsPage from "@pages/documents/YourPrintsPage";
 
 export default function Applayout() {
   return (
@@ -46,8 +46,8 @@ export default function Applayout() {
                   <ChangePrintSettingsPage />
                 </RequireCurrentTransaction>
               </Route>
-              <Route exact path="/documents">
-                <DocumentsPage />
+              <Route exact path="/prints">
+                <YourPrintsPage />
               </Route>
               <Route exact path="/printers">
                 <PrintersPage />
