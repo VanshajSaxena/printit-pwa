@@ -49,6 +49,11 @@ export default function Applayout() {
               <Route exact path="/prints">
                 <YourPrintsPage />
               </Route>
+              <Route exact path="/prints/checkout">
+                <RequireCurrentTransaction>
+                  <CheckoutPage />
+                </RequireCurrentTransaction>
+              </Route>
               <Route exact path="/printers">
                 <PrintersPage />
               </Route>

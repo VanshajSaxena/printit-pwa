@@ -39,7 +39,7 @@ const YourPrintsPage: React.FC = () => {
 
   const handleResumeDraft = (id: string) => {
     setCurrentDraftTransactionId(id);
-    router.push("/home/checkout");
+    router.push("/prints/checkout");
   };
 
   return (
@@ -59,7 +59,6 @@ const YourPrintsPage: React.FC = () => {
 
         <div className="ion-padding">
           {drafts.length === 0 ? (
-            // Empty State
             <div className="flex h-[70vh] flex-col items-center justify-center text-center opacity-80">
               <div className="rounded-full">
                 <IonIcon
@@ -82,7 +81,6 @@ const YourPrintsPage: React.FC = () => {
               </div>
 
               {drafts.map((draft) => {
-                // Simple synchronous lookup
                 const vendor = draft.vendorId
                   ? vendorsMap[draft.vendorId]
                   : undefined;
