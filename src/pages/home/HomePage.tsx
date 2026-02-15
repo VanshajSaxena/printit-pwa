@@ -6,11 +6,13 @@ import {
   IonPage,
   IonTitle,
   IonToolbar,
+  useIonRouter,
 } from "@ionic/react";
 import AppContent from "@layout/AppContent";
 import { scan } from "ionicons/icons";
 
 const HomePage: React.FC = () => {
+  const router = useIonRouter();
   return (
     <IonPage>
       <IonHeader translucent>
@@ -27,9 +29,10 @@ const HomePage: React.FC = () => {
         <div className="flex w-full max-w-xs flex-col gap-4">
           <IonButton
             size="large"
-            routerLink="/scan"
-            routerDirection="none"
             expand="block"
+            onClick={() => {
+              router.push("/scan", "none", "push");
+            }}
           >
             Scan QR
             <IonIcon slot="end" ios={scan} md={scan}></IonIcon>

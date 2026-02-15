@@ -1,0 +1,4 @@
+ion-button.back-button {
+  margin-top: var(--ion-safe-area-top, env(safe-area-inset-top, 0));
+  margin-left: var(--ion-safe-area-left, env(safe-area-inset-left, 0));
+}

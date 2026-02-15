@@ -11,6 +11,7 @@ import {
 import type { BrowserQRCodeReader, IScannerControls } from "@zxing/browser";
 import { close } from "ionicons/icons";
 import { useRef, useState } from "react";
+import "./ScanPage.css";
 
 export default function ScanPage() {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -110,7 +111,7 @@ export default function ScanPage() {
   return (
     <IonPage>
       <IonContent scrollY={false}>
-        <div className="relative h-screen w-screen overflow-hidden bg-black">
+        <div className="h-screen w-screen overflow-hidden bg-black">
           <video
             ref={videoRef}
             className="absolute inset-0 h-full w-full object-cover"
@@ -138,9 +139,10 @@ export default function ScanPage() {
           <IonButton
             color={"light"}
             shape={"round"}
-            className="--padding-start-0 --padding-end-0 absolute top-6 right-6 size-12"
+            className="back-button size-12"
             onClick={() => {
-              router.goBack();
+              stopScanning();
+              router.push("/home", "back", "pop");
             }}
           >
             <IonIcon slot="icon-only" icon={close} size={"small"}></IonIcon>
