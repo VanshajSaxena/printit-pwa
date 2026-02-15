@@ -100,6 +100,7 @@ const YourPrintsPage: React.FC = () => {
               return (
                 <IonCard
                   key={draft.id}
+                  className="my-4 border-none!"
                   button
                   onClick={() => {
                     handleResumeDraft(draft.id);
