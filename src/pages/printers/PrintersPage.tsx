@@ -100,7 +100,10 @@ const PrintersPage: React.FC = () => {
             horizontal="end"
             className="custom-fab"
           >
-            <IonFabButton onClick={handleLocateMe} disabled={isLocating}>
+            <IonFabButton
+              onClick={handleLocateMe}
+              disabled={isLocating || isFetching}
+            >
               {isFetching || isLocating ? (
                 <IonSpinner name="crescent" color="light" />
               ) : (

@@ -7,6 +7,7 @@ import {
   IonHeader,
   IonIcon,
   IonLabel,
+  IonList,
   IonNote,
   IonPage,
   IonText,
@@ -50,7 +51,7 @@ const YourPrintsPage: React.FC = () => {
         </IonToolbar>
       </IonHeader>
 
-      <AppContent fullscreen class="ion-padding">
+      <AppContent fullscreen>
         <IonHeader collapse="condense">
           <IonToolbar>
             <IonTitle size="large">Your Prints</IonTitle>
@@ -71,7 +72,7 @@ const YourPrintsPage: React.FC = () => {
             </IonNote>
           </div>
         ) : (
-          <div className="flex flex-col">
+          <IonList inset className="flex flex-col bg-transparent!">
             <div className="mb-4 ml-1">
               <IonText color="medium" className="text-sm font-medium">
                 Recent Drafts
@@ -137,7 +138,7 @@ const YourPrintsPage: React.FC = () => {
                 </IonCard>
               );
             })}
-          </div>
+          </IonList>
         )}
       </AppContent>
     </IonPage>
