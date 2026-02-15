@@ -128,7 +128,8 @@ const PrintersPage: React.FC = () => {
               <IonCard key={vendor.id} button className="m-0 border-none!">
                 <IonCardHeader>
                   <IonCardTitle>
-                    {vendor.firstName} {vendor.lastName}
+                    {vendor.givenName ??
+                      vendor.firstName.concat(vendor.lastName)}
                   </IonCardTitle>
                   <IonCardSubtitle>@{vendor.username}</IonCardSubtitle>
                 </IonCardHeader>
