@@ -171,7 +171,7 @@ export default function SelectedVendorPage() {
 
       await dismiss();
       event.target.value = "";
-      router.push("/home/checkout");
+      router.push(`/${router.routeInfo.tab ?? "home"}/checkout`);
     } catch (error) {
       console.error("Failed to process files:", error);
       await dismiss();

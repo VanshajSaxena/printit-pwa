@@ -42,7 +42,6 @@ import {
   options,
   printOutline,
   remove,
-  settingsOutline,
 } from "ionicons/icons";
 import { useEffect, useRef, useState } from "react";
 import "./CheckoutPage.css";
