@@ -17,7 +17,7 @@ export default function AppTabBar() {
       </IonTabButton>
       <IonTabButton tab="documents" href="/prints">
         <IonIcon aria-hidden="true" icon={documents} />
-        <IonLabel>Documents</IonLabel>
+        <IonLabel>Prints</IonLabel>
       </IonTabButton>
       <IonTabButton tab="printers" href="/printers">
         <IonIcon aria-hidden="true" icon={print} />
