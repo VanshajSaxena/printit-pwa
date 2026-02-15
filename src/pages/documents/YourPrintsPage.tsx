@@ -70,8 +70,7 @@ const YourPrintsPage: React.FC = () => {
               </div>
               <h2 className="text-xl font-semibold">No prints yet</h2>
               <IonNote className="max-w-xs text-sm">
-                Your recent draft prints will appear here so you can easily
-                resume them.
+                Your prints will appear here.
               </IonNote>
             </div>
           ) : (
