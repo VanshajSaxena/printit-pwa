@@ -43,7 +43,6 @@ const PrintersPage: React.FC = () => {
         query: {
           lat: coordinates?.lat ?? 0,
           lng: coordinates?.lng ?? 0,
-          range: 500000, // This is to show all printers (because we have really now printer count).
         },
       },
     },
