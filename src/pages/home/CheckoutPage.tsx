@@ -353,33 +353,18 @@ export default function CheckoutPage() {
           <IonLabel>Print Options</IonLabel>
         </IonButton>
 
+        <div className="mt-6 ml-1 flex max-w-full min-w-full justify-start">
+          <IonText color="medium" className="text-base font-semibold">
+            Documents
+          </IonText>
+        </div>
+
         <IonCard
-          className="ion-activatable ripple-parent rounded-rectangle my-6 max-w-full min-w-full"
+          className="ion-activatable ripple-parent rounded-rectangle my-3 max-w-full min-w-full"
           onClick={() => {
             setIsModalOpen(true);
           }}
         >
-          <IonCardTitle className="flex items-center justify-between px-5 pt-4 text-xl">
-            <IonLabel>
-              Documents{" "}
-              <IonLabel color={"medium"}>
-                ({currentDraftTransaction.jobs.length})
-              </IonLabel>
-            </IonLabel>
-            <IonButton
-              fill="clear"
-              size="small"
-              className="m-0 p-0!"
-              shape="round"
-            >
-              <IonIcon
-                icon={settingsOutline}
-                color="medium"
-                slot="icon-only"
-                className="text-2xl"
-              />
-            </IonButton>
-          </IonCardTitle>
           <IonCardContent className="p-0!">
             <IonGrid>
               <IonRow className="px-1.25 pt-1.25">
@@ -452,8 +437,8 @@ export default function CheckoutPage() {
                   <IonIcon icon={document} className="invisible text-xl" />
                 </IonCol>
                 <IonCol className="pl-2">
-                  <IonText color="dark">
-                    <strong>Total Pages</strong>
+                  <IonText color="dark" class="font-medium">
+                    Total Pages
                   </IonText>
                 </IonCol>
                 <IonCol size="auto" className="min-w-12" />

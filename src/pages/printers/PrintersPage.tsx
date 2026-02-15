@@ -132,12 +132,12 @@ const PrintersPage: React.FC = () => {
         )}
 
         {nearbyPrinters && nearbyPrinters.length > 0 && (
-          <IonList inset className="mt-0! bg-transparent! py-0!">
+          <IonList inset className="m-0! bg-transparent! py-0!">
             {nearbyPrinters.map((vendor) => (
               <IonCard
                 key={vendor.id}
                 button
-                className="m-0 border-none!"
+                className="border-none!"
                 onClick={() => {
                   handleSelectPrinter(`@${vendor.username}`);
                 }}

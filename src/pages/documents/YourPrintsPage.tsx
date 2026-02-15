@@ -10,7 +10,6 @@ import {
   IonList,
   IonNote,
   IonPage,
-  IonText,
   IonTitle,
   IonToolbar,
   useIonRouter,
@@ -72,13 +71,7 @@ const YourPrintsPage: React.FC = () => {
             </IonNote>
           </div>
         ) : (
-          <IonList inset className="flex flex-col bg-transparent!">
-            <div className="mb-4 ml-1">
-              <IonText color="medium" className="text-sm font-medium">
-                Recent Drafts
-              </IonText>
-            </div>
-
+          <IonList className="flex flex-col bg-transparent!">
             {drafts.map((draft) => {
               const vendor = draft.vendorId
                 ? vendorsMap[draft.vendorId]
@@ -111,7 +104,6 @@ const YourPrintsPage: React.FC = () => {
                   onClick={() => {
                     handleResumeDraft(draft.id);
                   }}
-                  className="m-0 mb-3 w-full shadow-sm"
                 >
                   <IonCardHeader className="pb-2">
                     <div className="flex justify-between">
