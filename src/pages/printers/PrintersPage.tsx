@@ -1,5 +1,6 @@
 import { client } from "@api/client";
 import {
+  IonAlert,
   IonCard,
   IonCardContent,
   IonCardHeader,
@@ -30,6 +31,7 @@ const PrintersPage: React.FC = () => {
     lng: number;
   } | null>(null);
   const [isLocating, setIsLocating] = useState(false);
+  const [isErrorGettingLocation, setIsErrorGettingLocation] = useState(false);
 
   const {
     data: nearbyPrinters,
@@ -64,8 +66,8 @@ const PrintersPage: React.FC = () => {
       },
       (error) => {
         setIsLocating(false);
+        setIsErrorGettingLocation(true);
         console.error("Error getting location:", error);
-        alert("Unable to retrieve your location");
       },
       { enableHighAccuracy: true, timeout: 10000 },
     );
@@ -100,7 +102,9 @@ const PrintersPage: React.FC = () => {
             className="custom-fab"
           >
             <IonFabButton
-              onClick={handleLocateMe}
+              onClick={() => {
+                handleLocateMe();
+              }}
               disabled={isLocating || isFetching}
             >
               {isFetching || isLocating ? (
@@ -179,6 +183,23 @@ const PrintersPage: React.FC = () => {
             ))}
           </IonList>
         )}
+
+        <IonAlert
+          isOpen={isErrorGettingLocation}
+          header="Unable to get your location"
+          message="Please allow location access to find printers near you."
+          buttons={[
+            {
+              text: "Ok",
+              handler: () => {
+                setIsErrorGettingLocation(false);
+              },
+            },
+          ]}
+          onDidDismiss={() => {
+            setIsErrorGettingLocation(false);
+          }}
+        />
       </AppContent>
     </IonPage>
   );

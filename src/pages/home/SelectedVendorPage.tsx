@@ -247,7 +247,7 @@ export default function SelectedVendorPage() {
       <IonHeader translucent>
         <IonToolbar>
           <IonButtons slot="start">
-            <IonBackButton defaultHref="/home">
+            <IonBackButton defaultHref={`/${router.routeInfo.tab ?? "home"}`}>
               <IonIcon slot="start" icon={arrowBack} />
             </IonBackButton>
           </IonButtons>
