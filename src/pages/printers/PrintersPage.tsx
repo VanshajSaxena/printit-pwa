@@ -145,7 +145,7 @@ const PrintersPage: React.FC = () => {
               <IonCard
                 key={vendor.id}
                 button
-                className="border-none!"
+                className="mx-4 my-4 border-none!"
                 onClick={() => {
                   handleSelectPrinter(vendor.username);
                 }}
