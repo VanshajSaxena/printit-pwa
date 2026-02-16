@@ -51,13 +51,13 @@ const YourPrintsPage: React.FC = () => {
       </IonHeader>
 
       <AppContent fullscreen>
-        <IonHeader collapse="condense">
+        <IonHeader translucent collapse="condense">
           <IonToolbar>
             <IonTitle size="large">Your Prints</IonTitle>
           </IonToolbar>
         </IonHeader>
         {drafts.length === 0 ? (
-          <div className="flex h-[70vh] flex-col items-center justify-center text-center opacity-80">
+          <div className="flex h-[80vh] flex-col items-center justify-center text-center">
             <div className="rounded-full">
               <IonIcon
                 icon={printOutline}
