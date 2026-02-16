@@ -289,7 +289,7 @@ export interface components {
       copyCount: number;
       documentId: number;
       /** @enum {string} */
-      outputColor: "COLOR" | "MONOCHROME" | "GRAYSCALE";
+      outputColor: "Color" | "Monochrome" | "Grayscale";
     };
     CreateJobResponseDto: {
       copyCount: number;
@@ -298,7 +298,7 @@ export interface components {
       document: components["schemas"]["CreateDocumentResponseDto"];
       id: number;
       /** @enum {string} */
-      outputColor: "COLOR" | "MONOCHROME" | "GRAYSCALE";
+      outputColor: "Color" | "Monochrome" | "Grayscale";
       /** Format: date-time */
       updatedAt: string;
     };
@@ -325,10 +325,10 @@ export interface components {
     };
     CreateVendorDto: {
       address?: string;
+      displayName?: string;
       /** Format: email */
       email: string;
       firstName: string;
-      givenName?: string;
       lastName: string;
       latitude?: number;
       longitude?: number;
@@ -355,7 +355,7 @@ export interface components {
       document: components["schemas"]["FindDocumentResponseDto"];
       id: number;
       /** @enum {string} */
-      outputColor: "COLOR" | "MONOCHROME" | "GRAYSCALE";
+      outputColor: "Color" | "Monochrome" | "Grayscale";
       /** @enum {string} */
       status: "PENDING" | "QUEUED" | "PRINTING" | "COMPLETED" | "ERROR";
     };
@@ -396,7 +396,7 @@ export interface components {
       copyCount?: number;
       documentId?: number;
       /** @enum {string} */
-      outputColor?: "COLOR" | "MONOCHROME" | "GRAYSCALE";
+      outputColor?: "Color" | "Monochrome" | "Grayscale";
     };
     UpdatePrinterDto: Record<string, never>;
     UpdateTransactionDto: Record<string, never>;
@@ -418,9 +418,9 @@ export interface components {
     };
     VendorResponseDto: {
       address: string;
+      displayName: string | null;
       distance: number;
       firstName: string;
-      givenName: string | null;
       id: number;
       lastName: string;
       location: components["schemas"]["LocationDto"] | null;

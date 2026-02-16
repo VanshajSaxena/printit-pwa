@@ -833,7 +833,7 @@
             "pattern": "/^[a-zA-Z0-9_]+$/"
           },
           "email": { "type": "string", "format": "email" },
-          "givenName": { "type": "string" },
+          "displayName": { "type": "string" },
           "address": { "type": "string" },
           "latitude": { "type": "number", "minimum": -90, "maximum": 90 },
           "longitude": { "type": "number", "minimum": -180, "maximum": 180 }
@@ -862,7 +862,7 @@
           "id": { "type": "number" },
           "firstName": { "type": "string" },
           "lastName": { "type": "string" },
-          "givenName": { "type": "string", "nullable": true },
+          "displayName": { "type": "string", "nullable": true },
           "username": { "type": "string" },
           "address": { "type": "string" },
           "slug": { "type": "string" },
@@ -876,7 +876,7 @@
           "id",
           "firstName",
           "lastName",
-          "givenName",
+          "displayName",
           "username",
           "address",
           "slug",
@@ -926,7 +926,7 @@
         "properties": {
           "documentId": { "type": "number" },
           "outputColor": {
-            "enum": ["COLOR", "MONOCHROME", "GRAYSCALE"],
+            "enum": ["Color", "Monochrome", "Grayscale"],
             "type": "string"
           },
           "copyCount": { "type": "number", "minimum": 1 }
@@ -969,7 +969,7 @@
         "properties": {
           "id": { "type": "number" },
           "outputColor": {
-            "enum": ["COLOR", "MONOCHROME", "GRAYSCALE"],
+            "enum": ["Color", "Monochrome", "Grayscale"],
             "type": "string"
           },
           "copyCount": { "type": "number" },
@@ -1028,7 +1028,7 @@
           "id": { "type": "number" },
           "outputColor": {
             "type": "string",
-            "enum": ["COLOR", "MONOCHROME", "GRAYSCALE"]
+            "enum": ["Color", "Monochrome", "Grayscale"]
           },
           "copyCount": { "type": "number" },
           "status": {
@@ -1105,7 +1105,7 @@
           "documentId": { "type": "number" },
           "outputColor": {
             "type": "string",
-            "enum": ["COLOR", "MONOCHROME", "GRAYSCALE"]
+            "enum": ["Color", "Monochrome", "Grayscale"]
           },
           "copyCount": { "type": "number", "minimum": 1 }
         }
