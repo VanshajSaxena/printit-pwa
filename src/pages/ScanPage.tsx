@@ -138,7 +138,7 @@ export default function ScanPage() {
               className="size-12"
               onClick={() => {
                 stopScanning();
-                router.goBack();
+                router.push("/home", "back", "pop");
               }}
             >
               <IonIcon slot="icon-only" icon={close} size="small" />
