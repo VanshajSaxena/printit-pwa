@@ -25,6 +25,7 @@ import {
   IonToolbar,
   isPlatform,
   useIonLoading,
+  useIonRouter,
   useIonToast,
 } from "@ionic/react";
 
@@ -54,6 +55,7 @@ interface StoredFileWrapper {
 }
 
 export default function CheckoutPage() {
+  const router = useIonRouter();
   const [presentLoading, dismissLoading] = useIonLoading();
   const [presentToast] = useIonToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -303,7 +305,7 @@ export default function CheckoutPage() {
     `${vendorProfile?.firstName ?? ""} ${vendorProfile?.lastName ?? ""}`.trim();
 
   const backLink = vendorProfile?.username
-    ? `/home/printer/${vendorProfile.username}`
+    ? `${router.routeInfo.tab === "home" || !router.routeInfo.tab ? "/home/printer" : router.routeInfo.tab}/@${vendorProfile.username}`
     : "/home";
 
   return (

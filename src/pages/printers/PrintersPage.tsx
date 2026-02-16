@@ -78,8 +78,8 @@ const PrintersPage: React.FC = () => {
     return `${(meters / 1000).toFixed(1)} km`;
   };
 
-  const handleSelectPrinter = (id: string) => {
-    router.push(`/printers/${id}`);
+  const handleSelectPrinter = (selector: string) => {
+    router.push(`/printers/@${selector}`);
   };
 
   return (
@@ -138,7 +138,7 @@ const PrintersPage: React.FC = () => {
                 button
                 className="border-none!"
                 onClick={() => {
-                  handleSelectPrinter(`@${vendor.username}`);
+                  handleSelectPrinter(vendor.username);
                 }}
               >
                 <IonCardHeader>

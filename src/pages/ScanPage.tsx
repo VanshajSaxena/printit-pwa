@@ -83,7 +83,7 @@ export default function ScanPage() {
       const printerId = paths[selectorIndex + 1];
 
       stopScanning();
-      router.push(`/home/printer/${printerId}`, "forward", "replace");
+      router.push(`/home/printer/${printerId}`, "forward");
     } catch {
       stopScanning();
       setIsAlertOpen(true);
