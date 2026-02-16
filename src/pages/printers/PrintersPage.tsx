@@ -11,9 +11,9 @@ import {
   IonHeader,
   IonIcon,
   IonList,
+  IonLoading,
   IonPage,
   IonSearchbar,
-  IonSpinner,
   IonText,
   IonTitle,
   IonToolbar,
@@ -107,16 +107,21 @@ const PrintersPage: React.FC = () => {
               }}
               disabled={isLocating || isFetching}
             >
-              {isFetching || isLocating ? (
-                <IonSpinner name="crescent" color="light" />
-              ) : (
-                <IonIcon icon={locationSharp} />
-              )}
+              <IonIcon icon={locationSharp} />
             </IonFabButton>
           </IonFab>
         }
       >
         <IonSearchbar placeholder="Search printers..." className="p-4!" />
+
+        {(isFetching || isLocating) && (
+          <div className="ion-text-center">
+            <IonLoading
+              isOpen={isLocating || isFetching}
+              message={"Searching printers near you..."}
+            ></IonLoading>
+          </div>
+        )}
 
         {isError && (
           <div className="ion-padding ion-text-center">
