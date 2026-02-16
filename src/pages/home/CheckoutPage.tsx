@@ -71,6 +71,8 @@ export default function CheckoutPage() {
     setPresentingElement(pageRef.current ?? undefined);
   }, []);
 
+  const setPresence = usePresenceStore((store) => store.setPresence);
+
   const createTransaction = useTransactionStore(
     (store) => store.createTransaction,
   );
@@ -294,6 +296,22 @@ export default function CheckoutPage() {
       setIsSubmitting(false);
     }
   };
+
+  const { data: presenceData } = client.useQuery(
+    "get",
+    "/api/v1/vendors/{selector}/presence",
+    { params: { path: { selector: vendorId ?? 0 } } },
+    {
+      enabled: !!vendorId && presenceStatus !== "online",
+      refetchOnWindowFocus: false,
+    },
+  );
+
+  useEffect(() => {
+    if (presenceData && vendorProfile) {
+      setPresence(vendorProfile.id, presenceData.status);
+    }
+  }, [presenceData, setPresence, vendorProfile]);
 
   const totalPages = currentDraftTransaction.jobs.reduce(
     (total, job) => total + job.document.pageCount * job.copyCount,
