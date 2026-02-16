@@ -91,7 +91,7 @@ export default function SelectedVendorPage() {
         id,
         firstName,
         lastName,
-        givenName,
+        displayName,
         username,
         slug,
         address,
@@ -102,7 +102,7 @@ export default function SelectedVendorPage() {
         id,
         firstName,
         lastName,
-        givenName,
+        displayName,
         username,
         slug,
         address,
@@ -239,7 +239,7 @@ export default function SelectedVendorPage() {
 
   const isOnline = presenceStatus === "online";
   const displayName =
-    vendorProfile?.givenName ??
+    vendorProfile?.displayName ??
     `${vendorProfile?.firstName ?? ""} ${vendorProfile?.lastName ?? ""}`.trim();
 
   return (

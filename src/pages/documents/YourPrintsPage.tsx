@@ -78,7 +78,8 @@ const YourPrintsPage: React.FC = () => {
                 : undefined;
 
               const vendorName = vendor
-                ? (vendor.givenName ?? `${vendor.firstName} ${vendor.lastName}`)
+                ? (vendor.displayName ??
+                  `${vendor.firstName} ${vendor.lastName}`)
                 : "Unknown Printer";
 
               const dateLabel = new Date(draft.updatedAt).toLocaleDateString(

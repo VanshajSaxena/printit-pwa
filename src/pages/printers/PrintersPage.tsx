@@ -143,7 +143,7 @@ const PrintersPage: React.FC = () => {
               >
                 <IonCardHeader>
                   <IonCardTitle>
-                    {vendor.givenName ??
+                    {vendor.displayName ??
                       vendor.firstName.concat(vendor.lastName)}
                   </IonCardTitle>
                   <IonCardSubtitle>@{vendor.username}</IonCardSubtitle>

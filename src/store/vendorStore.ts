@@ -16,7 +16,7 @@ export interface VendorProfile {
   id: number;
   firstName: string;
   lastName: string;
-  givenName: string | null;
+  displayName: string | null;
   username: string;
   slug: string;
   address: string;

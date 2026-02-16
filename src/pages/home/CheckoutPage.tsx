@@ -299,7 +299,7 @@ export default function CheckoutPage() {
   );
 
   const displayName =
-    vendorProfile?.givenName ??
+    vendorProfile?.displayName ??
     `${vendorProfile?.firstName ?? ""} ${vendorProfile?.lastName ?? ""}`.trim();
 
   const backLink = vendorProfile?.username
@@ -403,7 +403,7 @@ export default function CheckoutPage() {
                       icon={document}
                       className="text-xl"
                       color={
-                        job.outputColor === "COLOR" ? "secondary" : "medium"
+                        job.outputColor === "Color" ? "secondary" : "medium"
                       }
                     />
                   </IonCol>
@@ -495,7 +495,7 @@ export default function CheckoutPage() {
                         icon={document}
                         className="text-2xl"
                         color={
-                          job.outputColor === "COLOR" ? "secondary" : "medium"
+                          job.outputColor === "Color" ? "secondary" : "medium"
                         }
                       />
                     </div>

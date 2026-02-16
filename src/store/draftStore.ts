@@ -5,7 +5,7 @@ import { persist } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 import { createIdbStorage } from "./createIdbStorage";
 
-export type OutputColor = "COLOR" | "MONOCHROME" | "GRAYSCALE";
+export type OutputColor = "Color" | "Monochrome" | "Grayscale";
 
 export interface TimeAndIdentifierType {
   id: string;
@@ -96,7 +96,7 @@ export const useDraftStore = create<DraftStore>()(
             updatedAt: now,
             document,
             copyCount: 1,
-            outputColor: "MONOCHROME",
+            outputColor: "Monochrome",
           } satisfies DraftJob;
         });
 
