@@ -542,13 +542,13 @@ export default function CheckoutPage() {
                           mode="ios"
                           className="w-full"
                         >
-                          <IonSegmentButton value="MONOCHROME">
+                          <IonSegmentButton value="Monochrome">
                             <IonLabel className="flex items-center gap-1">
                               <IonIcon icon={contrastOutline} size="small" />
                               B&W
                             </IonLabel>
                           </IonSegmentButton>
-                          <IonSegmentButton value="COLOR">
+                          <IonSegmentButton value="Color">
                             <IonLabel className="flex items-center gap-1">
                               <IonIcon
                                 icon={colorPaletteOutline}
