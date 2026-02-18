@@ -82,7 +82,7 @@ const YourPrintsPage: React.FC = () => {
       case "COMPLETED":
         return {
           color: "success",
-          label: "Completed",
+          label: "Printed",
         };
       case "ERROR":
         return { color: "danger", label: "Failed" };
