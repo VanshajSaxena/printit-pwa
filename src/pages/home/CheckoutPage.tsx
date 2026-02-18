@@ -148,7 +148,9 @@ export default function CheckoutPage() {
     }
 
     setIsSubmitting(true);
-    await presentLoading({ message: "Retrieving files..." });
+    await presentLoading({
+      message: "Please wait while we talk to the printer...",
+    });
 
     try {
       const jobs = currentDraftTransaction.jobs;
@@ -177,9 +179,6 @@ export default function CheckoutPage() {
         throw new Error("Mismatch between jobs and retrieved files.");
       }
 
-      await dismissLoading();
-      await presentLoading({ message: "Registering documents..." });
-
       const draftDocuments = jobs.map(({ document }) => ({
         filename: document.filename,
         contentType: document.contentType,
@@ -193,9 +192,6 @@ export default function CheckoutPage() {
       const { signedUrls } = await filesMutation.mutateAsync({
         body: { ids: documents.map((document) => document.id) },
       });
-
-      await dismissLoading();
-      await presentLoading({ message: "Uploading files..." });
 
       try {
         await Promise.all(
@@ -250,9 +246,6 @@ export default function CheckoutPage() {
         throw new Error("Failed to upload documents");
       }
 
-      await dismissLoading();
-      await presentLoading({ message: "Creating print job..." });
-
       const finalJobs = jobs.map((job) => {
         const documentId = documents.find(
           (document) => job.document.id === document.draftId,
@@ -277,7 +270,6 @@ export default function CheckoutPage() {
       clearCurrentDraftTransactionId();
 
       await dismissLoading();
-
       await presentToast({
         message: "Print job submitted successfully!",
         duration: 3000,
@@ -288,7 +280,7 @@ export default function CheckoutPage() {
       console.error("Transaction creation failed:", error);
       await dismissLoading();
       await presentToast({
-        message: "Failed to create transaction. Please try again.",
+        message: "Failed to print your files. Please try again.",
         duration: 3000,
         color: "danger",
       });

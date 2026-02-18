@@ -127,7 +127,7 @@ const YourPrintsPage: React.FC = () => {
             {drafts.length > 0 && (
               <IonList className="bg-transparent!">
                 <IonListHeader>
-                  <IonLabel className="text-sm font-bold tracking-wide text-gray-500 uppercase">
+                  <IonLabel className="text-sm font-bold tracking-wide uppercase">
                     Drafts
                   </IonLabel>
                 </IonListHeader>
@@ -182,7 +182,7 @@ const YourPrintsPage: React.FC = () => {
             {pastPrints.length > 0 && (
               <IonList className="bg-transparent!">
                 <IonListHeader>
-                  <IonLabel className="text-sm font-bold tracking-wide text-gray-500 uppercase">
+                  <IonLabel className="text-sm font-bold tracking-wide uppercase">
                     Past Prints
                   </IonLabel>
                 </IonListHeader>
