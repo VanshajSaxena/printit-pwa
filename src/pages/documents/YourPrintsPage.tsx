@@ -17,15 +17,12 @@ import {
 } from "@ionic/react";
 import AppContent from "@layout/AppContent";
 import { useDraftStore } from "@store/draftStore";
-import { useTransactionStore } from "@store/transactionStore";
-import { useVendorStore } from "@store/vendorStore";
 import {
-  alertCircleOutline,
-  checkmarkCircleOutline,
-  documentTextOutline,
-  hourglassOutline,
-  printOutline,
-} from "ionicons/icons";
+  TransactionStatus,
+  useTransactionStore,
+} from "@store/transactionStore";
+import { useVendorStore } from "@store/vendorStore";
+import { documentTextOutline, printOutline } from "ionicons/icons";
 import React, { useMemo } from "react";
 
 const YourPrintsPage: React.FC = () => {
@@ -80,20 +77,19 @@ const YourPrintsPage: React.FC = () => {
     });
   };
 
-  const getStatusConfig = (status: string) => {
+  const getStatusConfig = (status: TransactionStatus) => {
     switch (status) {
       case "COMPLETED":
         return {
-          icon: checkmarkCircleOutline,
           color: "success",
           label: "Completed",
         };
       case "ERROR":
-        return { icon: alertCircleOutline, color: "danger", label: "Failed" };
+        return { color: "danger", label: "Failed" };
       case "PRINTING":
-        return { icon: printOutline, color: "secondary", label: "Printing" };
+        return { color: "secondary", label: "Printing" };
       default:
-        return { icon: hourglassOutline, color: "warning", label: "Queued" };
+        return { color: "warning", label: "Queued" };
     }
   };
 
@@ -128,7 +124,6 @@ const YourPrintsPage: React.FC = () => {
           </div>
         ) : (
           <div className="pb-12">
-            {/* SECTION 1: DRAFTS */}
             {drafts.length > 0 && (
               <IonList className="bg-transparent!">
                 <IonListHeader>
@@ -184,7 +179,6 @@ const YourPrintsPage: React.FC = () => {
               </IonList>
             )}
 
-            {/* SECTION 2: PAST PRINTS */}
             {pastPrints.length > 0 && (
               <IonList className="bg-transparent!">
                 <IonListHeader>
@@ -213,11 +207,6 @@ const YourPrintsPage: React.FC = () => {
                         <div className="flex justify-between">
                           <div>
                             <div className="flex items-center gap-1.5">
-                              <IonIcon
-                                icon={statusConfig.icon}
-                                color={statusConfig.color}
-                                className="text-sm"
-                              />
                               <IonCardSubtitle
                                 className="text-xs font-bold tracking-wider uppercase"
                                 color={statusConfig.color}

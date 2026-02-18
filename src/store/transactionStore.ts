@@ -5,6 +5,13 @@ import { immer } from "zustand/middleware/immer";
 import { createIdbStorage } from "./createIdbStorage";
 import { OutputColor } from "./draftStore";
 
+export type TransactionStatus =
+  | "PENDING"
+  | "QUEUED"
+  | "PRINTING"
+  | "COMPLETED"
+  | "ERROR";
+
 export interface TransactionDocument {
   id: number;
   createdAt: string;
@@ -29,7 +36,7 @@ export interface Transaction {
   updatedAt: string;
   vendorId: number;
   friendlyId: string;
-  status: "PENDING" | "QUEUED" | "PRINTING" | "COMPLETED" | "ERROR";
+  status: TransactionStatus;
   jobs: TransactionJob[];
 }
 
