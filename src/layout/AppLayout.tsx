@@ -3,7 +3,7 @@ import { IonReactRouter } from "@ionic/react-router";
 import { ChangePrintSettingsPage } from "@pages/home/ChangePrintSettingsPage";
 import CheckoutPage from "@pages/home/CheckoutPage";
 import HomePage from "@pages/home/HomePage";
-import { RequireCurrentTransaction } from "@pages/home/RequireCurrentTransaction";
+import { RequireCurrentDraftTransaction } from "@pages/home/RequireCurrentDraftTransaction";
 import SelectedVendorPage from "@pages/home/SelectedVendorPage";
 import NotFoundPage from "@pages/NotFoundPage";
 import PrintersPage from "@pages/printers/PrintersPage";
@@ -16,6 +16,8 @@ import AppearancePage from "@pages/settings/AppearancePage";
 import AppearanceModePage from "@pages/settings/AppearanceModePage";
 import YourPrintsPage from "@pages/documents/YourPrintsPage";
 import { RequireVendorAndTransactionStore } from "@pages/home/RequireVendorAndTransactionStore";
+import { RequireCurrentTransaction } from "@pages/home/RequireCurrentTransaction";
+import { SummaryPage } from "@pages/home/SummaryPage";
 
 export default function Applayout() {
   return (
@@ -38,13 +40,18 @@ export default function Applayout() {
                 <Redirect to="/home" />
               </Route>
               <Route exact path="/home/checkout">
-                <RequireCurrentTransaction>
+                <RequireCurrentDraftTransaction>
                   <CheckoutPage />
-                </RequireCurrentTransaction>
+                </RequireCurrentDraftTransaction>
               </Route>
               <Route exact path="/home/checkout/print-settings">
-                <RequireCurrentTransaction>
+                <RequireCurrentDraftTransaction>
                   <ChangePrintSettingsPage />
+                </RequireCurrentDraftTransaction>
+              </Route>
+              <Route exact path="/home/summary">
+                <RequireCurrentTransaction>
+                  <SummaryPage />
                 </RequireCurrentTransaction>
               </Route>
               <Route exact path="/prints">
@@ -53,9 +60,9 @@ export default function Applayout() {
                 </RequireVendorAndTransactionStore>
               </Route>
               <Route exact path="/prints/checkout">
-                <RequireCurrentTransaction>
+                <RequireCurrentDraftTransaction>
                   <CheckoutPage />
-                </RequireCurrentTransaction>
+                </RequireCurrentDraftTransaction>
               </Route>
               <Route exact path="/printers">
                 <PrintersPage />
@@ -64,9 +71,9 @@ export default function Applayout() {
                 <SelectedVendorPage />
               </Route>
               <Route exact path="/printers/checkout">
-                <RequireCurrentTransaction>
+                <RequireCurrentDraftTransaction>
                   <CheckoutPage />
-                </RequireCurrentTransaction>
+                </RequireCurrentDraftTransaction>
               </Route>
               <Route exact path="/settings">
                 <SettingsPage />

@@ -1,21 +1,21 @@
+import { useTransactionStore } from "@store/transactionStore";
 import { Redirect } from "react-router";
-import { useDraftStore } from "../../store/draftStore";
 
 export function RequireCurrentTransaction({
   children,
 }: {
   children: React.JSX.Element;
 }) {
-  const currentDraftTransactionId = useDraftStore(
-    (store) => store.state.currentDraftTransactionId,
+  const currentTransactionId = useTransactionStore(
+    (store) => store.state.currentTransactionId,
   );
-  const hydrated = useDraftStore((store) => store.hydrated);
+  const hydrated = useTransactionStore((store) => store.hydrated);
 
   if (!hydrated) {
     return null;
   }
 
-  if (!currentDraftTransactionId) {
+  if (!currentTransactionId) {
     return <Redirect to={"/home"}></Redirect>;
   }
   return children;

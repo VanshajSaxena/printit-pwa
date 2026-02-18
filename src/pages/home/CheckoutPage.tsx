@@ -76,6 +76,9 @@ export default function CheckoutPage() {
   const createTransaction = useTransactionStore(
     (store) => store.createTransaction,
   );
+  const setCurrentTransactionId = useTransactionStore(
+    (store) => store.setCurrentTransactionId,
+  );
   const clearCurrentDraftTransactionId = useDraftStore(
     (store) => store.clearCurrentDraftTransactionId,
   );
@@ -267,7 +270,8 @@ export default function CheckoutPage() {
       });
 
       createTransaction(transactionResponse);
-      clearCurrentDraftTransactionId();
+      setCurrentTransactionId(transactionResponse.id);
+      router.push("/home/summary", "forward", "push");
 
       await dismissLoading();
       await presentToast({
@@ -285,6 +289,7 @@ export default function CheckoutPage() {
         color: "danger",
       });
     } finally {
+      // clearCurrentDraftTransactionId();
       setIsSubmitting(false);
     }
   };
