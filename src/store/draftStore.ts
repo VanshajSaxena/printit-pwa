@@ -27,7 +27,7 @@ export interface DraftJob extends TimeAndIdentifierType {
 }
 
 export interface DraftTransaction extends TimeAndIdentifierType {
-  vendorId?: number; // CHANGED: Now stores ID only
+  vendorId?: number;
   jobs: DraftJob[];
 }
 

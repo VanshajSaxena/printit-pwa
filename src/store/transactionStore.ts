@@ -1,34 +1,45 @@
+import { CreateTransactionResponseDto } from "@api/cloud-api-types";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 import { createIdbStorage } from "./createIdbStorage";
-import { OutputColor, TimeAndIdentifierType } from "./draftStore";
-import { CreateTransactionResponseDto } from "@api/cloud-api-types";
+import { OutputColor } from "./draftStore";
 
-interface JobDocument extends Omit<TimeAndIdentifierType, "id"> {
+export interface TransactionDocument {
   id: number;
+  createdAt: string;
+  updatedAt: string;
   filename: string;
   contentType: string;
+  draftId: string;
 }
 
-interface Job extends Omit<TimeAndIdentifierType, "id"> {
-  document: JobDocument;
+export interface TransactionJob {
+  id: number;
+  createdAt: string;
+  updatedAt: string;
+  document: TransactionDocument;
   copyCount: number;
   outputColor: OutputColor;
 }
 
-interface Transaction extends Omit<TimeAndIdentifierType, "id"> {
-  jobs: Job[];
+export interface Transaction {
+  id: number;
+  createdAt: string;
+  updatedAt: string;
+  vendorId: number;
   friendlyId: string;
   status: "PENDING" | "QUEUED" | "PRINTING" | "COMPLETED" | "ERROR";
+  jobs: TransactionJob[];
 }
 
-interface TransactionState {
-  transactions: Record<number, Transaction>;
-}
+export interface TransactionStore {
+  state: {
+    transactions: Record<number, Transaction>;
+  };
+  hydrated: boolean;
+  setHydrated: () => void;
 
-interface TransactionStore {
-  state: TransactionState;
   createTransaction: (
     transactionResponse: CreateTransactionResponseDto,
   ) => void;
@@ -38,10 +49,16 @@ export const useTransactionStore = create<TransactionStore>()(
   persist(
     immer((set) => ({
       state: { transactions: {} },
+      hydrated: false,
+      setHydrated: () => {
+        set((store) => {
+          store.hydrated = true;
+        });
+      },
       createTransaction: (transactionResponse) => {
         set((store) => {
-          store.state.transactions[transactionResponse.id] ??=
-            transactionResponse;
+          store.state.transactions[transactionResponse.id] =
+            transactionResponse as Transaction;
         });
       },
     })),
@@ -49,7 +66,13 @@ export const useTransactionStore = create<TransactionStore>()(
       name: "printit-transaction-store",
       version: 1,
       storage: createIdbStorage<Pick<TransactionStore, "state">>(),
-      partialize: (store: TransactionStore) => ({ state: store.state }),
+      partialize: (store) => ({ state: store.state }),
+      onRehydrateStorage: (store) => {
+        return () => {
+          console.log("printit-transaction-store: hydrated");
+          store.setHydrated();
+        };
+      },
     },
   ),
 );

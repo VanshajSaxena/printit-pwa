@@ -1002,7 +1002,8 @@
             "items": { "$ref": "#/components/schemas/CreateJobResponseDto" }
           },
           "createdAt": { "format": "date-time", "type": "string" },
-          "updatedAt": { "format": "date-time", "type": "string" }
+          "updatedAt": { "format": "date-time", "type": "string" },
+          "vendorId": { "type": "number" }
         },
         "required": [
           "id",
@@ -1010,7 +1011,8 @@
           "friendlyId",
           "jobs",
           "createdAt",
-          "updatedAt"
+          "updatedAt",
+          "vendorId"
         ]
       },
       "FindDocumentResponseDto": {

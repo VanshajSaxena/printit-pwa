@@ -322,6 +322,7 @@ export interface components {
       status: "PENDING" | "QUEUED" | "PRINTING" | "COMPLETED" | "ERROR";
       /** Format: date-time */
       updatedAt: string;
+      vendorId: number;
     };
     CreateVendorDto: {
       address?: string;

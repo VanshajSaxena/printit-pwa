@@ -8,6 +8,7 @@ import {
   IonIcon,
   IonLabel,
   IonList,
+  IonListHeader,
   IonNote,
   IonPage,
   IonTitle,
@@ -16,30 +17,86 @@ import {
 } from "@ionic/react";
 import AppContent from "@layout/AppContent";
 import { useDraftStore } from "@store/draftStore";
+import { useTransactionStore } from "@store/transactionStore";
 import { useVendorStore } from "@store/vendorStore";
-import { documentTextOutline, printOutline } from "ionicons/icons";
+import {
+  alertCircleOutline,
+  checkmarkCircleOutline,
+  documentTextOutline,
+  hourglassOutline,
+  printOutline,
+} from "ionicons/icons";
 import React, { useMemo } from "react";
 
 const YourPrintsPage: React.FC = () => {
   const router = useIonRouter();
 
-  const transactionsMap = useDraftStore((state) => state.state.transactions);
+  const draftTransactionsMap = useDraftStore(
+    (state) => state.state.transactions,
+  );
   const setCurrentDraftTransactionId = useDraftStore(
     (state) => state.setCurrentDraftTransactionId,
+  );
+
+  const completedTransactionsMap = useTransactionStore(
+    (state) => state.state.transactions,
   );
 
   const vendorsMap = useVendorStore((state) => state.vendors);
 
   const drafts = useMemo(() => {
-    return Object.values(transactionsMap).sort(
+    return Object.values(draftTransactionsMap).sort(
       (a, b) =>
         new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
     );
-  }, [transactionsMap]);
+  }, [draftTransactionsMap]);
+
+  const pastPrints = useMemo(() => {
+    return Object.values(completedTransactionsMap).sort(
+      (a, b) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+    );
+  }, [completedTransactionsMap]);
+
+  const hasAnyActivity = drafts.length > 0 || pastPrints.length > 0;
 
   const handleResumeDraft = (id: string) => {
     setCurrentDraftTransactionId(id);
-    router.push("/prints/checkout");
+    router.push("/home/checkout");
+  };
+
+  const getVendorName = (vendorId?: number) => {
+    if (!vendorId) return "Unknown Printer";
+    const vendor = vendorsMap[vendorId];
+    return vendor.displayName === null
+      ? `${vendor.firstName} ${vendor.lastName}`
+      : "Unknown Printer";
+  };
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString(undefined, {
+      month: "short",
+      day: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+    });
+  };
+
+  const getStatusConfig = (status: string) => {
+    switch (status) {
+      case "COMPLETED":
+        return {
+          icon: checkmarkCircleOutline,
+          color: "success",
+          label: "Completed",
+        };
+      case "ERROR":
+        return { icon: alertCircleOutline, color: "danger", label: "Failed" };
+      case "PRINTING":
+        return { icon: printOutline, color: "secondary", label: "Printing" };
+      default:
+        return { icon: hourglassOutline, color: "warning", label: "Queued" };
+    }
   };
 
   return (
@@ -51,12 +108,13 @@ const YourPrintsPage: React.FC = () => {
       </IonHeader>
 
       <AppContent fullscreen>
-        <IonHeader translucent collapse="condense">
+        <IonHeader collapse="condense">
           <IonToolbar>
             <IonTitle size="large">Your Prints</IonTitle>
           </IonToolbar>
         </IonHeader>
-        {drafts.length === 0 ? (
+
+        {!hasAnyActivity ? (
           <div className="flex h-[80vh] flex-col items-center justify-center text-center">
             <div className="rounded-full">
               <IonIcon
@@ -67,72 +125,135 @@ const YourPrintsPage: React.FC = () => {
             </div>
             <h2 className="text-xl font-semibold">No prints yet</h2>
             <IonNote className="max-w-xs text-sm">
-              Your prints will appear here.
+              Your drafts and past prints will appear here.
             </IonNote>
           </div>
         ) : (
-          <IonList className="flex flex-col bg-transparent!">
-            {drafts.map((draft) => {
-              const vendor = draft.vendorId
-                ? vendorsMap[draft.vendorId]
-                : undefined;
+          <div className="pb-12">
+            {/* SECTION 1: DRAFTS */}
+            {drafts.length > 0 && (
+              <IonList className="bg-transparent!">
+                <IonListHeader>
+                  <IonLabel className="text-sm font-bold tracking-wide text-gray-500 uppercase">
+                    Drafts
+                  </IonLabel>
+                </IonListHeader>
 
-              const vendorName = vendor
-                ? (vendor.displayName ??
-                  `${vendor.firstName} ${vendor.lastName}`)
-                : "Unknown Printer";
+                {drafts.map((draft) => {
+                  const vendorName = getVendorName(draft.vendorId);
+                  const fileCount = draft.jobs.length;
+                  const fileLabel =
+                    fileCount === 1
+                      ? "1 Document"
+                      : `${fileCount.toString()} Documents`;
 
-              const dateLabel = new Date(draft.updatedAt).toLocaleDateString(
-                undefined,
-                {
-                  month: "short",
-                  day: "numeric",
-                  hour: "numeric",
-                  minute: "numeric",
-                },
-              );
+                  return (
+                    <IonCard
+                      key={draft.id}
+                      className="mx-4 my-2 mb-4 border-none! shadow-sm"
+                      button
+                      onClick={() => {
+                        handleResumeDraft(draft.id);
+                      }}
+                    >
+                      <IonCardHeader className="pb-2">
+                        <div className="flex justify-between">
+                          <div>
+                            <IonCardSubtitle
+                              className="text-xs font-bold tracking-wider uppercase"
+                              color="primary"
+                            >
+                              Draft
+                            </IonCardSubtitle>
+                            <IonCardTitle className="mt-1 text-base font-bold">
+                              {vendorName}
+                            </IonCardTitle>
+                          </div>
+                          <IonNote className="text-xs">
+                            {formatDate(draft.updatedAt)}
+                          </IonNote>
+                        </div>
+                      </IonCardHeader>
+                      <IonCardContent>
+                        <div className="flex items-center gap-2">
+                          <IonIcon icon={documentTextOutline} />
+                          <IonLabel>{fileLabel}</IonLabel>
+                        </div>
+                      </IonCardContent>
+                    </IonCard>
+                  );
+                })}
+              </IonList>
+            )}
 
-              const fileCount = draft.jobs.length;
-              const fileLabel =
-                fileCount === 1
-                  ? "1 Document"
-                  : `${fileCount.toString()} Documents`;
+            {/* SECTION 2: PAST PRINTS */}
+            {pastPrints.length > 0 && (
+              <IonList className="bg-transparent!">
+                <IonListHeader>
+                  <IonLabel className="text-sm font-bold tracking-wide text-gray-500 uppercase">
+                    Past Prints
+                  </IonLabel>
+                </IonListHeader>
 
-              return (
-                <IonCard
-                  key={draft.id}
-                  className="mx-4 my-4 border-none!"
-                  button
-                  onClick={() => {
-                    handleResumeDraft(draft.id);
-                  }}
-                >
-                  <IonCardHeader className="pb-2">
-                    <div className="flex justify-between">
-                      <div>
-                        <IonCardSubtitle
-                          className="text-xs font-semibold tracking-wider uppercase"
-                          color={"primary"}
-                        >
-                          Draft
-                        </IonCardSubtitle>
-                        <IonCardTitle className="mt-1 text-base font-bold">
-                          {vendorName}
-                        </IonCardTitle>
-                      </div>
-                      <IonNote className="text-xs">{dateLabel}</IonNote>
-                    </div>
-                  </IonCardHeader>
-                  <IonCardContent>
-                    <div className="flex items-center gap-2">
-                      <IonIcon icon={documentTextOutline} />
-                      <IonLabel>{fileLabel}</IonLabel>
-                    </div>
-                  </IonCardContent>
-                </IonCard>
-              );
-            })}
-          </IonList>
+                {pastPrints.map((print) => {
+                  const vendorName = getVendorName(print.vendorId);
+                  const fileCount = print.jobs.length;
+                  const fileLabel =
+                    fileCount === 1
+                      ? "1 Document"
+                      : `${fileCount.toString()} Documents`;
+
+                  const statusConfig = getStatusConfig(print.status);
+
+                  return (
+                    <IonCard
+                      key={print.id}
+                      className="mx-4 my-2 mb-4 border-none! shadow-sm"
+                      button
+                    >
+                      <IonCardHeader className="pb-2">
+                        <div className="flex justify-between">
+                          <div>
+                            <div className="flex items-center gap-1.5">
+                              <IonIcon
+                                icon={statusConfig.icon}
+                                color={statusConfig.color}
+                                className="text-sm"
+                              />
+                              <IonCardSubtitle
+                                className="text-xs font-bold tracking-wider uppercase"
+                                color={statusConfig.color}
+                              >
+                                {statusConfig.label}
+                              </IonCardSubtitle>
+                            </div>
+
+                            <IonCardTitle className="mt-1 text-base font-bold">
+                              {vendorName}
+                            </IonCardTitle>
+                          </div>
+                          <IonNote className="text-xs">
+                            {formatDate(print.createdAt)}
+                          </IonNote>
+                        </div>
+                      </IonCardHeader>
+                      <IonCardContent>
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <IonIcon icon={documentTextOutline} />
+                            <IonLabel>{fileLabel}</IonLabel>
+                          </div>
+                          <IonNote className="font-mono text-xs">
+                            #{print.friendlyId.substring(0, 8)}
+                          </IonNote>
+                        </div>
+                      </IonCardContent>
+                    </IonCard>
+                  );
+                })}
+              </IonList>
+            )}
+          </div>
         )}
       </AppContent>
     </IonPage>
