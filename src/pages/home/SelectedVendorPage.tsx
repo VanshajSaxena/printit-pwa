@@ -97,7 +97,6 @@ export default function SelectedVendorPage() {
         address,
         location,
       } = vendorData;
-
       upsertVendor({
         id,
         firstName,

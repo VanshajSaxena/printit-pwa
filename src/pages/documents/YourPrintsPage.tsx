@@ -68,9 +68,7 @@ const YourPrintsPage: React.FC = () => {
   const getVendorName = (vendorId?: number) => {
     if (!vendorId) return "Unknown Printer";
     const vendor = vendorsMap[vendorId];
-    return vendor.displayName === null
-      ? `${vendor.firstName} ${vendor.lastName}`
-      : "Unknown Printer";
+    return vendor.displayName ?? `${vendor.firstName} ${vendor.lastName}`;
   };
 
   const formatDate = (dateString: string) => {

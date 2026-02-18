@@ -15,6 +15,7 @@ import AppTabBar from "./AppTabBar";
 import AppearancePage from "@pages/settings/AppearancePage";
 import AppearanceModePage from "@pages/settings/AppearanceModePage";
 import YourPrintsPage from "@pages/documents/YourPrintsPage";
+import { RequireVendorAndTransactionStore } from "@pages/home/RequireVendorAndTransactionStore";
 
 export default function Applayout() {
   return (
@@ -47,7 +48,9 @@ export default function Applayout() {
                 </RequireCurrentTransaction>
               </Route>
               <Route exact path="/prints">
-                <YourPrintsPage />
+                <RequireVendorAndTransactionStore>
+                  <YourPrintsPage />
+                </RequireVendorAndTransactionStore>
               </Route>
               <Route exact path="/prints/checkout">
                 <RequireCurrentTransaction>
