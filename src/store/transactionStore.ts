@@ -40,22 +40,29 @@ export interface Transaction {
   jobs: TransactionJob[];
 }
 
-export interface TransactionStore {
-  state: {
-    transactions: Record<number, Transaction>;
-  };
+interface TransactionState {
+  transactions: Record<number, Transaction>;
+  currentTransactionId: number | null;
+}
+
+interface TransactionStore {
+  state: TransactionState;
   hydrated: boolean;
   setHydrated: () => void;
 
   createTransaction: (
     transactionResponse: CreateTransactionResponseDto,
   ) => void;
+  setCurrentTransactionId: (id: number | null) => void;
 }
 
 export const useTransactionStore = create<TransactionStore>()(
   persist(
     immer((set) => ({
-      state: { transactions: {} },
+      state: {
+        transactions: {},
+        currentTransactionId: null,
+      },
       hydrated: false,
       setHydrated: () => {
         set((store) => {
@@ -68,12 +75,17 @@ export const useTransactionStore = create<TransactionStore>()(
             transactionResponse as Transaction;
         });
       },
+      setCurrentTransactionId: (id) => {
+        set((store) => {
+          store.state.currentTransactionId = id;
+        });
+      },
     })),
     {
       name: "printit-transaction-store",
       version: 1,
       storage: createIdbStorage<Pick<TransactionStore, "state">>(),
-      partialize: (store) => ({ state: store.state }),
+      partialize: (store: TransactionStore) => ({ state: store.state }),
       onRehydrateStorage: (store) => {
         return () => {
           console.log("printit-transaction-store: hydrated");
