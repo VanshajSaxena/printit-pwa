@@ -1,8 +1,6 @@
 import {
-  IonButton,
   IonCard,
   IonCardContent,
-  IonFooter,
   IonHeader,
   IonIcon,
   IonItem,
@@ -12,7 +10,6 @@ import {
   IonPage,
   IonTitle,
   IonToolbar,
-  useIonRouter,
   useIonToast,
 } from "@ionic/react";
 import AppContent from "@layout/AppContent";
@@ -22,12 +19,10 @@ import {
   checkmarkCircle,
   copyOutline,
   documentTextOutline,
-  homeOutline,
   printOutline,
 } from "ionicons/icons";
 
 export function SummaryPage() {
-  const router = useIonRouter();
   const [presentToast] = useIonToast();
 
   const currentTransactionId = useTransactionStore(
@@ -64,7 +59,6 @@ export function SummaryPage() {
     { status: "COMPLETED", label: "Completed", desc: "Ready for pickup" },
   ];
 
-  // Helper to determine step state
   const getStepState = (stepStatus: string) => {
     const statusOrder = ["PENDING", "QUEUED", "PRINTING", "COMPLETED"];
     const currentIndex = statusOrder.indexOf(transaction.status);
@@ -87,7 +81,7 @@ export function SummaryPage() {
         </IonToolbar>
       </IonHeader>
 
-      <AppContent fullscreen className="bg-gray-50">
+      <AppContent fullscreen>
         <div className="flex flex-col gap-6 p-4">
           {/* Header Card */}
           <div className="mt-4 text-center">
@@ -109,10 +103,10 @@ export function SummaryPage() {
                   Order ID
                 </IonNote>
                 <div
-                  className="flex cursor-pointer items-center gap-3 rounded-lg bg-gray-50 px-4 py-2 transition-transform active:scale-95"
+                  className="flex cursor-pointer items-center gap-3 rounded-lg px-4 py-2 transition-transform active:scale-95"
                   onClick={() => void copyToClipboard()}
                 >
-                  <span className="font-mono text-2xl font-bold tracking-widest text-gray-800">
+                  <span className="font-mono text-2xl font-bold tracking-widest">
                     {transaction.friendlyId.substring(0, 8)}
                   </span>
                   <IonIcon icon={copyOutline} className="text-gray-400" />
@@ -205,20 +199,6 @@ export function SummaryPage() {
           </div>
         </div>
       </AppContent>
-
-      <IonFooter className="ion-no-border bg-white p-4">
-        <IonButton
-          expand="block"
-          fill="outline"
-          color="primary"
-          onClick={() => {
-            router.push("/home", "root", "replace");
-          }}
-        >
-          <IonIcon icon={homeOutline} slot="start" />
-          Back to Home
-        </IonButton>
-      </IonFooter>
     </IonPage>
   );
 }

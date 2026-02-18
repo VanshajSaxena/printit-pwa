@@ -39,6 +39,10 @@ const YourPrintsPage: React.FC = () => {
     (state) => state.state.transactions,
   );
 
+  const setCurrentTransactionId = useTransactionStore(
+    (state) => state.setCurrentTransactionId,
+  );
+
   const vendorsMap = useVendorStore((state) => state.vendors);
 
   const drafts = useMemo(() => {
@@ -60,6 +64,11 @@ const YourPrintsPage: React.FC = () => {
   const handleResumeDraft = (id: string) => {
     setCurrentDraftTransactionId(id);
     router.push("/home/checkout");
+  };
+
+  const handleViewPrint = (id: number) => {
+    setCurrentTransactionId(id);
+    router.push("/prints/summary");
   };
 
   const getVendorName = (vendorId?: number) => {
@@ -202,6 +211,9 @@ const YourPrintsPage: React.FC = () => {
                       key={print.id}
                       className="mx-4 my-2 mb-4 border-none! shadow-sm"
                       button
+                      onClick={() => {
+                        handleViewPrint(print.id);
+                      }}
                     >
                       <IonCardHeader className="pb-2">
                         <div className="flex justify-between">
