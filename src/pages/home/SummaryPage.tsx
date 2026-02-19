@@ -1,4 +1,6 @@
 import {
+  IonBackButton,
+  IonButtons,
   IonCard,
   IonCardContent,
   IonHeader,
@@ -10,12 +12,14 @@ import {
   IonPage,
   IonTitle,
   IonToolbar,
+  useIonRouter,
   useIonToast,
 } from "@ionic/react";
 import AppContent from "@layout/AppContent";
 import { useTransactionStore } from "@store/transactionStore";
 import { useVendorStore } from "@store/vendorStore";
 import {
+  arrowBack,
   checkmarkCircle,
   copyOutline,
   documentTextOutline,
@@ -24,6 +28,7 @@ import {
 
 export function SummaryPage() {
   const [presentToast] = useIonToast();
+  const router = useIonRouter();
 
   const currentTransactionId = useTransactionStore(
     (state) => state.state.currentTransactionId,
@@ -77,30 +82,35 @@ export function SummaryPage() {
     <IonPage>
       <IonHeader translucent>
         <IonToolbar>
-          <IonTitle>Your Print</IonTitle>
+          <IonButtons slot="start">
+            <IonBackButton defaultHref={`/${router.routeInfo.tab ?? "home"}`}>
+              <IonIcon slot="start" icon={arrowBack} />
+            </IonBackButton>
+          </IonButtons>
+          <IonTitle>Progress</IonTitle>
         </IonToolbar>
       </IonHeader>
 
       <AppContent fullscreen>
-        <div className="flex flex-col gap-6 p-4">
-          {/* Header Card */}
+        <div className="flex flex-col gap-3 p-4">
           <div className="mt-4 text-center">
-            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100 text-green-600">
-              <IonIcon icon={printOutline} className="text-3xl" />
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full">
+              <IonIcon icon={printOutline} className="text-5xl" />
             </div>
-            <h1 className="text-2xl font-bold text-gray-900">Order Received</h1>
-            <p className="text-sm text-gray-500">
+            <h1 className="text-2xl font-bold">Order Received</h1>
+            <IonNote className="text-sm">
               Sent to{" "}
-              <span className="font-semibold text-gray-700">{vendorName}</span>
-            </p>
+              <span className="font-semibold" color={"light"}>
+                {vendorName}
+              </span>
+            </IonNote>
           </div>
 
-          {/* Friendly ID Card */}
-          <IonCard className="mx-0 border border-gray-100 shadow-sm">
+          <IonCard className="mx-0 border shadow-sm">
             <IonCardContent className="p-4">
-              <div className="flex flex-col items-center gap-2">
+              <div className="flex flex-col items-center gap-1">
                 <IonNote className="text-xs font-semibold tracking-wider uppercase">
-                  Order ID
+                  Printit ID
                 </IonNote>
                 <div
                   className="flex cursor-pointer items-center gap-3 rounded-lg px-4 py-2 transition-transform active:scale-95"
@@ -109,20 +119,19 @@ export function SummaryPage() {
                   <span className="font-mono text-2xl font-bold tracking-widest">
                     {transaction.friendlyId.substring(0, 8)}
                   </span>
-                  <IonIcon icon={copyOutline} className="text-gray-400" />
+                  <IonIcon icon={copyOutline} />
                 </div>
-                <IonNote className="text-[10px] text-gray-400">
+                <IonNote className="text-xs">
                   Tap to copy • Share this with the vendor
                 </IonNote>
               </div>
             </IonCardContent>
           </IonCard>
 
-          {/* Status Timeline */}
           <div className="px-4 py-2">
-            <h3 className="mb-6 text-sm font-bold tracking-wider text-gray-500 uppercase">
+            <h5 className="mb-6 text-sm font-bold tracking-wider uppercase">
               Status Timeline
-            </h3>
+            </h5>
             <div className="relative ml-3 space-y-8 border-l-2 border-gray-200 pb-2">
               {steps.map((step, index) => {
                 const state = getStepState(step.status);
@@ -167,31 +176,24 @@ export function SummaryPage() {
             </div>
           </div>
 
-          {/* Documents Summary */}
           <div>
-            <h3 className="mb-2 px-4 text-sm font-bold tracking-wider text-gray-500 uppercase">
+            <h5 className="mb-2 px-4 text-sm font-bold tracking-wider uppercase">
               Documents
-            </h3>
+            </h5>
             <IonList className="rounded-xl bg-transparent p-0">
               {transaction.jobs.map((job) => (
-                <IonItem
-                  key={job.id}
-                  lines="none"
-                  className="mb-2 rounded-xl border border-gray-100"
-                >
+                <IonItem key={job.id} lines="none">
                   <IonIcon
                     icon={documentTextOutline}
                     slot="start"
                     color="medium"
                   />
                   <IonLabel>
-                    <h3 className="font-semibold text-gray-800">
-                      {job.document.filename}
-                    </h3>
-                    <p className="text-xs text-gray-500">
+                    <IonLabel>{job.document.filename}</IonLabel>
+                    <IonNote className="text-xs">
                       {job.copyCount} {job.copyCount > 1 ? "copies" : "copy"} •{" "}
                       {job.outputColor}
-                    </p>
+                    </IonNote>
                   </IonLabel>
                 </IonItem>
               ))}
