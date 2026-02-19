@@ -12,6 +12,7 @@ import {
   IonIcon,
   IonList,
   IonLoading,
+  IonNote,
   IonPage,
   IonSearchbar,
   IonText,
@@ -58,6 +59,7 @@ const PrintersPage: React.FC = () => {
     setIsLocating(true);
     navigator.geolocation.getCurrentPosition(
       (position) => {
+        setIsErrorGettingLocation(false);
         setIsLocating(false);
         setCoordinates({
           lat: position.coords.latitude,
@@ -125,9 +127,9 @@ const PrintersPage: React.FC = () => {
 
         {isError && (
           <div className="ion-padding ion-text-center">
-            <IonText color="danger">
+            <IonNote>
               <p>Failed to load nearby printers.</p>
-            </IonText>
+            </IonNote>
           </div>
         )}
 
