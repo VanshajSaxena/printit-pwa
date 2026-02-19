@@ -51,6 +51,8 @@ export function SummaryPage() {
       duration: 2000,
       color: "success",
       icon: checkmarkCircle,
+      translucent: true,
+      positionAnchor: "header",
       position: "top",
     });
   };
@@ -78,7 +80,7 @@ export function SummaryPage() {
 
   return (
     <IonPage>
-      <IonHeader translucent>
+      <IonHeader id="header" translucent>
         <IonToolbar>
           <IonButtons slot="start">
             <IonBackButton defaultHref="/prints" text={"Your Prints"}>
@@ -135,7 +137,6 @@ export function SummaryPage() {
 
               return (
                 <div key={step.status} className="relative pl-8">
-                  {/* Dot Indicator */}
                   <div
                     className={`absolute top-0 -left-[9px] flex h-4 w-4 items-center justify-center rounded-full border-2 bg-white transition-colors duration-300 ${
                       state === "completed"
@@ -175,7 +176,7 @@ export function SummaryPage() {
           <h5 className="mb-2 px-4 text-sm font-bold tracking-wider uppercase">
             Documents
           </h5>
-          <IonList className="rounded-xl bg-transparent p-0">
+          <IonList inset className="rounded-xl bg-transparent p-0">
             {transaction.jobs.map((job) => (
               <IonItem key={job.id}>
                 <IonIcon
