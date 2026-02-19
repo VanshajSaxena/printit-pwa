@@ -83,11 +83,11 @@ export function SummaryPage() {
       <IonHeader translucent>
         <IonToolbar>
           <IonButtons slot="start">
-            <IonBackButton defaultHref={`/${router.routeInfo.tab ?? "home"}`}>
+            <IonBackButton defaultHref="/prints" text={"Your Prints"}>
               <IonIcon slot="start" icon={arrowBack} />
             </IonBackButton>
           </IonButtons>
-          <IonTitle>Progress</IonTitle>
+          <IonTitle>Status</IonTitle>
         </IonToolbar>
       </IonHeader>
 
