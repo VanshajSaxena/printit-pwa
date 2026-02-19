@@ -19,6 +19,11 @@ http://ionicframework.com/docs/theming/ */
   --background: #1c1c1d; /* Standard iOS Dark Item Color */
 }
 
+/* iOS Dark Mode Overrides */
+:root.ion-palette-dark.ios ion-card {
+  --background: #1c1c1d;
+}
+
 /* Material Design Dark Mode Overrides (Optional, if needed) */
 :root.ion-palette-dark.md ion-item {
   --background: #1e1e1e;
@@ -35,6 +40,11 @@ http://ionicframework.com/docs/theming/ */
 
 /* iOS Light Mode Overrides */
 :root.ios ion-item {
+  --background: #ffffff;
+}
+
+/* iOS Light Mode Overrides */
+:root.ios ion-card {
   --background: #ffffff;
 }
 
