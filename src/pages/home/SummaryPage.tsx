@@ -162,88 +162,81 @@ export function SummaryPage() {
           </IonCardContent>
         </IonCard>
 
-        <div className="px-4 py-2">
-          <h5 className="mb-6 text-sm font-bold tracking-wider uppercase">
-            Status Timeline
-          </h5>
+        <div className="px-5 pt-2 pb-6">
           <div
-            className="relative ml-3 space-y-8 pb-2"
             style={{
-              borderLeft: "2px solid var(--ion-color-medium)",
+              fontSize: "13px",
+              fontWeight: 600,
+              letterSpacing: "0.2px",
+              color: "var(--ion-color-medium)",
+              marginBottom: "18px",
             }}
           >
-            {steps.map((step) => {
+            Status
+          </div>
+
+          <div
+            style={{
+              position: "relative",
+              marginLeft: "14px",
+              paddingBottom: "4px",
+              borderLeft: "1.5px solid var(--ion-color-step-200)",
+            }}
+          >
+            {steps.map((step, index) => {
               const state = getStepState(step.status);
 
-              return (
-                <div key={step.status} className="relative pl-8">
-                  <IonLabel
-                    color={
-                      state === "completed"
-                        ? "success"
-                        : state === "current"
-                          ? "primary"
-                          : "dark"
-                    }
-                    className="absolute top-0 -left-[9px] flex h-4 w-4 items-center justify-center rounded-full border-2 transition-colors duration-300"
-                    style={{
-                      background:
-                        state === "completed"
-                          ? "var(--ion-color-success)"
-                          : "var(--ion-background-color)",
-                      borderColor:
-                        state === "completed"
-                          ? "var(--ion-color-success)"
-                          : state === "current"
-                            ? "var(--ion-color-primary)"
-                            : "var(--ion-color-dark)",
-                    }}
-                  >
-                    {state === "current" && (
-                      <div
-                        className="h-2 w-2 animate-pulse rounded-full"
-                        style={{
-                          background: "var(--ion-color-primary)",
-                        }}
-                      />
-                    )}
+              const isCompleted = state === "completed";
+              const isCurrent = state === "current";
+              const isUpcoming = state === "upcoming";
 
-                    {state === "completed" && (
-                      <div
-                        className="h-2 w-2 rounded-full"
-                        style={{
-                          background: "var(--ion-color-light)",
-                        }}
-                      />
-                    )}
-                  </IonLabel>
+              return (
+                <div
+                  key={step.status}
+                  style={{
+                    position: "relative",
+                    paddingLeft: "26px",
+                    marginBottom: index !== steps.length - 1 ? "26px" : "0",
+                    opacity: isUpcoming ? 0.35 : 1,
+                  }}
+                >
+                  <div
+                    style={{
+                      position: "absolute",
+                      left: "-8px",
+                      top: "2px",
+                      height: "12px",
+                      width: "12px",
+                      borderRadius: "50%",
+                      background: isCompleted
+                        ? "var(--ion-color-success)"
+                        : isCurrent
+                          ? "var(--ion-color-primary)"
+                          : "var(--ion-color-step-400)",
+                      transition: "all 0.25s ease",
+                    }}
+                  />
 
                   <div
                     style={{
-                      opacity: state === "upcoming" ? 0.4 : 1,
+                      fontSize: "16px",
+                      fontWeight: isCurrent ? 600 : 500,
+                      color: "var(--ion-color-dark)",
+                      letterSpacing: "-0.2px",
                     }}
                   >
-                    <h4
-                      className="text-base leading-none font-medium"
-                      style={{
-                        fontWeight: state === "current" ? 700 : 500,
-                        color:
-                          state === "current"
-                            ? "var(--ion-color-primary)"
-                            : "var(--ion-color-dark)",
-                      }}
-                    >
-                      {step.label}
-                    </h4>
+                    {step.label}
+                  </div>
 
-                    <p
-                      className="mt-1 text-sm"
-                      style={{
-                        color: "var(--ion-color-medium)",
-                      }}
-                    >
-                      {step.desc}
-                    </p>
+                  <div
+                    style={{
+                      marginTop: "4px",
+                      fontSize: "14px",
+                      color: "var(--ion-color-medium)",
+                      lineHeight: "1.4",
+                    }}
+                  >
+                    {step.desc}
                   </div>
                 </div>
               );
@@ -251,24 +244,71 @@ export function SummaryPage() {
           </div>
         </div>
 
-        <div>
-          <h5 className="mb-2 px-4 text-sm font-bold tracking-wider uppercase">
+        <div className="pt-2 pb-4">
+          <div
+            style={{
+              fontSize: "13px",
+              fontWeight: 600,
+              color: "var(--ion-color-medium)",
+              marginBottom: "12px",
+              paddingLeft: "20px",
+              letterSpacing: "0.2px",
+            }}
+          >
             Documents
-          </h5>
-          <IonList inset className="rounded-xl bg-transparent p-0">
+          </div>
+
+          <IonList
+            inset
+            lines="full"
+            style={{
+              borderRadius: "16px",
+              overflow: "hidden",
+              background: "var(--ion-item-background)",
+            }}
+          >
             {transaction.jobs.map((job) => (
-              <IonItem key={job.id}>
+              <IonItem
+                key={job.id}
+                detail={false}
+                style={{
+                  "--inner-padding-top": "14px",
+                  "--inner-padding-bottom": "14px",
+                }}
+              >
                 <IonIcon
                   icon={documentTextOutline}
                   slot="start"
-                  color="medium"
+                  style={{
+                    fontSize: "20px",
+                    color: "var(--ion-color-medium)",
+                  }}
                 />
+
                 <IonLabel>
-                  <IonLabel>{job.document.filename}</IonLabel>
-                  <IonNote className="text-xs">
+                  {/* Filename */}
+                  <div
+                    style={{
+                      fontSize: "16px",
+                      fontWeight: 500,
+                      color: "var(--ion-color-dark)",
+                      letterSpacing: "-0.2px",
+                    }}
+                  >
+                    {job.document.filename}
+                  </div>
+
+                  {/* Meta Info */}
+                  <div
+                    style={{
+                      marginTop: "4px",
+                      fontSize: "14px",
+                      color: "var(--ion-color-medium)",
+                    }}
+                  >
                     {job.copyCount} {job.copyCount > 1 ? "copies" : "copy"} •{" "}
                     {job.outputColor}
-                  </IonNote>
+                  </div>
                 </IonLabel>
               </IonItem>
             ))}
