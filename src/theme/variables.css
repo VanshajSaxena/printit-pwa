@@ -46,6 +46,7 @@ http://ionicframework.com/docs/theming/ */
 /* iOS Light Mode Overrides */
 :root.ios ion-card {
   --background: #ffffff;
+  border-radius: 1rem;
 }
 
 /* Android (Material Design) Light Mode Overrides */

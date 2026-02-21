@@ -260,7 +260,7 @@ export function SummaryPage() {
 
           <IonList
             inset
-            lines="full"
+            lines="inset"
             style={{
               borderRadius: "16px",
               overflow: "hidden",
@@ -286,7 +286,6 @@ export function SummaryPage() {
                 />
 
                 <IonLabel>
-                  {/* Filename */}
                   <div
                     style={{
                       fontSize: "16px",
@@ -298,7 +297,6 @@ export function SummaryPage() {
                     {job.document.filename}
                   </div>
 
-                  {/* Meta Info */}
                   <div
                     style={{
                       marginTop: "4px",
