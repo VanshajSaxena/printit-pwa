@@ -23,8 +23,8 @@ import {
   checkmarkCircle,
   copyOutline,
   documentTextOutline,
-  printOutline,
 } from "ionicons/icons";
+import { AnimatedSuccessIcon } from "./AnimatedSuccessIcon";
 
 export function SummaryPage() {
   const [presentToast] = useIonToast();
@@ -94,50 +94,41 @@ export function SummaryPage() {
 
       <AppContent fullscreen>
         <div className="mt-6 px-6 text-center">
-          <div
-            className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full"
-            style={{
-              background: "var(--ion-color-success-tint)",
-            }}
-          >
-            <IonIcon
-              icon={printOutline}
-              style={{
-                fontSize: "28px",
-                color: "var(--ion-color-success-shade)",
-              }}
-            />
+          <div className="flex max-w-full min-w-full items-center justify-start gap-4 px-4">
+            <AnimatedSuccessIcon />
+
+            <div className="flex flex-col items-center justify-start">
+              <h1
+                className="!my-auto"
+                style={{
+                  fontSize: "22px",
+                  fontWeight: 600,
+                  letterSpacing: "-0.3px",
+                  color: "var(--ion-color-dark)",
+                }}
+              >
+                Order Received
+              </h1>
+              <IonText
+                className="text-sm font-medium"
+                slot="start"
+                style={{
+                  letterSpacing: "-0.3px",
+                  color: "var(--ion-color-medium)",
+                }}
+              >
+                Sent to{" "}
+                <span
+                  className="font-medium"
+                  style={{
+                    color: "var(--ion-color-dark)",
+                  }}
+                >
+                  {vendorName}
+                </span>
+              </IonText>
+            </div>
           </div>
-
-          <h1
-            style={{
-              fontSize: "22px",
-              fontWeight: 600,
-              letterSpacing: "-0.3px",
-              color: "var(--ion-color-dark)",
-            }}
-          >
-            Order Received
-          </h1>
-
-          <IonText
-            style={{
-              display: "block",
-              marginTop: "6px",
-              fontSize: "15px",
-              color: "var(--ion-color-medium)",
-            }}
-          >
-            Sent to{" "}
-            <span
-              style={{
-                fontWeight: 500,
-                color: "var(--ion-color-dark)",
-              }}
-            >
-              {vendorName}
-            </span>
-          </IonText>
         </div>
 
         <IonCard className="m-4 border-none!">
