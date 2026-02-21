@@ -63,7 +63,7 @@ const YourPrintsPage: React.FC = () => {
 
   const handleResumeDraft = (id: string) => {
     setCurrentDraftTransactionId(id);
-    router.push("/home/checkout");
+    router.push("/prints/checkout");
   };
 
   const handleViewPrint = (id: number) => {

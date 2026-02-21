@@ -84,7 +84,7 @@ export function SummaryPage() {
       <IonHeader id="header" translucent>
         <IonToolbar>
           <IonButtons slot="start">
-            <IonBackButton defaultHref="/prints" text={"Your Prints"}>
+            <IonBackButton defaultHref="/prints">
               <IonIcon slot="start" icon={arrowBack} />
             </IonBackButton>
           </IonButtons>
