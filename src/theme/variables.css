@@ -29,6 +29,10 @@ http://ionicframework.com/docs/theming/ */
   --background: #1e1e1e;
 }
 
+:root.ion-palette-dark.md ion-card {
+  --background: #1e1e1e;
+}
+
 /* =========================================
    LIGHT MODE
    Default (no specific class needed usually, or explicit overrides)
