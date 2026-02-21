@@ -94,7 +94,7 @@ export function SummaryPage() {
 
       <AppContent fullscreen>
         <div className="mt-6 px-6 text-center">
-          <div className="flex max-w-full min-w-full items-center justify-start gap-4 px-4">
+          <div className="flex max-w-full min-w-full items-center justify-start gap-4">
             <AnimatedSuccessIcon />
 
             <div className="flex flex-col items-center justify-start">
@@ -110,7 +110,7 @@ export function SummaryPage() {
                 Order Received
               </h1>
               <IonText
-                className="text-sm font-medium"
+                className="mr-auto text-sm font-medium"
                 slot="start"
                 style={{
                   letterSpacing: "-0.3px",
