@@ -139,6 +139,7 @@ export function SummaryPage() {
               </IonNote>
               <div
                 className="flex cursor-pointer items-center gap-3 rounded-lg px-4 py-2 transition-transform active:scale-95"
+                style={{ color: "var(--ion-color-dark-tint)" }}
                 onClick={() => void copyToClipboard()}
               >
                 <span className="font-mono text-2xl font-bold tracking-widest">
@@ -146,7 +147,7 @@ export function SummaryPage() {
                 </span>
                 <IonIcon icon={copyOutline} />
               </div>
-              <IonNote className="text-xs">
+              <IonNote className="text-sm">
                 Tap to copy • Share this with the vendor
               </IonNote>
             </div>
