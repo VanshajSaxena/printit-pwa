@@ -53,3 +53,7 @@ http://ionicframework.com/docs/theming/ */
 :root.md ion-item {
   --background: #ffffff;
 }
+
+:root.md ion-card {
+  --background: #ffffff;
+}
