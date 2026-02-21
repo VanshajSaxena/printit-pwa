@@ -10,6 +10,7 @@ import {
   IonList,
   IonNote,
   IonPage,
+  IonText,
   IonTitle,
   IonToolbar,
   useIonToast,
@@ -92,17 +93,51 @@ export function SummaryPage() {
       </IonHeader>
 
       <AppContent fullscreen>
-        <div className="mt-4 text-center">
-          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full">
-            <IonIcon icon={printOutline} className="text-5xl" />
+        <div className="mt-6 px-6 text-center">
+          <div
+            className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full"
+            style={{
+              background: "var(--ion-color-success-tint)",
+            }}
+          >
+            <IonIcon
+              icon={printOutline}
+              style={{
+                fontSize: "28px",
+                color: "var(--ion-color-success-shade)",
+              }}
+            />
           </div>
-          <h1 className="text-2xl font-bold">Order Received</h1>
-          <IonNote className="text-sm">
+
+          <h1
+            style={{
+              fontSize: "22px",
+              fontWeight: 600,
+              letterSpacing: "-0.3px",
+              color: "var(--ion-color-dark)",
+            }}
+          >
+            Order Received
+          </h1>
+
+          <IonText
+            style={{
+              display: "block",
+              marginTop: "6px",
+              fontSize: "15px",
+              color: "var(--ion-color-medium)",
+            }}
+          >
             Sent to{" "}
-            <span className="font-semibold" color={"light"}>
+            <span
+              style={{
+                fontWeight: 500,
+                color: "var(--ion-color-dark)",
+              }}
+            >
               {vendorName}
             </span>
-          </IonNote>
+          </IonText>
         </div>
 
         <IonCard className="m-4 border-none!">
@@ -131,40 +166,84 @@ export function SummaryPage() {
           <h5 className="mb-6 text-sm font-bold tracking-wider uppercase">
             Status Timeline
           </h5>
-          <div className="relative ml-3 space-y-8 border-l-2 border-gray-200 pb-2">
+          <div
+            className="relative ml-3 space-y-8 pb-2"
+            style={{
+              borderLeft: "2px solid var(--ion-color-medium)",
+            }}
+          >
             {steps.map((step) => {
               const state = getStepState(step.status);
 
               return (
                 <div key={step.status} className="relative pl-8">
-                  <div
-                    className={`absolute top-0 -left-[9px] flex h-4 w-4 items-center justify-center rounded-full border-2 bg-white transition-colors duration-300 ${
+                  <IonLabel
+                    color={
                       state === "completed"
-                        ? "border-green-500 bg-green-500"
+                        ? "success"
                         : state === "current"
-                          ? "border-blue-500"
-                          : "border-gray-300"
-                    } `}
+                          ? "primary"
+                          : "dark"
+                    }
+                    className="absolute top-0 -left-[9px] flex h-4 w-4 items-center justify-center rounded-full border-2 transition-colors duration-300"
+                    style={{
+                      background:
+                        state === "completed"
+                          ? "var(--ion-color-success)"
+                          : "var(--ion-background-color)",
+                      borderColor:
+                        state === "completed"
+                          ? "var(--ion-color-success)"
+                          : state === "current"
+                            ? "var(--ion-color-primary)"
+                            : "var(--ion-color-dark)",
+                    }}
                   >
                     {state === "current" && (
-                      <div className="h-2 w-2 animate-pulse rounded-full bg-blue-500" />
+                      <div
+                        className="h-2 w-2 animate-pulse rounded-full"
+                        style={{
+                          background: "var(--ion-color-primary)",
+                        }}
+                      />
                     )}
+
                     {state === "completed" && (
-                      <div className="h-2 w-2 rounded-full bg-white" />
+                      <div
+                        className="h-2 w-2 rounded-full"
+                        style={{
+                          background: "var(--ion-color-light)",
+                        }}
+                      />
                     )}
-                  </div>
+                  </IonLabel>
 
                   <div
-                    className={
-                      state === "upcoming" ? "opacity-40" : "opacity-100"
-                    }
+                    style={{
+                      opacity: state === "upcoming" ? 0.4 : 1,
+                    }}
                   >
                     <h4
-                      className={`text-base leading-none font-medium ${state === "current" ? "font-bold text-blue-600" : "text-gray-900"}`}
+                      className="text-base leading-none font-medium"
+                      style={{
+                        fontWeight: state === "current" ? 700 : 500,
+                        color:
+                          state === "current"
+                            ? "var(--ion-color-primary)"
+                            : "var(--ion-color-dark)",
+                      }}
                     >
                       {step.label}
                     </h4>
-                    <p className="mt-1 text-sm text-gray-500">{step.desc}</p>
+
+                    <p
+                      className="mt-1 text-sm"
+                      style={{
+                        color: "var(--ion-color-medium)",
+                      }}
+                    >
+                      {step.desc}
+                    </p>
                   </div>
                 </div>
               );
