@@ -68,7 +68,7 @@ const YourPrintsPage: React.FC = () => {
 
   const handleViewPrint = (id: number) => {
     setCurrentTransactionId(id);
-    router.push("/prints/summary");
+    router.push("/prints/status");
   };
 
   const getVendorName = (vendorId?: number) => {
@@ -110,7 +110,7 @@ const YourPrintsPage: React.FC = () => {
         </IonToolbar>
       </IonHeader>
 
-      <AppContent fullscreen>
+      <AppContent fullscreen className="h-full">
         <IonHeader collapse="condense">
           <IonToolbar>
             <IonTitle size="large">Your Prints</IonTitle>
@@ -118,7 +118,7 @@ const YourPrintsPage: React.FC = () => {
         </IonHeader>
 
         {!hasAnyActivity ? (
-          <div className="flex h-[80vh] flex-col items-center justify-center text-center">
+          <div className="flex h-full flex-col items-center justify-center text-center">
             <div className="rounded-full">
               <IonIcon
                 icon={printOutline}

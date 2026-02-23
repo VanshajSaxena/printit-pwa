@@ -49,7 +49,7 @@ export default function Applayout() {
                   <ChangePrintSettingsPage />
                 </RequireCurrentDraftTransaction>
               </Route>
-              <Route exact path="/home/summary">
+              <Route exact path="/home/status">
                 <RequireCurrentTransaction>
                   <SummaryPage />
                 </RequireCurrentTransaction>
@@ -59,7 +59,7 @@ export default function Applayout() {
                   <YourPrintsPage />
                 </RequireVendorAndTransactionStore>
               </Route>
-              <Route exact path="/prints/summary">
+              <Route exact path="/prints/status">
                 <RequireCurrentTransaction>
                   <SummaryPage />
                 </RequireCurrentTransaction>
@@ -79,6 +79,11 @@ export default function Applayout() {
                 <RequireCurrentDraftTransaction>
                   <CheckoutPage />
                 </RequireCurrentDraftTransaction>
+              </Route>
+              <Route exact path="/printers/status">
+                <RequireCurrentTransaction>
+                  <SummaryPage />
+                </RequireCurrentTransaction>
               </Route>
               <Route exact path="/settings">
                 <SettingsPage />

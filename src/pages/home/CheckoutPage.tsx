@@ -271,7 +271,11 @@ export default function CheckoutPage() {
 
       createTransaction(transactionResponse);
       setCurrentTransactionId(transactionResponse.id);
-      router.push("/home/summary", "forward", "push");
+      router.push(
+        `/${router.routeInfo.tab ?? "home"}/status`,
+        "forward",
+        "push",
+      );
 
       await dismissLoading();
       await presentToast({
