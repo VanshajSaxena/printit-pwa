@@ -10079,9 +10079,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"printly-mobile@workspace:.":
+"printit-mobile@workspace:.":
   version: 0.0.0-use.local
-  resolution: "printly-mobile@workspace:."
+  resolution: "printit-mobile@workspace:."
   dependencies:
     "@capacitor/app": "npm:8.0.0"
     "@capacitor/assets": "npm:^3.0.5"
