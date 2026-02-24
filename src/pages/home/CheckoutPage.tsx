@@ -274,7 +274,7 @@ export default function CheckoutPage() {
       router.push(
         `/${router.routeInfo.tab ?? "home"}/status`,
         "forward",
-        "push",
+        "replace",
       );
 
       await dismissLoading();
