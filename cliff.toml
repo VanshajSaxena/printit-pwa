@@ -16,12 +16,12 @@ body = """
     --------------------------------------------------------------------------------
     {% for commit in commits | sort(attribute="message")%}\
         {% if not commit.scope %}\
-            - {{ commit.id | truncate(length=12, end="") }} {{ commit.message }}
+            - [{{ commit.id | truncate(length=8, end="") }}]({{ commit.id }}) {{ commit.message }}
         {% endif %}\
     {% endfor %}\
     {% for group, commits in commits | group_by(attribute="scope") %}\
         {% for commit in commits | sort(attribute="message") %}\
-            - {{ commit.id | truncate(length=12, end="") }} {{commit.scope}}: {{ commit.message }}
+            - [{{ commit.id | truncate(length=8, end="") }}]({{ commit.id }}) {{commit.scope}}: {{ commit.message }}
         {% endfor %}\
     {% endfor %}
 {% endfor %}\n
