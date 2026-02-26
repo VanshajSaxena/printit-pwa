@@ -180,6 +180,22 @@ export interface paths {
     patch: operations["TransactionController_update_v1"];
     trace?: never;
   };
+  "/api/v1/transactions/{id}/status": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["TransactionController_findTransactionStatus_v1"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/v1/vendors": {
     parameters: {
       query?: never;
@@ -389,6 +405,10 @@ export interface components {
       id: number;
       name: string;
     };
+    TransactionStatusResponseDto: {
+      /** @enum {string} */
+      status: "PENDING" | "QUEUED" | "PRINTING" | "COMPLETED" | "ERROR";
+    };
     UpdateDocumentRequestDto: {
       /** @enum {string} */
       status: "CREATED" | "UPLOADED" | "FAILED" | "DELETED";
@@ -466,6 +486,8 @@ export type FindTransactionResponseDto =
 export type LocationDto = components["schemas"]["LocationDto"];
 export type NotFoundErrorDto = components["schemas"]["NotFoundErrorDto"];
 export type PrinterResponseDto = components["schemas"]["PrinterResponseDto"];
+export type TransactionStatusResponseDto =
+  components["schemas"]["TransactionStatusResponseDto"];
 export type UpdateDocumentRequestDto =
   components["schemas"]["UpdateDocumentRequestDto"];
 export type UpdateJobDto = components["schemas"]["UpdateJobDto"];
@@ -982,6 +1004,27 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["CreateTransactionResponseDto"];
+        };
+      };
+    };
+  };
+  TransactionController_findTransactionStatus_v1: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["TransactionStatusResponseDto"];
         };
       };
     };

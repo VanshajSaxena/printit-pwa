@@ -408,6 +408,32 @@
         "tags": ["Transaction"]
       }
     },
+    "/api/v1/transactions/{id}/status": {
+      "get": {
+        "operationId": "TransactionController_findTransactionStatus_v1",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransactionStatusResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["Transaction"]
+      }
+    },
     "/api/v1/transactions/{id}": {
       "get": {
         "operationId": "TransactionController_findOne_v1",
@@ -812,8 +838,8 @@
     }
   },
   "info": {
-    "title": "Printly",
-    "description": "Printly Cloud API.",
+    "title": "Printit",
+    "description": "Printit Cloud API.",
     "version": "0.1.0",
     "contact": {}
   },
@@ -1057,6 +1083,16 @@
           "createdAt": { "format": "date-time", "type": "string" }
         },
         "required": ["id", "status", "friendlyId", "jobs", "createdAt"]
+      },
+      "TransactionStatusResponseDto": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["PENDING", "QUEUED", "PRINTING", "COMPLETED", "ERROR"]
+          }
+        },
+        "required": ["status"]
       },
       "UpdateTransactionDto": { "type": "object", "properties": {} },
       "CreateDocumentRequestDto": {
