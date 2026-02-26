@@ -1,0 +1,8 @@
+:root.ios ion-list.documents-list {
+  border-radius: 1rem;
+}
+
+:root.md ion-list.documents-list {
+  padding-top: 0;
+  padding-bottom: 0;
+}

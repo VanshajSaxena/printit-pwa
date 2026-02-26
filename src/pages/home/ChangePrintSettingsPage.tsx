@@ -58,7 +58,7 @@ export function ChangePrintSettingsPage() {
               </IonNote>
             </IonListHeader>
             <IonCard
-              className={`mx-0 mt-4 mb-0 flex items-center justify-between shadow-none ${selected === "standard" ? "selected-card" : "bg-transparent"}`}
+              className={`mx-0 mt-4 mb-0 flex items-center justify-between ${selected === "standard" ? "selected-card" : "bg-transparent"}`}
             >
               <IonRadio
                 className="min-h-full min-w-full pr-5"
@@ -75,7 +75,7 @@ export function ChangePrintSettingsPage() {
               </IonRadio>
             </IonCard>
             <IonCard
-              className={`m-0 flex items-center justify-between shadow-none ${selected === "color" ? "selected-card" : "bg-transparent"}`}
+              className={`m-0 flex items-center justify-between ${selected === "color" ? "selected-card" : "bg-transparent"}`}
             >
               <IonRadio className="min-h-full min-w-full pr-5" value={"color"}>
                 <IonCardHeader className="p-4">

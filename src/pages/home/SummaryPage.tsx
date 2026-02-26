@@ -25,6 +25,7 @@ import {
   documentTextOutline,
 } from "ionicons/icons";
 import { AnimatedSuccessIcon } from "./AnimatedSuccessIcon";
+import "./SummaryPage.css";
 
 export function SummaryPage() {
   const [presentToast] = useIonToast();
@@ -131,7 +132,7 @@ export function SummaryPage() {
           </div>
         </div>
 
-        <IonCard className="m-4 border-none!">
+        <IonCard className="m-4 border-none! shadow-sm">
           <IonCardContent className="p-4">
             <div className="flex flex-col items-center gap-1">
               <IonNote className="text-xs font-semibold tracking-wider uppercase">
@@ -156,12 +157,10 @@ export function SummaryPage() {
 
         <div className="px-5 pt-2 pb-6">
           <div
+            className="mb-4 text-sm font-semibold"
             style={{
-              fontSize: "13px",
-              fontWeight: 600,
               letterSpacing: "0.2px",
               color: "var(--ion-color-medium)",
-              marginBottom: "18px",
             }}
           >
             Status
@@ -238,43 +237,29 @@ export function SummaryPage() {
 
         <div className="pt-2 pb-4">
           <div
+            className="pl-5 text-sm font-semibold"
             style={{
-              fontSize: "13px",
-              fontWeight: 600,
               color: "var(--ion-color-medium)",
-              marginBottom: "12px",
-              paddingLeft: "20px",
-              letterSpacing: "0.2px",
             }}
           >
             Documents
           </div>
 
-          <IonList
-            inset
-            lines="inset"
-            style={{
-              borderRadius: "16px",
-              overflow: "hidden",
-              background: "var(--ion-item-background)",
-            }}
-          >
+          <IonList inset lines="inset" className="documents-list">
             {transaction.jobs.map((job) => (
               <IonItem
                 key={job.id}
                 detail={false}
                 style={{
-                  "--inner-padding-top": "14px",
-                  "--inner-padding-bottom": "14px",
+                  "--inner-padding-top": "0.5rem",
+                  "--inner-padding-bottom": "0.5rem",
                 }}
               >
                 <IonIcon
                   icon={documentTextOutline}
                   slot="start"
-                  style={{
-                    fontSize: "20px",
-                    color: "var(--ion-color-medium)",
-                  }}
+                  color={"medium"}
+                  className="text-xl"
                 />
 
                 <IonLabel>
@@ -297,7 +282,9 @@ export function SummaryPage() {
                     }}
                   >
                     {job.copyCount} {job.copyCount > 1 ? "copies" : "copy"} •{" "}
-                    {job.outputColor}
+                    {job.outputColor === "Monochrome"
+                      ? "Black & White"
+                      : "Color"}
                   </div>
                 </IonLabel>
               </IonItem>

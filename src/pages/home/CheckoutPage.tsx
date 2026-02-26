@@ -374,7 +374,7 @@ export default function CheckoutPage() {
         </div>
 
         <IonCard
-          className="ion-activatable ripple-parent rounded-rectangle my-3 max-w-full min-w-full"
+          className="ion-activatable ripple-parent rounded-rectangle my-3 max-w-full min-w-full shadow-sm"
           onClick={() => {
             setIsModalOpen(true);
           }}

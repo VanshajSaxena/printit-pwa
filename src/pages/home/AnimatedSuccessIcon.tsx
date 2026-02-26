@@ -18,7 +18,7 @@ export function AnimatedSuccessIcon() {
         height: "56px",
         width: "56px",
         borderRadius: "50%",
-        background: "var(--ion-color-light-shade)",
+        background: "var(--ion-color-light)",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
