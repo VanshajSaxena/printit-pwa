@@ -54,6 +54,7 @@ interface TransactionStore {
     transactionResponse: CreateTransactionResponseDto,
   ) => void;
   setCurrentTransactionId: (id: number | null) => void;
+  updateTransactionStatus: (id: number, status: TransactionStatus) => void;
 }
 
 export const useTransactionStore = create<TransactionStore>()(
@@ -78,6 +79,13 @@ export const useTransactionStore = create<TransactionStore>()(
       setCurrentTransactionId: (id) => {
         set((store) => {
           store.state.currentTransactionId = id;
+        });
+      },
+      updateTransactionStatus: (id: number, status) => {
+        set((store) => {
+          const existing = store.state.transactions[id];
+          existing.updatedAt = new Date().toISOString();
+          existing.status = status;
         });
       },
     })),

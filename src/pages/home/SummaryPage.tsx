@@ -1,3 +1,4 @@
+import { client } from "@api/client";
 import {
   IonBackButton,
   IonButtons,
@@ -24,6 +25,7 @@ import {
   copyOutline,
   documentTextOutline,
 } from "ionicons/icons";
+import { useEffect } from "react";
 import { AnimatedSuccessIcon } from "./AnimatedSuccessIcon";
 import "./SummaryPage.css";
 
@@ -34,9 +36,22 @@ export function SummaryPage() {
     (state) => state.state.currentTransactionId,
   );
 
+  const updateTransactionStatus = useTransactionStore(
+    (state) => state.updateTransactionStatus,
+  );
+
   if (!currentTransactionId) {
     throw new Error("CurrentTransactionId doesn't exist");
   }
+
+  const { data: response } = client.useQuery(
+    "get",
+    "/api/v1/transactions/{id}/status",
+    {
+      params: { path: { id: currentTransactionId } },
+    },
+    { staleTime: 1000 * 60 },
+  );
 
   const transaction = useTransactionStore(
     (store) => store.state.transactions[currentTransactionId],
@@ -79,6 +94,13 @@ export function SummaryPage() {
   const vendorName = vendor
     ? (vendor.displayName ?? `${vendor.firstName} ${vendor.lastName}`)
     : "Unknown Printer";
+
+  useEffect(() => {
+    if (!response) {
+      return;
+    }
+    updateTransactionStatus(currentTransactionId, response.status);
+  }, [currentTransactionId, response, updateTransactionStatus]);
 
   return (
     <IonPage>
