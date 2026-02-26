@@ -66,7 +66,12 @@ export default function AppearancePage() {
         </IonToolbar>
       </IonHeader>
       <AppContent fullscreen>
-        <IonList inset className="py-0!">
+        <div className="ion-margin-horizontal ion-margin-top ion-padding-horizontal">
+          <IonLabel color={"medium"} className="text-sm uppercase">
+            system
+          </IonLabel>
+        </div>
+        <IonList inset className="my-1.5! py-0!">
           <IonItem
             detail
             button
@@ -93,7 +98,14 @@ export default function AppearancePage() {
               }}
             />
           </IonItem>
+        </IonList>
 
+        <div className="ion-margin-horizontal ion-margin-top ion-padding-horizontal">
+          <IonLabel color={"medium"} className="text-sm uppercase">
+            theme
+          </IonLabel>
+        </div>
+        <IonList inset className="my-1.5! py-0!">
           <IonItem>
             <IonLabel>Dark Mode</IonLabel>
             <IonToggle

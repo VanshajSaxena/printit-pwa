@@ -27,11 +27,24 @@ export default function UpdateAppPage() {
         </IonToolbar>
       </IonHeader>
       <AppContent fullscreen>
-        <IonList inset className="py-0!">
+        <div className="ion-margin-horizontal ion-margin-top ion-padding-horizontal">
+          <IonLabel color={"medium"} className="text-sm uppercase">
+            version
+          </IonLabel>
+        </div>
+        <IonList inset className="my-1.5! py-0!">
           <IonItem>
             <IonLabel>Current version</IonLabel>
             <IonLabel slot="end">{import.meta.env.VITE_APP_VERSION}</IonLabel>
           </IonItem>
+        </IonList>
+
+        <div className="ion-margin-horizontal ion-margin-top ion-padding-horizontal">
+          <IonLabel color={"medium"} className="text-sm uppercase">
+            debug
+          </IonLabel>
+        </div>
+        <IonList inset className="my-1.5! py-0!">
           {import.meta.env.VITE_NETLIFY_CONTEXT !== "production" && (
             <>
               <IonItem>
