@@ -22,7 +22,7 @@ import {
   useTransactionStore,
 } from "@store/transactionStore";
 import { useVendorStore } from "@store/vendorStore";
-import { documentTextOutline, printOutline } from "ionicons/icons";
+import { documentTextOutline } from "ionicons/icons";
 import React, { useMemo } from "react";
 
 const YourPrintsPage: React.FC = () => {
@@ -118,15 +118,8 @@ const YourPrintsPage: React.FC = () => {
         </IonHeader>
 
         {!hasAnyActivity ? (
-          <div className="flex h-full flex-col items-center justify-center text-center">
-            <div className="rounded-full">
-              <IonIcon
-                icon={printOutline}
-                className="text-6xl"
-                color={"medium"}
-              />
-            </div>
-            <h2 className="text-xl font-semibold">No prints yet</h2>
+          <div className="flex h-full flex-col items-center justify-center pb-12.5 text-center">
+            <p className="mb-2 text-2xl font-medium">No prints yet</p>
             <IonNote className="max-w-xs text-sm">
               Your drafts and past prints will appear here.
             </IonNote>
