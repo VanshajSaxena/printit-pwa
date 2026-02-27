@@ -1,0 +1,11 @@
+:root.ios ion-list.how-it-works-list {
+  border-radius: 1rem;
+}
+:root.md ion-list.how-it-works-list {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+:root.md ion-card.scan-card {
+  margin-top: 0;
+}
