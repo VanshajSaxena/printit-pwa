@@ -1,25 +1,27 @@
+import { useAndroidBackButton } from "@hooks/useAndroidBackButton";
 import { IonRouterOutlet, IonTabs } from "@ionic/react";
 import { IonReactRouter } from "@ionic/react-router";
+import YourPrintsPage from "@pages/documents/YourPrintsPage";
 import { ChangePrintSettingsPage } from "@pages/home/ChangePrintSettingsPage";
 import CheckoutPage from "@pages/home/CheckoutPage";
 import HomePage from "@pages/home/HomePage";
 import { RequireCurrentDraftTransaction } from "@pages/home/RequireCurrentDraftTransaction";
+import { RequireCurrentTransaction } from "@pages/home/RequireCurrentTransaction";
+import { RequireVendorAndTransactionStore } from "@pages/home/RequireVendorAndTransactionStore";
 import SelectedVendorPage from "@pages/home/SelectedVendorPage";
+import { SummaryPage } from "@pages/home/SummaryPage";
 import NotFoundPage from "@pages/NotFoundPage";
 import PrintersPage from "@pages/printers/PrintersPage";
 import ScanPage from "@pages/ScanPage";
+import AppearanceModePage from "@pages/settings/AppearanceModePage";
+import AppearancePage from "@pages/settings/AppearancePage";
 import SettingsPage from "@pages/settings/SettingsPage";
 import UpdateAppPage from "@pages/settings/UpdateAppPage";
 import { Redirect, Route } from "react-router-dom";
 import AppTabBar from "./AppTabBar";
-import AppearancePage from "@pages/settings/AppearancePage";
-import AppearanceModePage from "@pages/settings/AppearanceModePage";
-import YourPrintsPage from "@pages/documents/YourPrintsPage";
-import { RequireVendorAndTransactionStore } from "@pages/home/RequireVendorAndTransactionStore";
-import { RequireCurrentTransaction } from "@pages/home/RequireCurrentTransaction";
-import { SummaryPage } from "@pages/home/SummaryPage";
 
 export default function Applayout() {
+  useAndroidBackButton();
   return (
     <IonReactRouter>
       <IonRouterOutlet>
