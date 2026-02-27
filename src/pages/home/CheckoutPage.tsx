@@ -13,10 +13,11 @@ import {
   IonGrid,
   IonHeader,
   IonIcon,
+  IonItem,
   IonLabel,
+  IonList,
   IonModal,
   IonPage,
-  IonRippleEffect,
   IonRow,
   IonSegment,
   IonSegmentButton,
@@ -40,7 +41,6 @@ import {
   colorPaletteOutline,
   contrastOutline,
   document,
-  options,
   printOutline,
   remove,
 } from "ionicons/icons";
@@ -66,6 +66,7 @@ export default function CheckoutPage() {
   >(undefined);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
 
   useEffect(() => {
     setPresentingElement(pageRef.current ?? undefined);
@@ -326,7 +327,9 @@ export default function CheckoutPage() {
   const backLink = vendorProfile?.username
     ? `${router.routeInfo.tab === "home" || !router.routeInfo.tab ? "/home/printer" : router.routeInfo.tab}/@${vendorProfile.username}`
     : "/home";
-
+  const selectedJob = currentDraftTransaction.jobs.find(
+    (job) => job.id === selectedJobId,
+  );
   return (
     <IonPage ref={pageRef}>
       <IonHeader translucent>
@@ -342,7 +345,7 @@ export default function CheckoutPage() {
         scrollY={true}
         className="ion-padding flex min-h-full flex-col items-center justify-start gap-0"
       >
-        <IonCard className="m-0 min-w-full bg-transparent px-4 pt-2 pb-6 shadow-none">
+        <IonCard className="m-0 min-w-full bg-transparent px-4 pt-2 pb-2 shadow-none">
           <IonCardContent className="p-0!">
             <IonCardTitle className="flex items-center gap-1">
               {isOnline ? "Printer Ready" : "Printer Offline"}
@@ -352,120 +355,142 @@ export default function CheckoutPage() {
           </IonCardContent>
         </IonCard>
 
-        <IonButton
-          expand="block"
-          size="default"
-          fill="solid"
-          color="primary"
-          className="m-0 min-w-full"
-          disabled={isSubmitting}
-          onClick={() => {
-            setIsModalOpen(true);
-          }}
+        <IonList
+          lines="inset"
+          inset
+          className="!mx-0 !my-3 max-w-full min-w-full"
         >
-          <IonIcon icon={options} slot="start" />
-          <IonLabel>Print Options</IonLabel>
-        </IonButton>
+          <IonItem
+            detail={false}
+            lines="none"
+            style={{
+              "--inner-padding-top": "0.75rem",
+              "--inner-padding-bottom": "0.25rem",
+            }}
+          >
+            <IonLabel>
+              <div
+                style={{
+                  fontSize: "18px",
+                  fontWeight: 700,
+                  color: "var(--ion-color-dark)",
+                }}
+              >
+                Documents
+              </div>
+            </IonLabel>
+          </IonItem>
 
-        <div className="mt-6 ml-1 flex max-w-full min-w-full justify-start">
-          <IonText color="medium" className="text-base font-semibold">
-            Documents
-          </IonText>
-        </div>
+          {currentDraftTransaction.jobs.map((job) => {
+            const totalSheets = job.document.pageCount * job.copyCount;
 
-        <IonCard
-          className="ion-activatable ripple-parent rounded-rectangle my-3 max-w-full min-w-full shadow-sm"
-          onClick={() => {
-            setIsModalOpen(true);
-          }}
-        >
-          <IonCardContent className="p-0!">
-            <IonGrid>
-              <IonRow className="px-1.25 pt-1.25">
-                <IonCol
-                  size="auto"
-                  className="flex items-center justify-center"
+            return (
+              <IonItem
+                key={job.id}
+                button
+                detail={false}
+                onClick={() => {
+                  setSelectedJobId(job.id);
+                  setIsModalOpen(true);
+                }}
+                style={{
+                  "--inner-padding-top": "0.5rem",
+                  "--inner-padding-bottom": "0.5rem",
+                }}
+              >
+                {/* Left Icon */}
+                <IonIcon
+                  icon={document}
+                  slot="start"
+                  color={job.outputColor === "Color" ? "secondary" : "medium"}
+                  className="text-2xl"
+                />
+
+                {/* Main Label */}
+                <IonLabel>
+                  {/* Filename */}
+                  <div
+                    style={{
+                      fontSize: "16px",
+                      fontWeight: 600,
+                      color: "var(--ion-color-dark)",
+                    }}
+                    className="truncate"
+                    title={job.document.filename}
+                  >
+                    {job.document.filename}
+                  </div>
+
+                  {/* Pages + Copies */}
+                  <div
+                    style={{
+                      marginTop: "4px",
+                      fontSize: "14px",
+                      color: "var(--ion-color-medium)",
+                    }}
+                  >
+                    {job.document.pageCount} pages • {job.copyCount}{" "}
+                    {job.copyCount === 1 ? "copy" : "copies"}
+                  </div>
+                </IonLabel>
+
+                {/* Right Side: Total Sheets */}
+                <div
+                  slot="end"
+                  style={{
+                    fontSize: "15px",
+                    color: "var(--ion-color-medium)",
+                    textAlign: "right",
+                    minWidth: "48px",
+                  }}
                 >
-                  <IonIcon icon={document} className="invisible text-xl" />
-                </IonCol>
-                <IonCol className="min-w-0 flex-1 pl-2">
-                  <IonText
-                    color="medium"
-                    className="invisible text-sm font-medium"
-                  >
-                    Filename
-                  </IonText>
-                </IonCol>
-                <IonCol size="auto" className="min-w-12 text-center">
-                  <IonText color="medium" className="text-sm font-medium">
-                    Copies
-                  </IonText>
-                </IonCol>
-                <IonCol size="auto" className="min-w-16 text-center">
-                  <IonText color="medium" className="text-sm font-medium">
-                    Pages
-                  </IonText>
-                </IonCol>
-              </IonRow>
+                  {totalSheets} Pages
+                </div>
+              </IonItem>
+            );
+          })}
 
-              {currentDraftTransaction.jobs.map((job) => (
-                <IonRow key={job.id} className="p-1.25">
-                  <IonCol
-                    size="auto"
-                    className="flex min-h-8 min-w-8 items-center justify-center"
-                  >
-                    <IonIcon
-                      icon={document}
-                      className="text-xl"
-                      color={
-                        job.outputColor === "Color" ? "secondary" : "medium"
-                      }
-                    />
-                  </IonCol>
-                  <IonCol className="flex min-w-0 flex-1 items-center pl-2">
-                    <IonText
-                      color="dark"
-                      className="block truncate align-middle font-medium"
-                      title={job.document.filename}
-                    >
-                      {job.document.filename}
-                    </IonText>
-                  </IonCol>
-                  <IonCol size="auto" className="min-w-12 text-center">
-                    {job.copyCount}
-                  </IonCol>
-                  <IonCol
-                    size="auto"
-                    className="min-w-16 text-center font-semibold"
-                  >
-                    {job.document.pageCount}
-                  </IonCol>
-                </IonRow>
-              ))}
+          {/* Total Pages Row */}
+          <IonItem
+            detail={false}
+            style={{
+              "--inner-padding-top": "0.75rem",
+              "--inner-padding-bottom": "0.75rem",
+            }}
+          >
+            <IonIcon
+              icon={document}
+              slot="start"
+              className="invisible text-2xl"
+            />
 
-              <IonRow className="ion-align-items-center p-1.25 pt-4">
-                <IonCol
-                  size="auto"
-                  className="flex min-h-8 min-w-8 items-center justify-center"
-                >
-                  <IonIcon icon={document} className="invisible text-xl" />
-                </IonCol>
-                <IonCol className="pl-2">
-                  <IonText color="dark" class="font-medium">
-                    Total Pages
-                  </IonText>
-                </IonCol>
-                <IonCol size="auto" className="min-w-12" />
-                <IonCol size="auto" className="min-w-16 text-center">
-                  <IonText color="dark">
-                    <strong>{totalPages}</strong>
-                  </IonText>
-                </IonCol>
-              </IonRow>
-            </IonGrid>
-          </IonCardContent>
-          <IonRippleEffect />
-        </IonCard>
+            <IonLabel>
+              <div
+                style={{
+                  fontSize: "16px",
+                  fontWeight: 600,
+                  color: "var(--ion-color-dark)",
+                  display: "flex",
+                  justifyContent: "space-between",
+                }}
+              >
+                <span>Total Pages</span>
+                <span>{totalPages}</span>
+              </div>
+            </IonLabel>
+          </IonItem>
+        </IonList>
+
+        <IonList inset className="min-w-full py-0!">
+          <IonItem
+            button
+            detail
+            routerLink={`/prints/checkout/print-options`}
+            routerDirection="forward"
+          >
+            <IonLabel>Print Options</IonLabel>
+          </IonItem>
+        </IonList>
 
         <IonModal
           isOpen={isModalOpen}
@@ -478,6 +503,7 @@ export default function CheckoutPage() {
           expandToScroll={false}
           onDidDismiss={() => {
             setIsModalOpen(false);
+            setSelectedJobId(null);
           }}
         >
           <IonHeader translucent>
@@ -487,6 +513,7 @@ export default function CheckoutPage() {
                 <IonButton
                   onClick={() => {
                     setIsModalOpen(false);
+                    setSelectedJobId(null);
                   }}
                 >
                   Done
@@ -498,9 +525,9 @@ export default function CheckoutPage() {
             fullscreen
             className="ion-padding flex flex-col items-center justify-start gap-0"
           >
-            {currentDraftTransaction.jobs.map((job) => (
+            {selectedJob && (
               <IonCard
-                key={job.id}
+                key={selectedJob.id}
                 className="m-0 mb-4 max-w-full min-w-full pt-2 shadow-sm"
               >
                 <IonCardContent className="p-3!">
@@ -510,7 +537,9 @@ export default function CheckoutPage() {
                         icon={document}
                         className="text-2xl"
                         color={
-                          job.outputColor === "Color" ? "secondary" : "medium"
+                          selectedJob.outputColor === "Color"
+                            ? "secondary"
+                            : "medium"
                         }
                       />
                     </div>
@@ -519,11 +548,11 @@ export default function CheckoutPage() {
                         color="dark"
                         className="block truncate text-base font-semibold"
                       >
-                        {job.document.filename}
+                        {selectedJob.document.filename}
                       </IonText>
                       <IonText color="medium" className="text-xs">
-                        {job.document.pageCount} pages •{" "}
-                        {job.document.contentType
+                        {selectedJob.document.pageCount} pages •{" "}
+                        {selectedJob.document.contentType
                           .split("/")[1]
                           ?.toUpperCase() || "FILE"}
                       </IonText>
@@ -533,10 +562,10 @@ export default function CheckoutPage() {
                     <IonRow className="ion-align-items-center">
                       <IonCol size="12" className="mb-3 pb-0">
                         <IonSegment
-                          value={job.outputColor}
+                          value={selectedJob.outputColor}
                           onIonChange={(e) => {
                             handleColorChange(
-                              job.id,
+                              selectedJob.id,
                               e.detail.value as OutputColor,
                             );
                           }}
@@ -574,9 +603,12 @@ export default function CheckoutPage() {
                             color="light"
                             className="m-0 h-8 w-10 shadow-none"
                             onClick={() => {
-                              handleDecrementCopy(job.id, job.copyCount);
+                              handleDecrementCopy(
+                                selectedJob.id,
+                                selectedJob.copyCount,
+                              );
                             }}
-                            disabled={job.copyCount <= 1}
+                            disabled={selectedJob.copyCount <= 1}
                           >
                             <IonIcon icon={remove} size="small" color="dark" />
                           </IonButton>
@@ -584,7 +616,7 @@ export default function CheckoutPage() {
                             color="dark"
                             className="w-6 text-center text-lg"
                           >
-                            {job.copyCount}
+                            {selectedJob.copyCount}
                           </IonText>
                           <IonButton
                             size="small"
@@ -592,7 +624,10 @@ export default function CheckoutPage() {
                             color="light"
                             className="m-0 h-8 w-10 shadow-none"
                             onClick={() => {
-                              handleIncrementCopy(job.id, job.copyCount);
+                              handleIncrementCopy(
+                                selectedJob.id,
+                                selectedJob.copyCount,
+                              );
                             }}
                           >
                             <IonIcon icon={add} size="small" color="dark" />
@@ -603,7 +638,7 @@ export default function CheckoutPage() {
                   </IonGrid>
                 </IonCardContent>
               </IonCard>
-            ))}
+            )}
           </AppContent>
         </IonModal>
       </AppContent>

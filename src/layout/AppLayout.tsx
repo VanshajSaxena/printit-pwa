@@ -46,7 +46,7 @@ export default function Applayout() {
                   <CheckoutPage />
                 </RequireCurrentDraftTransaction>
               </Route>
-              <Route exact path="/home/checkout/print-settings">
+              <Route exact path="/home/checkout/print-options">
                 <RequireCurrentDraftTransaction>
                   <ChangePrintSettingsPage />
                 </RequireCurrentDraftTransaction>
@@ -61,15 +61,20 @@ export default function Applayout() {
                   <YourPrintsPage />
                 </RequireVendorAndTransactionStore>
               </Route>
-              <Route exact path="/prints/status">
-                <RequireCurrentTransaction>
-                  <SummaryPage />
-                </RequireCurrentTransaction>
-              </Route>
               <Route exact path="/prints/checkout">
                 <RequireCurrentDraftTransaction>
                   <CheckoutPage />
                 </RequireCurrentDraftTransaction>
+              </Route>
+              <Route exact path="/prints/checkout/print-options">
+                <RequireCurrentDraftTransaction>
+                  <ChangePrintSettingsPage />
+                </RequireCurrentDraftTransaction>
+              </Route>
+              <Route exact path="/prints/status">
+                <RequireCurrentTransaction>
+                  <SummaryPage />
+                </RequireCurrentTransaction>
               </Route>
               <Route exact path="/printers">
                 <PrintersPage />
@@ -80,6 +85,11 @@ export default function Applayout() {
               <Route exact path="/printers/checkout">
                 <RequireCurrentDraftTransaction>
                   <CheckoutPage />
+                </RequireCurrentDraftTransaction>
+              </Route>
+              <Route exact path="/printers/checkout/print-options">
+                <RequireCurrentDraftTransaction>
+                  <ChangePrintSettingsPage />
                 </RequireCurrentDraftTransaction>
               </Route>
               <Route exact path="/printers/status">
