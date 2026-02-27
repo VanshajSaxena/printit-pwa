@@ -6,9 +6,8 @@ import {
   IonButton,
   IonButtons,
   IonCard,
-  IonCardHeader,
+  IonCardContent,
   IonCardSubtitle,
-  IonCardTitle,
   IonHeader,
   IonIcon,
   IonLabel,
@@ -29,6 +28,7 @@ import { getPdfPageCount } from "@utils/getPdfPageCount";
 import { getUUID } from "@utils/getUUID";
 import { setMany } from "idb-keyval";
 import {
+  alertCircle,
   arrowBack,
   arrowBackOutline,
   cloudUploadOutline,
@@ -258,22 +258,59 @@ export default function SelectedVendorPage() {
         scrollY={true}
         className="ion-padding flex min-h-full flex-col items-center justify-between"
       >
-        <IonCard className="max-w-full min-w-full">
-          <IonCardHeader className="p-4">
-            <div className="flex items-center gap-8">
-              <PrinterGraphic />
-              <div>
-                <IonCardTitle className="flex items-center justify-start gap-2">
-                  {isOnline ? "Printer Ready" : "Printer Offline"}
-                  <PulseIcon
-                    className="mt-0 min-h-8 min-w-8"
-                    status={presenceStatus}
-                  />
-                </IonCardTitle>
-                <IonCardSubtitle>{displayName}</IonCardSubtitle>
+        <IonCard className="w-full">
+          <IonCardContent className="!p-4">
+            <div
+              className="grid items-start gap-6"
+              style={{
+                gridTemplateColumns: "minmax(120px, 30%) 1fr",
+              }}
+            >
+              <div className="h-auto w-full">
+                <PrinterGraphic />
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center gap-3">
+                  <div className="flex flex-col">
+                    <h2
+                      style={{
+                        fontSize: "20px",
+                        fontWeight: 600,
+                        color: "var(--ion-color-dark)",
+                      }}
+                    >
+                      {isOnline ? "Printer Ready" : "Printer Offline"}
+                    </h2>
+
+                    <IonCardSubtitle>{displayName}</IonCardSubtitle>
+                  </div>
+
+                  {isOnline && <PulseIcon status={presenceStatus} />}
+                  {!isOnline && (
+                    <IonIcon
+                      icon={alertCircle}
+                      color="danger"
+                      className="text-4xl"
+                    />
+                  )}
+                </div>
+
+                {!isOnline && (
+                  <p
+                    style={{
+                      marginTop: "0.5rem",
+                      fontWeight: 600,
+                      fontSize: "14px",
+                      color: "var(--ion-color-danger-tint)",
+                    }}
+                  >
+                    This printer is currently unavailable.
+                  </p>
+                )}
               </div>
             </div>
-          </IonCardHeader>
+          </IonCardContent>
         </IonCard>
 
         <div className="flex w-full max-w-full flex-col gap-4">
