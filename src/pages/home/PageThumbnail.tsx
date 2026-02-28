@@ -2,11 +2,6 @@ import { IonSpinner } from "@ionic/react";
 import * as pdfjsLib from "pdfjs-dist";
 import { useCallback, useEffect, useRef, useState } from "react";
 
-pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
-  "pdfjs-dist/build/pdf.worker.mjs",
-  import.meta.url,
-).toString();
-
 const PLACEHOLDER_ASPECT_RATIO = "210 / 297";
 
 const INTERSECTION_MARGIN = "200px";
@@ -48,7 +43,7 @@ export function PageThumbnail({
 
     // Cancel any in-flight render before starting a new one
     renderTaskRef.current?.cancel();
-    const task = page.render({ canvasContext: ctx, viewport, canvas });
+    const task = page.render({ canvasContext: ctx, viewport });
     renderTaskRef.current = task;
 
     try {
