@@ -19,7 +19,7 @@ import type { StoredFileWrapper } from "./CheckoutPage";
 import { PageThumbnail } from "./PageThumbnail";
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
-  "pdfjs-dist/build/pdf.worker.mjs",
+  "pdfjs-dist/build/pdf.worker.js",
   import.meta.url,
 ).toString();
 

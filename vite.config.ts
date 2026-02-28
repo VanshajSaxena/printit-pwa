@@ -1,5 +1,5 @@
 /// <reference types="vitest" />
-
+import basicSsl from "@vitejs/plugin-basic-ssl";
 import tailwindcss from "@tailwindcss/vite";
 import legacy from "@vitejs/plugin-legacy";
 import react from "@vitejs/plugin-react";
@@ -10,6 +10,16 @@ import pkg from "./package.json";
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  build: {
+    rollupOptions: {
+      onwarn(warning, warn) {
+        if (warning.code === "EVAL" && warning.id?.includes("pdfjs-dist")) {
+          return;
+        }
+        warn(warning);
+      },
+    },
+  },
   define: {
     "import.meta.env.VITE_APP_VERSION": JSON.stringify(pkg.version),
     "import.meta.env.VITE_NETLIFY_CONTEXT": JSON.stringify(
@@ -23,6 +33,7 @@ export default defineConfig({
     ),
   },
   plugins: [
+    basicSsl(),
     react(),
     legacy(),
     tailwindcss({ optimize: { minify: true } }),
@@ -72,6 +83,10 @@ export default defineConfig({
       },
     }),
   ],
+  server: {
+    https: true,
+    host: true,
+  },
   test: {
     globals: true,
     environment: "jsdom",
