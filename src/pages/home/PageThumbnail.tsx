@@ -30,18 +30,22 @@ export function PageThumbnail({
     if (!canvas || !container || rendered) return;
 
     const page = await pdfDocument.getPage(pageNumber);
+    const dpr = window.devicePixelRatio;
     const containerWidth = container.clientWidth;
     const baseViewport = page.getViewport({ scale: 1 });
-    const scale = containerWidth / baseViewport.width;
+
+    const scale = (containerWidth / baseViewport.width) * dpr;
     const viewport = page.getViewport({ scale });
 
     canvas.width = viewport.width;
     canvas.height = viewport.height;
 
+    canvas.style.width = `${(viewport.width / dpr).toString()}px`;
+    canvas.style.height = `${(viewport.height / dpr).toString()}px`;
+
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    // Cancel any in-flight render before starting a new one
     renderTaskRef.current?.cancel();
     const task = page.render({ canvasContext: ctx, viewport });
     renderTaskRef.current = task;
@@ -50,7 +54,6 @@ export function PageThumbnail({
       await task.promise;
       setRendered(true);
     } catch (e) {
-      // RenderingCancelledException is expected, ignore it
       if ((e as Error).name !== "RenderingCancelledException") {
         console.error(`Failed to render page ${pageNumber.toString()}:`, e);
       }
