@@ -2,9 +2,11 @@ import { useAndroidBackButton } from "@hooks/useAndroidBackButton";
 import { IonRouterOutlet, IonTabs } from "@ionic/react";
 import { IonReactRouter } from "@ionic/react-router";
 import YourPrintsPage from "@pages/documents/YourPrintsPage";
-import { ChangePrintSettingsPage } from "@pages/home/ChangePrintSettingsPage";
 import CheckoutPage from "@pages/home/CheckoutPage";
 import HomePage from "@pages/home/HomePage";
+import { PrintOptionsDocumentPage } from "@pages/home/PrintOptionsDocumentPage";
+import { PrintOptionsPage } from "@pages/home/PrintOptionsPage";
+import { RequireCurrentDraftJob } from "@pages/home/RequireCurrentDraftJob";
 import { RequireCurrentDraftTransaction } from "@pages/home/RequireCurrentDraftTransaction";
 import { RequireCurrentTransaction } from "@pages/home/RequireCurrentTransaction";
 import { RequireVendorAndTransactionStore } from "@pages/home/RequireVendorAndTransactionStore";
@@ -48,7 +50,15 @@ export default function Applayout() {
               </Route>
               <Route exact path="/home/checkout/print-options">
                 <RequireCurrentDraftTransaction>
-                  <ChangePrintSettingsPage />
+                  <PrintOptionsPage />
+                </RequireCurrentDraftTransaction>
+              </Route>
+
+              <Route exact path="/home/checkout/print-options/document">
+                <RequireCurrentDraftTransaction>
+                  <RequireCurrentDraftJob>
+                    <PrintOptionsDocumentPage />
+                  </RequireCurrentDraftJob>
                 </RequireCurrentDraftTransaction>
               </Route>
               <Route exact path="/home/status">
@@ -68,7 +78,14 @@ export default function Applayout() {
               </Route>
               <Route exact path="/prints/checkout/print-options">
                 <RequireCurrentDraftTransaction>
-                  <ChangePrintSettingsPage />
+                  <PrintOptionsPage />
+                </RequireCurrentDraftTransaction>
+              </Route>
+              <Route exact path="/prints/checkout/print-options/document">
+                <RequireCurrentDraftTransaction>
+                  <RequireCurrentDraftJob>
+                    <PrintOptionsDocumentPage />
+                  </RequireCurrentDraftJob>
                 </RequireCurrentDraftTransaction>
               </Route>
               <Route exact path="/prints/status">
@@ -89,7 +106,15 @@ export default function Applayout() {
               </Route>
               <Route exact path="/printers/checkout/print-options">
                 <RequireCurrentDraftTransaction>
-                  <ChangePrintSettingsPage />
+                  <PrintOptionsPage />
+                </RequireCurrentDraftTransaction>
+              </Route>
+
+              <Route exact path="/printers/checkout/print-options/document">
+                <RequireCurrentDraftTransaction>
+                  <RequireCurrentDraftJob>
+                    <PrintOptionsDocumentPage />
+                  </RequireCurrentDraftJob>
                 </RequireCurrentDraftTransaction>
               </Route>
               <Route exact path="/printers/status">
