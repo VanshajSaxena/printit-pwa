@@ -9,6 +9,7 @@ import {
   IonSpinner,
   IonTitle,
   IonToolbar,
+  useIonRouter,
 } from "@ionic/react";
 import AppContent from "@layout/AppContent";
 import { useDraftStore } from "@store/draftStore";
@@ -24,6 +25,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
 ).toString();
 
 export function PrintOptionsDocumentPage() {
+  const router = useIonRouter();
   const [pdfDocument, setPdfDocument] =
     useState<pdfjsLib.PDFDocumentProxy | null>(null);
   const [loading, setLoading] = useState(true);
@@ -88,15 +90,17 @@ export function PrintOptionsDocumentPage() {
       <IonHeader translucent>
         <IonToolbar>
           <IonButtons slot="start">
-            <IonBackButton defaultHref="print-options" text="Print Options" />
+            <IonBackButton
+              defaultHref={`/${router.routeInfo.tab ?? "home"}/checkout/print-options`}
+            />
           </IonButtons>
           <IonTitle>{currentJob.document.filename}</IonTitle>
         </IonToolbar>
       </IonHeader>
-      <AppContent fullscreen>
+      <AppContent fullscreen className="h-full">
         {loading || !pdfDocument ? (
           <div className="flex h-full items-center justify-center">
-            <IonSpinner name="crescent" />
+            <IonSpinner />
           </div>
         ) : (
           <IonGrid className="ion-padding-horizontal ion-padding-bottom">

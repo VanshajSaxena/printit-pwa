@@ -1,5 +1,5 @@
 import {
-  IonButton,
+  IonBackButton,
   IonButtons,
   IonHeader,
   IonIcon,
@@ -13,7 +13,7 @@ import {
 } from "@ionic/react";
 import AppContent from "@layout/AppContent";
 import { useDraftStore } from "@store/draftStore";
-import { chevronForward } from "ionicons/icons";
+import { checkmark, chevronForward } from "ionicons/icons";
 
 import "./PrintOptionsPage.css";
 
@@ -29,9 +29,6 @@ export function PrintOptionsPage() {
 
   const handleJobPress = (jobId: string) => {
     setCurrentDraftJobId(jobId);
-    console.log(
-      `/${router.routeInfo.tab ?? "home"}/checkout/print-options/document`,
-    );
     router.push(
       `/${router.routeInfo.tab ?? "home"}/checkout/print-options/document`,
       "forward",
@@ -44,14 +41,14 @@ export function PrintOptionsPage() {
         <IonToolbar>
           <IonTitle>Print Options</IonTitle>
           <IonButtons slot="end">
-            <IonButton
-              size="default"
-              onClick={() => {
-                router.goBack();
-              }}
+            <IonBackButton
+              type="submit"
+              icon={checkmark}
+              text={""}
+              className="mr-2"
             >
               Done
-            </IonButton>
+            </IonBackButton>
           </IonButtons>
         </IonToolbar>
       </IonHeader>

@@ -1,5 +1,4 @@
 /// <reference types="vitest" />
-import basicSsl from "@vitejs/plugin-basic-ssl";
 import tailwindcss from "@tailwindcss/vite";
 import legacy from "@vitejs/plugin-legacy";
 import react from "@vitejs/plugin-react";
@@ -33,7 +32,6 @@ export default defineConfig({
     ),
   },
   plugins: [
-    basicSsl(),
     react(),
     legacy(),
     tailwindcss({ optimize: { minify: true } }),
@@ -83,10 +81,6 @@ export default defineConfig({
       },
     }),
   ],
-  server: {
-    https: true,
-    host: true,
-  },
   test: {
     globals: true,
     environment: "jsdom",

@@ -324,18 +324,16 @@ export default function CheckoutPage() {
     vendorProfile?.displayName ??
     `${vendorProfile?.firstName ?? ""} ${vendorProfile?.lastName ?? ""}`.trim();
 
-  const backLink = vendorProfile?.username
-    ? `${router.routeInfo.tab === "home" || !router.routeInfo.tab ? "/home/printer" : router.routeInfo.tab}/@${vendorProfile.username}`
-    : "/home";
   const selectedJob = currentDraftTransaction.jobs.find(
     (job) => job.id === selectedJobId,
   );
+
   return (
     <IonPage ref={pageRef}>
       <IonHeader translucent>
         <IonToolbar>
           <IonButtons slot="start">
-            <IonBackButton defaultHref={backLink} />
+            <IonBackButton defaultHref={"/home"} />
           </IonButtons>
           <IonTitle>Checkout</IonTitle>
         </IonToolbar>

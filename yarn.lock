@@ -3610,15 +3610,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vitejs/plugin-basic-ssl@npm:^2.1.4":
-  version: 2.1.4
-  resolution: "@vitejs/plugin-basic-ssl@npm:2.1.4"
-  peerDependencies:
-    vite: ^6.0.0 || ^7.0.0
-  checksum: 10c0/fcbec6f089d3f16f3c2011a8d7cf41920a0b9a97907a36f1dc367527582f98e6e376fa29b1f4d93c265be765ccd90752bfe6558bfaf71cc4f171196dccd19b56
-  languageName: node
-  linkType: hard
-
 "@vitejs/plugin-legacy@npm:^5.0.0":
   version: 5.4.3
   resolution: "@vitejs/plugin-legacy@npm:5.4.3"
@@ -10293,7 +10284,6 @@ __metadata:
     "@types/react-dom": "npm:19.0.4"
     "@types/react-router": "npm:^5.1.20"
     "@types/react-router-dom": "npm:^5.3.3"
-    "@vitejs/plugin-basic-ssl": "npm:^2.1.4"
     "@vitejs/plugin-legacy": "npm:^5.0.0"
     "@vitejs/plugin-react": "npm:^4.0.1"
     "@zxing/browser": "npm:^0.1.5"
