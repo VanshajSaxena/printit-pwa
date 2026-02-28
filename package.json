@@ -33,6 +33,7 @@
     "openapi-fetch": "^0.15.0",
     "openapi-react-query": "^0.5.1",
     "pdf-lib": "^1.17.1",
+    "pdfjs-dist": "^5.4.624",
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "react-router": "^5.3.4",

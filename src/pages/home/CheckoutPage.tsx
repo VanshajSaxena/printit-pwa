@@ -47,7 +47,7 @@ import {
 import { useEffect, useRef, useState } from "react";
 import "./CheckoutPage.css";
 
-interface StoredFileWrapper {
+export interface StoredFileWrapper {
   id: string;
   file: File;
   filename?: string;
@@ -485,7 +485,7 @@ export default function CheckoutPage() {
           <IonItem
             button
             detail
-            routerLink={`/prints/checkout/print-options`}
+            routerLink={`/${router.routeInfo.tab ?? "home"}/checkout/print-options`}
             routerDirection="forward"
           >
             <IonLabel>Print Options</IonLabel>

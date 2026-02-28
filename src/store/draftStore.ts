@@ -13,17 +13,25 @@ export interface TimeAndIdentifierType {
   updatedAt: string;
 }
 
-export interface DraftDocument extends TimeAndIdentifierType {
-  filename: string;
-  contentType: string;
-  fileId: string;
-  pageCount: number;
+export interface DraftPageConfig {
+  pageNumber: number;
+  excluded: boolean;
+  outputColor?: OutputColor;
+  copyCount?: number;
 }
 
 export interface DraftJob extends TimeAndIdentifierType {
   document: DraftDocument;
   copyCount: number;
   outputColor: OutputColor;
+  pageConfigs: DraftPageConfig[];
+}
+
+export interface DraftDocument extends TimeAndIdentifierType {
+  filename: string;
+  contentType: string;
+  fileId: string;
+  pageCount: number;
 }
 
 export interface DraftTransaction extends TimeAndIdentifierType {
@@ -42,6 +50,7 @@ export interface DraftStore {
   state: {
     transactions: Record<string, DraftTransaction>;
     currentDraftTransactionId: string | null;
+    currentDraftJobId: string | null;
   };
   hydrated: boolean;
   setHydrated: () => void;
@@ -54,13 +63,34 @@ export interface DraftStore {
   setCurrentDraftTransactionId: (id: string) => void;
   clearCurrentDraftTransactionId: () => void;
 
+  updateTransactionVendor: (transactionId: string, vendorId: number) => void;
+
+  setCurrentDraftJobId: (id: string) => void;
+  clearCurrentDraftJobId: () => void;
+
   updateDraftJob: (
     transactionId: string,
     jobId: string,
     updates: Partial<DraftJob>,
   ) => void;
+  togglePageExclusion: (
+    transactionId: string,
+    jobId: string,
+    pageNumber: number,
+  ) => void;
 
-  updateTransactionVendor: (transactionId: string, vendorId: number) => void;
+  updatePageConfig: (
+    transactionId: string,
+    jobId: string,
+    pageNumber: number,
+    updates: Partial<Omit<DraftPageConfig, "pageNumber">>,
+  ) => void;
+
+  resetPageConfig: (
+    transactionId: string,
+    jobId: string,
+    pageNumber: number,
+  ) => void;
 }
 
 export const useDraftStore = create<DraftStore>()(
@@ -69,6 +99,7 @@ export const useDraftStore = create<DraftStore>()(
       state: {
         transactions: {},
         currentDraftTransactionId: null,
+        currentDraftJobId: null,
       },
       hydrated: false,
       setHydrated: () => {
@@ -90,6 +121,13 @@ export const useDraftStore = create<DraftStore>()(
         }));
 
         const jobs = documents.map((document) => {
+          const pageConfigs: DraftPageConfig[] = Array.from(
+            { length: document.pageCount },
+            (_, i) => ({
+              pageNumber: i + 1,
+              excluded: false,
+            }),
+          );
           return {
             id: getUUID(),
             createdAt: now,
@@ -97,6 +135,7 @@ export const useDraftStore = create<DraftStore>()(
             document,
             copyCount: 1,
             outputColor: "Monochrome",
+            pageConfigs,
           } satisfies DraftJob;
         });
 
@@ -143,6 +182,39 @@ export const useDraftStore = create<DraftStore>()(
           }
         });
       },
+      setCurrentDraftJobId: (id) => {
+        set((store) => {
+          store.state.currentDraftJobId = id;
+        });
+      },
+      clearCurrentDraftJobId: () => {
+        set((store) => {
+          store.state.currentDraftJobId = null;
+        });
+      },
+      togglePageExclusion: (transactionId, jobId, pageNumber) => {
+        set((store) => {
+          const transaction = store.state.transactions[transactionId];
+          if (!transaction) return;
+          const job = transaction.jobs.find((j) => j.id === jobId);
+          if (job?.pageConfigs[pageNumber]) {
+            const currentStatus = job.pageConfigs[pageNumber].excluded;
+            job.pageConfigs[pageNumber].excluded = !currentStatus;
+          }
+        });
+      },
+      updatePageConfig: (
+        transactionId: string,
+        jobId: string,
+        pageNumber: number,
+        updates: Partial<Omit<DraftPageConfig, "pageNumber">>,
+      ) => {},
+
+      resetPageConfig: (
+        transactionId: string,
+        jobId: string,
+        pageNumber: number,
+      ) => {},
     })),
     {
       name: "printit-draft-storage",
