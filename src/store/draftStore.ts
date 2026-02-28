@@ -197,27 +197,41 @@ export const useDraftStore = create<DraftStore>()(
           const transaction = store.state.transactions[transactionId];
           if (!transaction) return;
           const job = transaction.jobs.find((j) => j.id === jobId);
-          if (job?.pageConfigs[pageNumber]) {
-            const currentStatus = job.pageConfigs[pageNumber].excluded;
-            job.pageConfigs[pageNumber].excluded = !currentStatus;
+          const page = job?.pageConfigs.find(
+            (p) => p.pageNumber === pageNumber,
+          );
+          if (page) {
+            page.excluded = !page.excluded;
           }
         });
       },
-      updatePageConfig: (
-        transactionId: string,
-        jobId: string,
-        pageNumber: number,
-        updates: Partial<Omit<DraftPageConfig, "pageNumber">>,
-      ) => {
-        console.log(transactionId, jobId, pageNumber, updates);
+      updatePageConfig: (transactionId, jobId, pageNumber, updates) => {
+        set((store) => {
+          const transaction = store.state.transactions[transactionId];
+          if (!transaction) return;
+          const job = transaction.jobs.find((j) => j.id === jobId);
+          const page = job?.pageConfigs.find(
+            (p) => p.pageNumber === pageNumber,
+          );
+          if (page) {
+            Object.assign(page, updates);
+          }
+        });
       },
-
-      resetPageConfig: (
-        transactionId: string,
-        jobId: string,
-        pageNumber: number,
-      ) => {
-        console.log(transactionId, jobId, pageNumber);
+      resetPageConfig: (transactionId, jobId, pageNumber) => {
+        set((store) => {
+          const transaction = store.state.transactions[transactionId];
+          if (!transaction) return;
+          const job = transaction.jobs.find((j) => j.id === jobId);
+          const page = job?.pageConfigs.find(
+            (p) => p.pageNumber === pageNumber,
+          );
+          if (page) {
+            delete page.outputColor;
+            delete page.copyCount;
+            // excluded intentionally not reset — that's a deliberate user action
+          }
+        });
       },
     })),
     {

@@ -12,7 +12,7 @@ import {
   useIonRouter,
 } from "@ionic/react";
 import AppContent from "@layout/AppContent";
-import { useDraftStore } from "@store/draftStore";
+import { DraftJob, OutputColor, useDraftStore } from "@store/draftStore";
 import { get } from "idb-keyval";
 import * as pdfjsLib from "pdfjs-dist";
 import { useCallback, useEffect, useState } from "react";
@@ -34,6 +34,10 @@ export function PrintOptionsDocumentPage() {
     (s) => s.state.currentDraftTransactionId,
   );
 
+  if (!currentTransactionId) {
+    throw new Error("CurrentDraftTransactionId doesn't exist");
+  }
+
   const currentJob = useDraftStore((s) => {
     const transactionId = s.state.currentDraftTransactionId;
     const jobId = s.state.currentDraftJobId;
@@ -49,6 +53,7 @@ export function PrintOptionsDocumentPage() {
   }
 
   const togglePageExclusion = useDraftStore((s) => s.togglePageExclusion);
+  const updatePageConfig = useDraftStore((s) => s.updatePageConfig);
 
   useEffect(() => {
     const job = currentJob;
@@ -82,8 +87,22 @@ export function PrintOptionsDocumentPage() {
       if (!currentTransactionId) return;
       togglePageExclusion(currentTransactionId, currentJob.id, pageNumber);
     },
-    [currentTransactionId, currentJob, togglePageExclusion],
+    [currentTransactionId, currentJob.id, togglePageExclusion],
   );
+
+  function getEffectiveColor(job: DraftJob, pageNumber: number): OutputColor {
+    return (
+      job.pageConfigs.find((p) => p.pageNumber === pageNumber)?.outputColor ??
+      job.outputColor
+    );
+  }
+
+  function getEffectiveCopyCount(job: DraftJob, pageNumber: number): number {
+    return (
+      job.pageConfigs.find((p) => p.pageNumber === pageNumber)?.copyCount ??
+      job.copyCount
+    );
+  }
 
   return (
     <IonPage>
@@ -103,7 +122,7 @@ export function PrintOptionsDocumentPage() {
             <IonSpinner />
           </div>
         ) : (
-          <IonGrid className="ion-padding-horizontal ion-padding-bottom">
+          <IonGrid className="ion-padding">
             <IonRow>
               {currentJob.pageConfigs.map((pageConfig) => (
                 <IonCol key={pageConfig.pageNumber} size="6" sizeMd="4">
@@ -111,8 +130,36 @@ export function PrintOptionsDocumentPage() {
                     pdfDocument={pdfDocument}
                     pageNumber={pageConfig.pageNumber}
                     excluded={pageConfig.excluded}
-                    onToggle={() => {
-                      handleToggle(pageConfig.pageNumber - 1);
+                    outputColor={getEffectiveColor(
+                      currentJob,
+                      pageConfig.pageNumber,
+                    )}
+                    copyCount={getEffectiveCopyCount(
+                      currentJob,
+                      pageConfig.pageNumber,
+                    )}
+                    onToggleExclusion={() => {
+                      handleToggle(pageConfig.pageNumber);
+                    }}
+                    onOutputColorChange={(color) => {
+                      updatePageConfig(
+                        currentTransactionId,
+                        currentJob.id,
+                        pageConfig.pageNumber,
+                        { outputColor: color },
+                      );
+                    }}
+                    onCopyCountChange={(count) => {
+                      updatePageConfig(
+                        currentTransactionId,
+                        currentJob.id,
+                        pageConfig.pageNumber,
+                        { copyCount: count },
+                      );
+                    }}
+                    onPress={() => {
+                      // setCurrentDraftPageNumber(pageConfig.pageNumber);
+                      // router.push(`.../orientation`);
                     }}
                   />
                 </IonCol>

@@ -362,8 +362,7 @@ export default function CheckoutPage() {
             detail={false}
             lines="none"
             style={{
-              "--inner-padding-top": "0.75rem",
-              "--inner-padding-bottom": "0.25rem",
+              "--inner-padding-top": "0.6rem",
             }}
           >
             <IonLabel>
@@ -452,8 +451,8 @@ export default function CheckoutPage() {
           <IonItem
             detail={false}
             style={{
-              "--inner-padding-top": "0.75rem",
-              "--inner-padding-bottom": "0.75rem",
+              "--inner-padding-top": "0.5rem",
+              "--inner-padding-bottom": "0.4rem",
             }}
           >
             <IonIcon

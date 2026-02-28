@@ -56,6 +56,7 @@ const PrintersPage: React.FC = () => {
   );
 
   const handleLocateMe = () => {
+    setIsErrorGettingLocation(false);
     setIsLocating(true);
     navigator.geolocation.getCurrentPosition(
       (position) => {
