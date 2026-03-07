@@ -10,6 +10,8 @@ import {
   IonTitle,
   IonToolbar,
   useIonRouter,
+  useIonViewDidEnter,
+  useIonViewDidLeave,
 } from "@ionic/react";
 import AppContent from "@layout/AppContent";
 import { DraftJob, OutputColor, useDraftStore } from "@store/draftStore";
@@ -29,6 +31,15 @@ export function PrintOptionsDocumentPage() {
   const [pdfDocument, setPdfDocument] =
     useState<pdfjsLib.PDFDocumentProxy | null>(null);
   const [loading, setLoading] = useState(true);
+
+  const [isActive, setIsActive] = useState(true);
+
+  useIonViewDidEnter(() => {
+    setIsActive(true);
+  });
+  useIonViewDidLeave(() => {
+    setIsActive(false);
+  });
 
   const currentTransactionId = useDraftStore(
     (s) => s.state.currentDraftTransactionId,
@@ -127,6 +138,7 @@ export function PrintOptionsDocumentPage() {
               {currentJob.pageConfigs.map((pageConfig) => (
                 <IonCol key={pageConfig.pageNumber} size="6" sizeMd="4">
                   <PageThumbnail
+                    isActive={isActive}
                     pdfDocument={pdfDocument}
                     pageNumber={pageConfig.pageNumber}
                     excluded={pageConfig.excluded}

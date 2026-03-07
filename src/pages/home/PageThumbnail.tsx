@@ -14,6 +14,7 @@ const COLOR_LABEL: Record<string, string> = {
 };
 
 interface PageThumbnailProps {
+  isActive: boolean;
   pdfDocument: pdfjsLib.PDFDocumentProxy;
   pageNumber: number;
   excluded: boolean;
@@ -26,6 +27,7 @@ interface PageThumbnailProps {
 }
 
 export function PageThumbnail({
+  isActive,
   pdfDocument,
   pageNumber,
   excluded,
@@ -76,8 +78,20 @@ export function PageThumbnail({
   }, [pdfDocument, pageNumber, rendered]);
 
   useEffect(() => {
+    if (!isActive) {
+      const canvas = canvasRef.current;
+      if (canvas) {
+        canvas.width = 0;
+        canvas.height = 0;
+      }
+      setRendered(false);
+      renderTaskRef.current?.cancel();
+    }
+  }, [isActive]);
+
+  useEffect(() => {
     const container = containerRef.current;
-    if (!container) return;
+    if (!container || !isActive || rendered) return;
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -94,7 +108,7 @@ export function PageThumbnail({
       observer.disconnect();
       renderTaskRef.current?.cancel();
     };
-  }, [renderPage]);
+  }, [renderPage, isActive, rendered]);
 
   const cycleColor = (e: React.MouseEvent) => {
     e.stopPropagation();

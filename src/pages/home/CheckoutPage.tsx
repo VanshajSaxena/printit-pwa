@@ -31,10 +31,12 @@ import {
 } from "@ionic/react";
 
 import AppContent from "@layout/AppContent";
-import { OutputColor, useDraftStore } from "@store/draftStore";
+import { OutputColor, useDraftStore, type DraftJob } from "@store/draftStore";
 import { usePresenceStore } from "@store/presenceStore";
 import { useTransactionStore } from "@store/transactionStore";
 import { useVendorStore } from "@store/vendorStore";
+import { resolveJobGroups } from "@utils/resolveJobGroups";
+import { deriveJobSummary, formatSubtitle } from "@utils/jobSummary";
 import { getMany } from "idb-keyval";
 import {
   add,
@@ -53,6 +55,60 @@ export interface StoredFileWrapper {
   filename?: string;
   mimeType?: string;
 }
+
+// ─── Override Chips ───────────────────────────────────────────────────────────
+//
+// Rendered only when the job has per-page overrides. Each chip is a small,
+// low-contrast pill that communicates a single fact without demanding attention.
+// The user who hasn't touched Print Options will never see these.
+
+interface OverrideChipsProps {
+  job: DraftJob;
+}
+
+function OverrideChips({ job }: OverrideChipsProps) {
+  const summary = deriveJobSummary(job);
+  if (!summary.hasAnyOverride) return null;
+
+  const chips: { key: string; label: string }[] = [];
+
+  if (summary.hasExclusions) {
+    const skipped = summary.totalPagesCount - summary.activePagesCount;
+    chips.push({
+      key: "excluded",
+      label: `${skipped.toString()} ${skipped === 1 ? "page" : "pages"} skipped`,
+    });
+  }
+
+  if (summary.hasMixedColor) {
+    chips.push({ key: "color", label: "Mixed color" });
+  }
+
+  if (summary.hasMixedCopies) {
+    chips.push({ key: "copies", label: "Mixed copies" });
+  }
+
+  return (
+    <div className="mt-1.5 flex flex-wrap gap-1">
+      {chips.map((chip) => (
+        <span
+          key={chip.key}
+          className="rounded-full px-2 py-0.5 text-xs font-medium"
+          style={{
+            background: "var(--ion-color-light)",
+            color: "var(--ion-color-medium-shade)",
+            // Subtle border so chips read as distinct on any background
+            border: "1px solid var(--ion-color-light-shade)",
+          }}
+        >
+          {chip.label}
+        </span>
+      ))}
+    </div>
+  );
+}
+
+// ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function CheckoutPage() {
   const router = useIonRouter();
@@ -80,9 +136,7 @@ export default function CheckoutPage() {
   const setCurrentTransactionId = useTransactionStore(
     (store) => store.setCurrentTransactionId,
   );
-  const clearCurrentDraftTransactionId = useDraftStore(
-    (store) => store.clearCurrentDraftTransactionId,
-  );
+
   const updateDraftJob = useDraftStore((store) => store.updateDraftJob);
 
   const currentDraftTransactionId = useDraftStore(
@@ -98,13 +152,10 @@ export default function CheckoutPage() {
   });
 
   const vendorId = currentDraftTransaction.vendorId;
-
   const vendorProfile = useVendorStore((store) => store.getVendor(vendorId));
-
   const presenceStatus = usePresenceStore((store) =>
     vendorId ? store.getPresence(vendorId) : undefined,
   );
-
   const isOnline = presenceStatus === "online";
 
   const createDocumentsMutation = client.useMutation(
@@ -135,9 +186,7 @@ export default function CheckoutPage() {
   };
 
   const handleColorChange = (jobId: string, value: OutputColor) => {
-    updateDraftJob(currentDraftTransactionId, jobId, {
-      outputColor: value,
-    });
+    updateDraftJob(currentDraftTransactionId, jobId, { outputColor: value });
   };
 
   const handleSubmit = async () => {
@@ -159,7 +208,6 @@ export default function CheckoutPage() {
     try {
       const jobs = currentDraftTransaction.jobs;
       const fileIds = jobs.map((job) => job.document.fileId);
-
       const fileObjects: (StoredFileWrapper | undefined)[] =
         await getMany(fileIds);
 
@@ -170,53 +218,63 @@ export default function CheckoutPage() {
       }
 
       const fileMap = new Map<string, File>();
-
       jobs.forEach((job) => {
         const wrapper = fileObjects.find((w) => w?.id === job.document.fileId);
-
-        if (wrapper?.file) {
-          fileMap.set(job.document.id, wrapper.file);
-        }
+        if (wrapper?.file) fileMap.set(job.document.fileId, wrapper.file);
       });
 
       if (fileMap.size !== jobs.length) {
         throw new Error("Mismatch between jobs and retrieved files.");
       }
 
-      const draftDocuments = jobs.map(({ document }) => ({
-        filename: document.filename,
-        contentType: document.contentType,
-        draftId: document.id,
-      }));
+      const preparedJobsNested = await Promise.all(
+        jobs.map((job) => {
+          const file = fileMap.get(job.document.fileId);
+          if (!file) throw new Error("Failed to prepare job from nested jobs.");
+          return resolveJobGroups(job, file);
+        }),
+      );
+
+      const preparedJobs = preparedJobsNested.flat();
+
+      if (preparedJobs.length === 0) {
+        throw new Error("No pages selected for printing.");
+      }
 
       const { documents } = await createDocumentsMutation.mutateAsync({
-        body: { documents: draftDocuments },
+        body: {
+          documents: preparedJobs.map((job) => ({
+            filename: job.filename,
+            contentType: job.contentType,
+            draftId: job.draftId,
+          })),
+        },
       });
 
       const { signedUrls } = await filesMutation.mutateAsync({
-        body: { ids: documents.map((document) => document.id) },
+        body: { ids: documents.map((d) => d.id) },
       });
 
       try {
         await Promise.all(
           signedUrls.map(async ({ url, id }) => {
-            const document = documents.find((document) => document.id === id);
-            if (!document) {
+            const doc = documents.find((d) => d.id === id);
+            if (!doc)
               throw new Error(`Document not found for id ${id.toString()}`);
-            }
 
-            const file = fileMap.get(document.draftId);
-
-            if (!file) {
+            const preparedJob = preparedJobs.find(
+              (pj) => pj.draftId === doc.draftId,
+            );
+            if (!preparedJob) {
               throw new Error(
-                `File binary not found for draftId ${document.draftId}`,
+                `PreparedJob not found for draftId ${doc.draftId}`,
               );
             }
 
             const uploadResponse = await fetch(url, {
               method: "PUT",
-              headers: { "Content-Type": file.type },
-              body: file,
+              headers: { "Content-Type": preparedJob.file.type },
+              body: preparedJob.file,
             });
 
             if (!uploadResponse.ok) {
@@ -228,46 +286,39 @@ export default function CheckoutPage() {
         );
 
         await Promise.all(
-          documents.map(async (document) => {
+          documents.map(async (doc) => {
             await updateDocumentsMutation.mutateAsync({
-              params: { path: { id: document.id } },
+              params: { path: { id: doc.id } },
               body: { status: "UPLOADED" },
             });
           }),
         );
       } catch (uploadError) {
         console.error("Upload failed:", uploadError);
-
         await Promise.all(
-          documents.map(async (document) => {
+          documents.map(async (doc) => {
             await updateDocumentsMutation.mutateAsync({
-              params: { path: { id: document.id } },
+              params: { path: { id: doc.id } },
               body: { status: "FAILED" },
             });
           }),
         );
-
         throw new Error("Failed to upload documents");
       }
 
-      const finalJobs = jobs.map((job) => {
-        const documentId = documents.find(
-          (document) => job.document.id === document.draftId,
-        )?.id;
-
-        if (!documentId) {
-          throw new Error("Missing document id");
-        }
-
+      const finalJobs = preparedJobs.map((pj) => {
+        const documentId = documents.find((d) => d.draftId === pj.draftId)?.id;
+        if (!documentId)
+          throw new Error(`Missing document id for draftId ${pj.draftId}`);
         return {
-          copyCount: job.copyCount,
-          outputColor: job.outputColor,
+          copyCount: pj.copyCount,
+          outputColor: pj.outputColor,
           documentId,
         };
       });
 
       const transactionResponse = await createTransactionMutation.mutateAsync({
-        body: { jobs: finalJobs, vendorId: vendorId },
+        body: { jobs: finalJobs, vendorId },
       });
 
       createTransaction(transactionResponse);
@@ -294,7 +345,6 @@ export default function CheckoutPage() {
         color: "danger",
       });
     } finally {
-      // clearCurrentDraftTransactionId();
       setIsSubmitting(false);
     }
   };
@@ -315,10 +365,11 @@ export default function CheckoutPage() {
     }
   }, [presenceData, setPresence, vendorProfile]);
 
-  const totalPages = currentDraftTransaction.jobs.reduce(
-    (total, job) => total + job.document.pageCount * job.copyCount,
-    0,
-  );
+  // Grand total: sum effectiveTotalSheets across all jobs so excluded pages
+  // and per-page copy overrides are both reflected correctly.
+  const totalPages = currentDraftTransaction.jobs.reduce((total, job) => {
+    return total + deriveJobSummary(job).effectiveTotalSheets;
+  }, 0);
 
   const displayName =
     vendorProfile?.displayName ??
@@ -361,9 +412,7 @@ export default function CheckoutPage() {
           <IonItem
             detail={false}
             lines="none"
-            style={{
-              "--inner-padding-top": "0.6rem",
-            }}
+            style={{ "--inner-padding-top": "0.6rem" }}
           >
             <IonLabel>
               <div
@@ -379,7 +428,8 @@ export default function CheckoutPage() {
           </IonItem>
 
           {currentDraftTransaction.jobs.map((job) => {
-            const totalSheets = job.document.pageCount * job.copyCount;
+            const summary = deriveJobSummary(job);
+            const subtitle = formatSubtitle(job, summary);
 
             return (
               <IonItem
@@ -391,11 +441,14 @@ export default function CheckoutPage() {
                   setIsModalOpen(true);
                 }}
                 style={{
-                  "--inner-padding-top": "0.5rem",
-                  "--inner-padding-bottom": "0.5rem",
+                  "--inner-padding-top": summary.hasAnyOverride
+                    ? "0.6rem"
+                    : "0.5rem",
+                  "--inner-padding-bottom": summary.hasAnyOverride
+                    ? "0.6rem"
+                    : "0.5rem",
                 }}
               >
-                {/* Left Icon */}
                 <IonIcon
                   icon={document}
                   slot="start"
@@ -403,9 +456,7 @@ export default function CheckoutPage() {
                   className="text-2xl"
                 />
 
-                {/* Main Label */}
                 <IonLabel>
-                  {/* Filename */}
                   <div
                     style={{
                       fontSize: "16px",
@@ -417,21 +468,19 @@ export default function CheckoutPage() {
                   >
                     {job.document.filename}
                   </div>
-
-                  {/* Pages + Copies */}
                   <div
                     style={{
-                      marginTop: "4px",
+                      marginTop: "2px",
                       fontSize: "14px",
                       color: "var(--ion-color-medium)",
                     }}
                   >
-                    {job.document.pageCount} pages • {job.copyCount}{" "}
-                    {job.copyCount === 1 ? "copy" : "copies"}
+                    {subtitle}
                   </div>
+                  {/* Chips — only rendered when the job has been customised */}
+                  <OverrideChips job={job} />
                 </IonLabel>
 
-                {/* Right Side: Total Sheets */}
                 <div
                   slot="end"
                   style={{
@@ -439,15 +488,18 @@ export default function CheckoutPage() {
                     color: "var(--ion-color-medium)",
                     textAlign: "right",
                     minWidth: "48px",
+                    // Keep end slot aligned with the top of the label
+                    alignSelf: "flex-start",
+                    paddingTop: "2px",
                   }}
                 >
-                  {totalSheets} Pages
+                  {summary.effectiveTotalSheets} pages
                 </div>
               </IonItem>
             );
           })}
 
-          {/* Total Pages Row */}
+          {/* Grand total */}
           <IonItem
             detail={false}
             style={{
@@ -460,7 +512,6 @@ export default function CheckoutPage() {
               slot="start"
               className="invisible text-2xl"
             />
-
             <IonLabel>
               <div
                 style={{
@@ -489,6 +540,7 @@ export default function CheckoutPage() {
           </IonItem>
         </IonList>
 
+        {/* ── Quick Settings Modal ───────────────────────────────────────── */}
         <IonModal
           isOpen={isModalOpen}
           presentingElement={
@@ -522,120 +574,153 @@ export default function CheckoutPage() {
             fullscreen
             className="ion-padding flex flex-col items-center justify-start gap-0"
           >
-            {selectedJob && (
-              <IonCard
-                key={selectedJob.id}
-                className="m-0 mb-4 max-w-full min-w-full pt-2 shadow-sm"
-              >
-                <IonCardContent className="p-3!">
-                  <div className="mb-3 flex items-center gap-3 pb-3">
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg">
-                      <IonIcon
-                        icon={document}
-                        className="text-2xl"
-                        color={
-                          selectedJob.outputColor === "Color"
-                            ? "secondary"
-                            : "medium"
-                        }
-                      />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <IonText
-                        color="dark"
-                        className="block truncate text-base font-semibold"
-                      >
-                        {selectedJob.document.filename}
-                      </IonText>
-                      <IonText color="medium" className="text-xs">
-                        {selectedJob.document.pageCount} pages •{" "}
-                        {selectedJob.document.contentType
-                          .split("/")[1]
-                          ?.toUpperCase() || "FILE"}
-                      </IonText>
-                    </div>
-                  </div>
-                  <IonGrid className="p-0">
-                    <IonRow className="ion-align-items-center">
-                      <IonCol size="12" className="mb-3 pb-0">
-                        <IonSegment
-                          value={selectedJob.outputColor}
-                          onIonChange={(e) => {
-                            handleColorChange(
-                              selectedJob.id,
-                              e.detail.value as OutputColor,
-                            );
-                          }}
-                          mode="ios"
-                          className="w-full"
-                        >
-                          <IonSegmentButton value="Monochrome">
-                            <IonLabel className="flex items-center gap-1">
-                              <IonIcon icon={contrastOutline} size="small" />
-                              B&W
-                            </IonLabel>
-                          </IonSegmentButton>
-                          <IonSegmentButton value="Color">
-                            <IonLabel className="flex items-center gap-1">
-                              <IonIcon
-                                icon={colorPaletteOutline}
-                                size="small"
-                              />
-                              Color
-                            </IonLabel>
-                          </IonSegmentButton>
-                        </IonSegment>
-                      </IonCol>
-                      <IonCol
-                        size="12"
-                        className="flex items-center justify-between pt-2"
-                      >
-                        <IonText color="dark" className="font-medium">
-                          Copies
-                        </IonText>
-                        <div className="flex items-center gap-3 rounded-lg p-1">
-                          <IonButton
-                            size="small"
-                            fill="solid"
-                            color="light"
-                            className="m-0 h-8 w-10 shadow-none"
-                            onClick={() => {
-                              handleDecrementCopy(
-                                selectedJob.id,
-                                selectedJob.copyCount,
-                              );
-                            }}
-                            disabled={selectedJob.copyCount <= 1}
-                          >
-                            <IonIcon icon={remove} size="small" color="dark" />
-                          </IonButton>
+            {selectedJob &&
+              (() => {
+                const selectedSummary = deriveJobSummary(selectedJob);
+                return (
+                  <IonCard
+                    key={selectedJob.id}
+                    className="m-0 mb-4 max-w-full min-w-full pt-2 shadow-sm"
+                  >
+                    <IonCardContent className="p-3!">
+                      <div className="mb-3 flex items-center gap-3 pb-3">
+                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg">
+                          <IonIcon
+                            icon={document}
+                            className="text-2xl"
+                            color={
+                              selectedJob.outputColor === "Color"
+                                ? "secondary"
+                                : "medium"
+                            }
+                          />
+                        </div>
+                        <div className="min-w-0 flex-1">
                           <IonText
                             color="dark"
-                            className="w-6 text-center text-lg"
+                            className="block truncate text-base font-semibold"
                           >
-                            {selectedJob.copyCount}
+                            {selectedJob.document.filename}
                           </IonText>
-                          <IonButton
-                            size="small"
-                            fill="solid"
-                            color="light"
-                            className="m-0 h-8 w-10 shadow-none"
-                            onClick={() => {
-                              handleIncrementCopy(
-                                selectedJob.id,
-                                selectedJob.copyCount,
-                              );
-                            }}
-                          >
-                            <IonIcon icon={add} size="small" color="dark" />
-                          </IonButton>
+                          <IonText color="medium" className="text-xs">
+                            {formatSubtitle(selectedJob, selectedSummary)}
+                          </IonText>
+                          {/* Chips repeated in modal header for quick awareness */}
+                          {selectedSummary.hasAnyOverride && (
+                            <div className="mt-1">
+                              <OverrideChips job={selectedJob} />
+                            </div>
+                          )}
                         </div>
-                      </IonCol>
-                    </IonRow>
-                  </IonGrid>
-                </IonCardContent>
-              </IonCard>
-            )}
+                      </div>
+
+                      {/* Note when per-page overrides exist */}
+                      {selectedSummary.hasAnyOverride && (
+                        <div
+                          className="mb-3 rounded-lg px-3 py-2 text-xs"
+                          style={{
+                            background: "var(--ion-color-light)",
+                            color: "var(--ion-color-medium-shade)",
+                          }}
+                        >
+                          Some pages have individual settings. Changes here
+                          apply to pages without overrides. Go to{" "}
+                          <strong style={{ color: "var(--ion-color-dark)" }}>
+                            Print Options
+                          </strong>{" "}
+                          to edit per-page settings.
+                        </div>
+                      )}
+
+                      <IonGrid className="p-0">
+                        <IonRow className="ion-align-items-center">
+                          <IonCol size="12" className="mb-3 pb-0">
+                            <IonSegment
+                              value={selectedJob.outputColor}
+                              onIonChange={(e) => {
+                                handleColorChange(
+                                  selectedJob.id,
+                                  e.detail.value as OutputColor,
+                                );
+                              }}
+                              mode="ios"
+                              className="w-full"
+                            >
+                              <IonSegmentButton value="Monochrome">
+                                <IonLabel className="flex items-center gap-1">
+                                  <IonIcon
+                                    icon={contrastOutline}
+                                    size="small"
+                                  />
+                                  B&W
+                                </IonLabel>
+                              </IonSegmentButton>
+                              <IonSegmentButton value="Color">
+                                <IonLabel className="flex items-center gap-1">
+                                  <IonIcon
+                                    icon={colorPaletteOutline}
+                                    size="small"
+                                  />
+                                  Color
+                                </IonLabel>
+                              </IonSegmentButton>
+                            </IonSegment>
+                          </IonCol>
+                          <IonCol
+                            size="12"
+                            className="flex items-center justify-between pt-2"
+                          >
+                            <IonText color="dark" className="font-medium">
+                              Copies
+                            </IonText>
+                            <div className="flex items-center gap-3 rounded-lg p-1">
+                              <IonButton
+                                size="small"
+                                fill="solid"
+                                color="light"
+                                className="m-0 h-8 w-10 shadow-none"
+                                onClick={() => {
+                                  handleDecrementCopy(
+                                    selectedJob.id,
+                                    selectedJob.copyCount,
+                                  );
+                                }}
+                                disabled={selectedJob.copyCount <= 1}
+                              >
+                                <IonIcon
+                                  icon={remove}
+                                  size="small"
+                                  color="dark"
+                                />
+                              </IonButton>
+                              <IonText
+                                color="dark"
+                                className="w-6 text-center text-lg"
+                              >
+                                {selectedJob.copyCount}
+                              </IonText>
+                              <IonButton
+                                size="small"
+                                fill="solid"
+                                color="light"
+                                className="m-0 h-8 w-10 shadow-none"
+                                onClick={() => {
+                                  handleIncrementCopy(
+                                    selectedJob.id,
+                                    selectedJob.copyCount,
+                                  );
+                                }}
+                              >
+                                <IonIcon icon={add} size="small" color="dark" />
+                              </IonButton>
+                            </div>
+                          </IonCol>
+                        </IonRow>
+                      </IonGrid>
+                    </IonCardContent>
+                  </IonCard>
+                );
+              })()}
           </AppContent>
         </IonModal>
       </AppContent>
