@@ -134,7 +134,7 @@ export const useDraftStore = create<DraftStore>()(
             updatedAt: now,
             document,
             copyCount: 1,
-            outputColor: "Monochrome",
+            outputColor: "Grayscale",
             pageConfigs,
           } satisfies DraftJob;
         });
