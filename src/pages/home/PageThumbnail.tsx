@@ -171,7 +171,7 @@ export function PageThumbnail({
 
         <div
           className={[
-            "flex items-center justify-between px-2 py-1.5",
+            "flex items-center justify-between p-1.5",
             "transition-opacity duration-200",
             excluded ? "pointer-events-none opacity-0" : "opacity-100",
           ].join(" ")}
@@ -179,51 +179,53 @@ export function PageThumbnail({
         >
           <button
             onClick={cycleColor}
-            className="rounded-md! border-0 p-1.5! text-xs"
+            className="rounded-md! border-0 p-1! text-xs"
             style={{
-              background: "var(--ion-color-light)",
+              background: "var(--ion-card-background)",
               color: "var(--ion-color-medium)",
-              fontSize: "14px",
+              fontSize: "0.875rem",
               fontWeight: 600,
             }}
           >
             {COLOR_LABEL[outputColor]}
           </button>
 
-          <div className="flex items-center gap-1">
+          <div className="flex items-center justify-between rounded-2xl">
             <button
               onClick={(e) => {
                 adjustCopy(e, -1);
               }}
               disabled={copyCount <= 1}
-              className="flex h-6 w-6 items-center justify-center rounded-full border-0 text-base font-medium active:opacity-60 disabled:opacity-25"
+              className="flex h-8 w-8 items-center justify-center rounded-xl transition active:scale-95 disabled:opacity-30"
               style={{
-                background: "var(--ion-color-light)",
+                background: "var(--ion-card-background)",
                 color: "var(--ion-color-dark)",
               }}
               aria-label="Decrease copies"
             >
-              <IonIcon icon={remove}></IonIcon>
+              <IonIcon icon={remove} size="small" />
             </button>
+
             <span
-              className="w-5 text-center text-xs font-semibold tabular-nums"
+              className="min-w-[26px] text-center text-sm font-semibold tabular-nums"
               style={{ color: "var(--ion-color-dark)" }}
             >
               {copyCount}
             </span>
+
             <button
               onClick={(e) => {
                 adjustCopy(e, 1);
               }}
               disabled={copyCount >= 99}
-              className="flex h-6 w-6 items-center justify-center rounded-full border-0 text-base font-medium active:opacity-60 disabled:opacity-25"
+              className="flex h-8 w-8 items-center justify-center rounded-xl transition active:scale-95 disabled:opacity-30"
               style={{
-                background: "var(--ion-color-light)",
+                background: "var(--ion-card-background)",
                 color: "var(--ion-color-dark)",
               }}
               aria-label="Increase copies"
             >
-              <IonIcon icon={add}></IonIcon>
+              <IonIcon icon={add} size="small"></IonIcon>
             </button>
           </div>
         </div>

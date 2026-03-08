@@ -65,20 +65,21 @@ export function PrintOptionsDocumentPage() {
 
   const togglePageExclusion = useDraftStore((s) => s.togglePageExclusion);
   const updatePageConfig = useDraftStore((s) => s.updatePageConfig);
+  const documentFileId = currentJob.document.fileId;
 
   useEffect(() => {
-    const job = currentJob;
     let cancelled = false;
+    let pdf: pdfjsLib.PDFDocumentProxy | null = null;
 
     async function loadPdf() {
-      const wrapper = await get<StoredFileWrapper>(job.document.fileId);
+      const wrapper = await get<StoredFileWrapper>(documentFileId);
       if (!wrapper?.file || cancelled) return;
 
       const arrayBuffer = await wrapper.file.arrayBuffer();
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       if (cancelled) return;
 
-      const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+      pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       if (!cancelled) {
         setPdfDocument(pdf);
@@ -90,8 +91,9 @@ export function PrintOptionsDocumentPage() {
 
     return () => {
       cancelled = true;
+      void pdf?.destroy();
     };
-  }, [currentJob]);
+  }, [documentFileId]);
 
   const handleToggle = useCallback(
     (pageNumber: number) => {
@@ -133,7 +135,7 @@ export function PrintOptionsDocumentPage() {
             <IonSpinner />
           </div>
         ) : (
-          <IonGrid className="ion-padding">
+          <IonGrid className="ion-padding pb-15!">
             <IonRow>
               {currentJob.pageConfigs.map((pageConfig) => (
                 <IonCol key={pageConfig.pageNumber} size="6" sizeMd="4">
