@@ -13,7 +13,7 @@ import {
 } from "@ionic/react";
 import AppContent from "@layout/AppContent";
 import { useDraftStore } from "@store/draftStore";
-import { checkmark, chevronForward } from "ionicons/icons";
+import { checkmark, document } from "ionicons/icons";
 
 import "./PrintOptionsPage.css";
 
@@ -53,16 +53,33 @@ export function PrintOptionsPage() {
         </IonToolbar>
       </IonHeader>
       <AppContent fullscreen className="ion-padding-top">
+        <h2
+          style={{
+            fontSize: "20px",
+            fontWeight: 600,
+            margin: "1rem",
+            color: "var(--ion-color-dark)",
+          }}
+        >
+          Documents
+        </h2>
+
         <IonList inset>
           {currentDraftTransaction?.jobs.map((job) => (
             <IonItem
               key={job.id}
               button
-              detail={false}
+              detail
               onClick={() => {
                 handleJobPress(job.id);
               }}
             >
+              <IonIcon
+                icon={document}
+                slot="start"
+                color={job.outputColor === "Color" ? "secondary" : "medium"}
+                className="text-xl"
+              />
               <IonLabel>
                 <h3 className="font-medium">{job.document.filename}</h3>
                 <p>
@@ -70,12 +87,6 @@ export function PrintOptionsPage() {
                   {job.document.pageCount === 1 ? "page" : "pages"}
                 </p>
               </IonLabel>
-              <IonIcon
-                slot="end"
-                icon={chevronForward}
-                color="medium"
-                aria-hidden="true"
-              />
             </IonItem>
           ))}
         </IonList>

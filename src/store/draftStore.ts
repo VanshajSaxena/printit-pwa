@@ -86,6 +86,20 @@ export interface DraftStore {
     updates: Partial<Omit<DraftPageConfig, "pageNumber">>,
   ) => void;
 
+  updatePageConfigOutputColor: (
+    transactionId: string,
+    jobId: string,
+    pageNumber: number,
+    outputColor: OutputColor,
+  ) => void;
+
+  updatePageConfigCopyCount: (
+    transactionId: string,
+    jobId: string,
+    pageNumber: number,
+    copyCount: number,
+  ) => void;
+
   resetPageConfig: (
     transactionId: string,
     jobId: string,
@@ -95,7 +109,7 @@ export interface DraftStore {
 
 export const useDraftStore = create<DraftStore>()(
   persist(
-    immer((set) => ({
+    immer((set, get) => ({
       state: {
         transactions: {},
         currentDraftTransactionId: null,
@@ -215,6 +229,71 @@ export const useDraftStore = create<DraftStore>()(
           );
           if (page) {
             Object.assign(page, updates);
+          }
+        });
+      },
+      updatePageConfigOutputColor: (
+        transactionId: string,
+        jobId: string,
+        pageNumber: number,
+        outputColor: OutputColor,
+      ) => {
+        const { updatePageConfig, state } = get();
+
+        const transaction = state.transactions[transactionId];
+        if (!transaction) return;
+
+        const job = transaction.jobs.find((j) => j.id === jobId);
+
+        if (outputColor === job?.outputColor) {
+          updatePageConfig(transactionId, jobId, pageNumber, {
+            outputColor: undefined,
+          });
+          return;
+        }
+
+        set((store) => {
+          const transaction = store.state.transactions[transactionId];
+          const job = transaction?.jobs.find((j) => j.id === jobId);
+          const page = job?.pageConfigs.find(
+            (p) => p.pageNumber === pageNumber,
+          );
+
+          if (page) {
+            page.outputColor = outputColor;
+          }
+        });
+      },
+      updatePageConfigCopyCount: (
+        transactionId: string,
+        jobId: string,
+        pageNumber: number,
+        copyCount: number,
+      ) => {
+        const { updatePageConfig, state } = get();
+
+        const transaction = state.transactions[transactionId];
+        if (!transaction) return;
+
+        const job = transaction.jobs.find((j) => j.id === jobId);
+        if (!job) return;
+
+        if (copyCount === job.copyCount) {
+          updatePageConfig(transactionId, jobId, pageNumber, {
+            copyCount: undefined,
+          });
+          return;
+        }
+
+        set((store) => {
+          const transaction = store.state.transactions[transactionId];
+          const job = transaction?.jobs.find((j) => j.id === jobId);
+          const page = job?.pageConfigs.find(
+            (p) => p.pageNumber === pageNumber,
+          );
+
+          if (page) {
+            page.copyCount = copyCount;
           }
         });
       },

@@ -23,7 +23,7 @@ import {
   arrowBack,
   checkmarkCircle,
   copyOutline,
-  documentTextOutline,
+  document,
 } from "ionicons/icons";
 import { useEffect } from "react";
 import { AnimatedSuccessIcon } from "./AnimatedSuccessIcon";
@@ -65,7 +65,7 @@ export function SummaryPage() {
     await navigator.clipboard.writeText(transaction.friendlyId);
     await presentToast({
       message: "Order ID copied to clipboard!",
-      duration: 2000,
+      duration: 1500,
       color: "success",
       icon: checkmarkCircle,
       translucent: true,
@@ -278,7 +278,7 @@ export function SummaryPage() {
                 }}
               >
                 <IonIcon
-                  icon={documentTextOutline}
+                  icon={document}
                   slot="start"
                   color={"medium"}
                   className="text-xl"

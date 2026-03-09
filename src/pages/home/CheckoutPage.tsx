@@ -196,6 +196,8 @@ export default function CheckoutPage() {
         duration: 3000,
         color: "danger",
         position: "top",
+        translucent: true,
+        positionAnchor: "header",
       });
       return;
     }
@@ -330,12 +332,14 @@ export default function CheckoutPage() {
       );
 
       await dismissLoading();
-      await presentToast({
-        message: "Print job submitted successfully!",
-        duration: 3000,
-        color: "success",
-        position: "top",
-      });
+      // await presentToast({
+      //   message: "Print job submitted successfully!",
+      //   duration: 3000,
+      //   color: "success",
+      //   position: "top",
+      //   translucent: true,
+      //   positionAnchor: "header",
+      // });
     } catch (error) {
       console.error("Transaction creation failed:", error);
       await dismissLoading();
@@ -343,6 +347,9 @@ export default function CheckoutPage() {
         message: "Failed to print your files. Please try again.",
         duration: 3000,
         color: "danger",
+        position: "bottom",
+        translucent: true,
+        positionAnchor: "footer",
       });
     } finally {
       setIsSubmitting(false);

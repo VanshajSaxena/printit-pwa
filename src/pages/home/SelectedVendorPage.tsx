@@ -26,6 +26,7 @@ import { usePresenceStore } from "@store/presenceStore";
 import { useVendorStore } from "@store/vendorStore";
 import { getPdfPageCount } from "@utils/getPdfPageCount";
 import { getUUID } from "@utils/getUUID";
+import { isPdfEncryptedFast } from "@utils/isPdfEncryptedFast";
 import { setMany } from "idb-keyval";
 import {
   alertCircle,
@@ -134,9 +135,23 @@ export default function SelectedVendorPage() {
 
     await present({ message: "Processing files..." });
 
+    const encryptionChecks = await Promise.all(
+      onlyPdfFiles.map(async (file) => {
+        const encrypted = await isPdfEncryptedFast(file);
+        return {
+          file,
+          encrypted,
+        };
+      }),
+    );
+
+    const unencryptedFiles = encryptionChecks
+      .filter(({ encrypted }) => !encrypted)
+      .map(({ file }) => file);
+
     try {
       const processedData = await Promise.all(
-        onlyPdfFiles.map(async (file) => {
+        unencryptedFiles.map(async (file) => {
           const fileId = getUUID();
           const pageCount = await getPdfPageCount(file);
 

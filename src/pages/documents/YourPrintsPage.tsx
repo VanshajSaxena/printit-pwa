@@ -22,7 +22,7 @@ import {
   useTransactionStore,
 } from "@store/transactionStore";
 import { useVendorStore } from "@store/vendorStore";
-import { document, documentTextOutline } from "ionicons/icons";
+import { chevronForward, document } from "ionicons/icons";
 import React, { useMemo } from "react";
 
 const YourPrintsPage: React.FC = () => {
@@ -174,15 +174,19 @@ const YourPrintsPage: React.FC = () => {
                               {vendorName}
                             </IonCardTitle>
                           </div>
-                          <IonNote className="text-xs">
-                            {formatDate(draft.updatedAt)}
-                          </IonNote>
+                          <IonIcon icon={chevronForward} size="small"></IonIcon>
                         </div>
                       </IonCardHeader>
                       <IonCardContent>
-                        <div className="flex items-center gap-2">
-                          <IonIcon icon={documentTextOutline} />
-                          <IonLabel>{fileLabel}</IonLabel>
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <IonIcon icon={document} />
+                            <IonLabel>{fileLabel}</IonLabel>
+                          </div>
+
+                          <IonNote className="text-xs">
+                            {formatDate(draft.updatedAt)}
+                          </IonNote>
                         </div>
                       </IonCardContent>
                     </IonCard>
@@ -234,18 +238,16 @@ const YourPrintsPage: React.FC = () => {
                               {vendorName}
                             </IonCardTitle>
                           </div>
-                          <IonNote className="text-xs">
-                            {formatDate(print.createdAt)}
-                          </IonNote>
+                          <IonIcon icon={chevronForward} size="small"></IonIcon>
                         </div>
                       </IonCardHeader>
                       <IonCardContent>
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2">
-                            <IonIcon icon={documentTextOutline} />
+                            <IonIcon icon={document} />
                             <IonLabel>{fileLabel}</IonLabel>
                           </div>
-                          <IonNote className="font-mono text-xs">
+                          <IonNote className="font-mono text-sm">
                             #{print.friendlyId.substring(0, 8)}
                           </IonNote>
                         </div>

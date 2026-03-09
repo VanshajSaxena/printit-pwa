@@ -1,8 +1,8 @@
 import { IonIcon, IonSpinner } from "@ionic/react";
-import { add, remove, checkmarkCircle, ellipseOutline } from "ionicons/icons";
+import type { OutputColor } from "@store/draftStore";
+import { add, checkmarkCircle, ellipseOutline, remove } from "ionicons/icons";
 import * as pdfjsLib from "pdfjs-dist";
 import { useCallback, useEffect, useRef, useState } from "react";
-import type { OutputColor } from "@store/draftStore";
 
 const PLACEHOLDER_ASPECT_RATIO = "210 / 297";
 const INTERSECTION_MARGIN = "200px";
@@ -20,6 +20,7 @@ interface PageThumbnailProps {
   excluded: boolean;
   outputColor: OutputColor;
   copyCount: number;
+  isOverridden: boolean;
   onToggleExclusion: () => void;
   onOutputColorChange: (color: OutputColor) => void;
   onCopyCountChange: (count: number) => void;
@@ -33,6 +34,7 @@ export function PageThumbnail({
   excluded,
   outputColor,
   copyCount,
+  isOverridden,
   onToggleExclusion,
   onOutputColorChange,
   onCopyCountChange,
@@ -134,7 +136,11 @@ export function PageThumbnail({
         style={{
           background: "var(--ion-card-background)",
           border: "1.5px solid var(--ion-color-light-shade)",
-          boxShadow: "0 1px 4px rgba(0,0,0,0.08)",
+          boxShadow: isOverridden
+            ? `
+0px 0px 3px 3px rgba(var(--ion-color-primary-rgb), 1)
+`
+            : "",
         }}
       >
         <button

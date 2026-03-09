@@ -64,7 +64,12 @@ export function PrintOptionsDocumentPage() {
   }
 
   const togglePageExclusion = useDraftStore((s) => s.togglePageExclusion);
-  const updatePageConfig = useDraftStore((s) => s.updatePageConfig);
+  const updatePageConfigOutputColor = useDraftStore(
+    (s) => s.updatePageConfigOutputColor,
+  );
+  const updatePageConfigCopyCount = useDraftStore(
+    (s) => s.updatePageConfigCopyCount,
+  );
   const documentFileId = currentJob.document.fileId;
 
   useEffect(() => {
@@ -117,6 +122,13 @@ export function PrintOptionsDocumentPage() {
     );
   }
 
+  function isPageOverridden(job: DraftJob, pageNumber: number): boolean {
+    const cfg = job.pageConfigs.find((p) => p.pageNumber === pageNumber);
+    return (
+      !!cfg && (cfg.outputColor !== undefined || cfg.copyCount !== undefined)
+    );
+  }
+
   return (
     <IonPage>
       <IonHeader translucent>
@@ -152,23 +164,27 @@ export function PrintOptionsDocumentPage() {
                       currentJob,
                       pageConfig.pageNumber,
                     )}
+                    isOverridden={isPageOverridden(
+                      currentJob,
+                      pageConfig.pageNumber,
+                    )}
                     onToggleExclusion={() => {
                       handleToggle(pageConfig.pageNumber);
                     }}
                     onOutputColorChange={(color) => {
-                      updatePageConfig(
+                      updatePageConfigOutputColor(
                         currentTransactionId,
                         currentJob.id,
                         pageConfig.pageNumber,
-                        { outputColor: color },
+                        color,
                       );
                     }}
                     onCopyCountChange={(count) => {
-                      updatePageConfig(
+                      updatePageConfigCopyCount(
                         currentTransactionId,
                         currentJob.id,
                         pageConfig.pageNumber,
-                        { copyCount: count },
+                        count,
                       );
                     }}
                     onPress={() => {
