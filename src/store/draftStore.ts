@@ -68,11 +68,19 @@ export interface DraftStore {
   setCurrentDraftJobId: (id: string) => void;
   clearCurrentDraftJobId: () => void;
 
+  addJobsToTransaction: (
+    transactionId: string,
+    documents: DocumentMetadata[],
+  ) => void;
+
   updateDraftJob: (
     transactionId: string,
     jobId: string,
     updates: Partial<DraftJob>,
   ) => void;
+
+  deleteDraftJob: (transactionId: string, jobId: string) => void;
+
   togglePageExclusion: (
     transactionId: string,
     jobId: string,
@@ -177,6 +185,43 @@ export const useDraftStore = create<DraftStore>()(
           store.state.currentDraftTransactionId = null;
         });
       },
+      addJobsToTransaction: (transactionId, documentsMetadata) => {
+        set((store) => {
+          const transaction = store.state.transactions[transactionId];
+          if (!transaction) return;
+
+          const now = new Date().toISOString();
+
+          const newJobs: DraftJob[] = documentsMetadata.map((meta) => {
+            const document: DraftDocument = {
+              id: getUUID(),
+              createdAt: now,
+              updatedAt: now,
+              filename: meta.filename,
+              contentType: meta.contentType,
+              fileId: meta.fileId,
+              pageCount: meta.pageCount,
+            };
+
+            const pageConfigs: DraftPageConfig[] = Array.from(
+              { length: meta.pageCount },
+              (_, i) => ({ pageNumber: i + 1, excluded: false }),
+            );
+
+            return {
+              id: getUUID(),
+              createdAt: now,
+              updatedAt: now,
+              document,
+              copyCount: 1,
+              outputColor: "Grayscale",
+              pageConfigs,
+            };
+          });
+
+          transaction.jobs.push(...newJobs);
+        });
+      },
       updateDraftJob: (transactionId, jobId, updates) => {
         set((store) => {
           const transaction = store.state.transactions[transactionId];
@@ -186,6 +231,13 @@ export const useDraftStore = create<DraftStore>()(
           if (job) {
             Object.assign(job, updates);
           }
+        });
+      },
+      deleteDraftJob: (transactionId, jobId) => {
+        set((store) => {
+          const transaction = store.state.transactions[transactionId];
+          if (!transaction) return;
+          transaction.jobs = transaction.jobs.filter((j) => j.id !== jobId);
         });
       },
       updateTransactionVendor: (transactionId, vendorId) => {

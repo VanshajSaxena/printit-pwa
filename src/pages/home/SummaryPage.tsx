@@ -304,7 +304,7 @@ export function SummaryPage() {
                     }}
                   >
                     {job.copyCount} {job.copyCount > 1 ? "copies" : "copy"} •{" "}
-                    {job.outputColor === "Monochrome"
+                    {job.outputColor === "Grayscale"
                       ? "Black & White"
                       : "Color"}
                   </div>
