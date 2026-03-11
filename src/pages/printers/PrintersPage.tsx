@@ -33,11 +33,14 @@ import { formatDistance } from "@utils/formatDistance";
 import { formatRelativeTime } from "@utils/formatRelativeTime";
 import { getPdfPageCount } from "@utils/getPdfPageCount";
 import { getUUID } from "@utils/getUUID";
+import { isPdfEncryptedFast } from "@utils/isPdfEncryptedFast";
 import { setMany } from "idb-keyval";
 import {
   alertCircle,
   close,
   cloudUploadOutline,
+  globeOutline,
+  golfOutline,
   location,
   navigate,
   navigateOutline,
@@ -47,7 +50,6 @@ import {
 } from "ionicons/icons";
 import React, { ChangeEvent, useMemo, useRef, useState } from "react";
 import "./PrintersPage.css";
-import { isPdfEncryptedFast } from "@utils/isPdfEncryptedFast";
 
 /**
  * Union of VendorResponseDto (from nearby search) and VendorProfile (from
@@ -73,9 +75,9 @@ const DISTANCE_RANGES: {
   value: DistanceRange;
   meters: number | undefined;
 }[] = [
-  { label: "0–1 km", value: "0-1", meters: 1000 },
-  { label: "1–5 km", value: "1-5", meters: 5000 },
-  { label: "5+ km", value: "5+", meters: undefined },
+  { label: "Walk", value: "0-1", meters: 1000 },
+  { label: "Area", value: "1-5", meters: 5000 },
+  { label: "Closest", value: "5+", meters: undefined },
 ];
 
 const RADAR_LABEL: Record<RadarState, string | null> = {
@@ -683,18 +685,26 @@ const PrintersPage: React.FC = () => {
         />
 
         <div className="flex flex-row justify-center gap-2 overflow-x-auto px-4 pb-4">
-          {DISTANCE_RANGES.map((range) => (
-            <IonChip
-              key={range.value}
-              color={selectedRange === range.value ? "primary" : undefined}
-              onClick={() => {
-                handleRangeSelect(range.value);
-              }}
-            >
-              <IonIcon icon={walk}></IonIcon>
-              <IonLabel className="font-semibold">{range.label}</IonLabel>
-            </IonChip>
-          ))}
+          {DISTANCE_RANGES.map((range) => {
+            const icon =
+              range.value === "0-1"
+                ? walk
+                : range.value === "1-5"
+                  ? golfOutline
+                  : globeOutline;
+            return (
+              <IonChip
+                key={range.value}
+                color={selectedRange === range.value ? "primary" : undefined}
+                onClick={() => {
+                  handleRangeSelect(range.value);
+                }}
+              >
+                <IonIcon icon={icon}></IonIcon>
+                <IonLabel className="font-semibold">{range.label}</IonLabel>
+              </IonChip>
+            );
+          })}
         </div>
         {previousVendors.length > 0 && (
           <div className="pp-prev-section">

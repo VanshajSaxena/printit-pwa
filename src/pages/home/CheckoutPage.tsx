@@ -42,10 +42,12 @@ import { getMany, setMany } from "idb-keyval";
 import {
   add,
   addOutline,
+  alertCircle,
   colorPaletteOutline,
   contrastOutline,
   document as documentIcon,
   informationCircle,
+  print,
   printOutline,
   remove,
   trashOutline,
@@ -85,7 +87,7 @@ function OverrideChips({ job }: { job: DraftJob }) {
     chips.push({ key: "copies", label: "Mixed copies" });
 
   return (
-    <div className="mt-1.5 flex flex-wrap gap-1">
+    <div className="flex flex-wrap gap-1">
       {chips.map((chip) => (
         <span
           key={chip.key}
@@ -161,8 +163,10 @@ function QuickSettingsDialog({
       >
         {/* ── Header ── */}
         <div
-          className="flex items-center gap-3 px-3 pt-5 pb-4"
-          style={{ borderBottom: "1px solid var(--ion-color-light-tint)" }}
+          className="flex items-center gap-3 px-3 pt-5 pb-3"
+          style={{
+            borderBottom: "1px solid rgba(var(--ion-color-medium-rgb), 0.3)",
+          }}
         >
           <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl">
             <IonIcon
@@ -176,7 +180,7 @@ function QuickSettingsDialog({
               }}
             />
           </div>
-          <div className="flex min-w-0 flex-1 flex-col gap-1.5">
+          <div className="flex min-w-0 flex-1 flex-col">
             <p
               className="m-0 text-sm leading-snug font-semibold"
               style={{ color: "var(--ion-color-dark)" }}
@@ -185,21 +189,19 @@ function QuickSettingsDialog({
               {job.document.filename}
             </p>
             <p
-              className="m-0 text-xs"
+              className="m-0 mt-0.5 text-xs"
               style={{ color: "var(--ion-color-medium)" }}
             >
               {formatSubtitle(job, summary)}
             </p>
-            {summary.hasAnyOverride && (
-              <div className="mt-1.5">
-                <OverrideChips job={job} />
-              </div>
-            )}
+            <div className="mt-3">
+              {summary.hasAnyOverride && <OverrideChips job={job} />}
+            </div>
           </div>
         </div>
 
         {/* ── Controls ── */}
-        <div className="flex flex-col gap-4 px-4 pt-4 pb-5">
+        <div className="flex flex-col gap-4 px-4 pt-4 pb-4">
           {/* Output color */}
           <div className="flex flex-col gap-2">
             <p
@@ -725,9 +727,18 @@ export default function CheckoutPage() {
       >
         <IonCard className="m-0 min-w-full bg-transparent px-4 pt-2 pb-2 shadow-none">
           <IonCardContent className="p-0!">
-            <IonCardTitle className="flex items-center gap-1">
+            <IonCardTitle className="flex items-center gap-2">
               {isOnline ? "Printer Ready" : "Printer Offline"}
-              <PulseIcon className="m-1 mt-0" status={presenceStatus} />
+              {isOnline ? (
+                <PulseIcon status={presenceStatus} className="m-1 mt-0" />
+              ) : (
+                <IonIcon
+                  icon={alertCircle}
+                  color="danger"
+                  className="shrink-0"
+                  style={{ fontSize: "1.75rem" }}
+                />
+              )}
             </IonCardTitle>
             <IonCardSubtitle color="medium">{displayName}</IonCardSubtitle>
           </IonCardContent>
@@ -776,11 +787,11 @@ export default function CheckoutPage() {
                   }}
                   style={{
                     "--inner-padding-top": summary.hasAnyOverride
-                      ? "0.6rem"
-                      : "0.5rem",
+                      ? "0.5rem"
+                      : "0.6rem",
                     "--inner-padding-bottom": summary.hasAnyOverride
-                      ? "0.6rem"
-                      : "0.5rem",
+                      ? "0.5rem"
+                      : "0.6rem",
                   }}
                 >
                   <IonIcon
@@ -789,7 +800,7 @@ export default function CheckoutPage() {
                     color={job.outputColor === "Color" ? "secondary" : "medium"}
                     className="text-2xl"
                   />
-                  <IonLabel>
+                  <IonLabel className="my-1">
                     <div
                       className="truncate"
                       style={{
@@ -802,15 +813,17 @@ export default function CheckoutPage() {
                       {job.document.filename}
                     </div>
                     <div
+                      className="mt-1"
                       style={{
-                        marginTop: "2px",
                         fontSize: "14px",
                         color: "var(--ion-color-medium)",
                       }}
                     >
                       {subtitle}
                     </div>
-                    <OverrideChips job={job} />
+                    <div className="mt-3">
+                      <OverrideChips job={job} />
+                    </div>
                   </IonLabel>
                   <div
                     slot="end"
@@ -823,7 +836,7 @@ export default function CheckoutPage() {
                       paddingTop: "2px",
                     }}
                   >
-                    {summary.effectiveTotalSheets} pages
+                    {summary.effectiveTotalSheets} sheets
                   </div>
                 </IonItem>
 
@@ -836,7 +849,7 @@ export default function CheckoutPage() {
                         handleDelete(job.id);
                       }}
                     >
-                      <IonIcon slot="top" icon={trashOutline} />
+                      <IonIcon slot="top" icon={trashOutline} size="small" />
                       Delete
                     </IonItemOption>
                   </IonItemOptions>
@@ -867,7 +880,7 @@ export default function CheckoutPage() {
                   justifyContent: "space-between",
                 }}
               >
-                <span>Total Pages</span>
+                <span>Total Sheets</span>
                 <span>{totalPages}</span>
               </div>
             </IonLabel>
@@ -881,6 +894,7 @@ export default function CheckoutPage() {
             routerLink={`/${router.routeInfo.tab ?? "home"}/checkout/print-options`}
             routerDirection="forward"
           >
+            <IonIcon icon={print} color="medium" slot="start"></IonIcon>
             <IonLabel>Print Options</IonLabel>
           </IonItem>
         </IonList>

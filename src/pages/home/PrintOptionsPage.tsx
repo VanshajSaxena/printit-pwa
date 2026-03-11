@@ -13,7 +13,7 @@ import {
 } from "@ionic/react";
 import AppContent from "@layout/AppContent";
 import { useDraftStore } from "@store/draftStore";
-import { checkmark, document } from "ionicons/icons";
+import { document } from "ionicons/icons";
 
 import "./PrintOptionsPage.css";
 
@@ -40,15 +40,8 @@ export function PrintOptionsPage() {
       <IonHeader translucent>
         <IonToolbar>
           <IonTitle>Print Options</IonTitle>
-          <IonButtons slot="end">
-            <IonBackButton
-              type="submit"
-              icon={checkmark}
-              text={""}
-              className="mr-2"
-            >
-              Done
-            </IonBackButton>
+          <IonButtons slot="start">
+            <IonBackButton defaultHref="/home" />
           </IonButtons>
         </IonToolbar>
       </IonHeader>

@@ -136,11 +136,6 @@ export function PageThumbnail({
         style={{
           background: "var(--ion-card-background)",
           border: "1.5px solid var(--ion-color-light-shade)",
-          boxShadow: isOverridden
-            ? `
-0px 0px 3px 3px rgba(var(--ion-color-primary-rgb), 1)
-`
-            : "",
         }}
       >
         <button
@@ -251,7 +246,9 @@ export function PageThumbnail({
               fontSize: "26px",
               color: excluded
                 ? "rgba(var(--ion-color-medium-rgb), 0.7)"
-                : "var(--ion-color-success)",
+                : isOverridden
+                  ? "var(--ion-color-primary)"
+                  : "var(--ion-color-success)",
               filter: "drop-shadow(0 1px 3px rgba(0,0,0,0.25))",
             }}
           />

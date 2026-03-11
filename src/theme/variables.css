@@ -40,21 +40,6 @@ http://ionicframework.com/docs/theming/ */
 
 :root {
   --ion-background-color: #f4f5f8;
-  --ion-color-accent: #8d1fbf;
-  --ion-color-accent-rgb: 141, 31, 191;
-  --ion-color-accent-contrast: #ffffff;
-  --ion-color-accent-contrast-rgb: 255, 255, 255;
-  --ion-color-accent-shade: #7c1ba8;
-  --ion-color-accent-tint: #9835c5;
-}
-
-.ion-color-accent {
-  --ion-color-base: var(--ion-color-accent);
-  --ion-color-base-rgb: var(--ion-color-accent-rgb);
-  --ion-color-contrast: var(--ion-color-accent-contrast);
-  --ion-color-contrast-rgb: var(--ion-color-accent-contrast-rgb);
-  --ion-color-shade: var(--ion-color-accent-shade);
-  --ion-color-tint: var(--ion-color-accent-tint);
 }
 
 /* iOS Light Mode Overrides */
