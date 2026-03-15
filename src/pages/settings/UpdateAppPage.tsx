@@ -39,35 +39,37 @@ export default function UpdateAppPage() {
           </IonItem>
         </IonList>
 
-        <div className="ion-margin-horizontal ion-margin-top ion-padding-horizontal">
-          <IonLabel color={"medium"} className="text-sm uppercase">
-            debug
-          </IonLabel>
-        </div>
-        <IonList inset className="my-1.5! py-0!">
-          {import.meta.env.VITE_NETLIFY_CONTEXT !== "production" && (
-            <>
-              <IonItem>
-                <IonLabel>Context</IonLabel>
-                <IonLabel slot="end">
-                  {import.meta.env.VITE_NETLIFY_CONTEXT}
-                </IonLabel>
-              </IonItem>
-              <IonItem>
-                <IonLabel>Commit</IonLabel>
-                <IonLabel slot="end">
-                  {import.meta.env.VITE_COMMIT_REF.substring(0, 8)}
-                </IonLabel>
-              </IonItem>
-              <IonItem>
-                <IonLabel>Deploy URL</IonLabel>
-                <IonLabel slot="end" color={"secondary"}>
-                  {import.meta.env.VITE_DEPLOY_PRIME_URL}
-                </IonLabel>
-              </IonItem>
-            </>
-          )}
-        </IonList>
+        {import.meta.env.VITE_NETLIFY_CONTEXT !== "production" && (
+          <>
+            <div className="ion-margin-horizontal ion-margin-top ion-padding-horizontal">
+              <IonLabel color={"medium"} className="text-sm uppercase">
+                debug
+              </IonLabel>
+            </div>
+            <IonList inset className="my-1.5! py-0!">
+              <>
+                <IonItem>
+                  <IonLabel>Context</IonLabel>
+                  <IonLabel slot="end">
+                    {import.meta.env.VITE_NETLIFY_CONTEXT}
+                  </IonLabel>
+                </IonItem>
+                <IonItem>
+                  <IonLabel>Commit</IonLabel>
+                  <IonLabel slot="end">
+                    {import.meta.env.VITE_COMMIT_REF.substring(0, 8)}
+                  </IonLabel>
+                </IonItem>
+                <IonItem>
+                  <IonLabel>Deploy URL</IonLabel>
+                  <IonLabel slot="end" color={"secondary"}>
+                    {import.meta.env.VITE_DEPLOY_PRIME_URL}
+                  </IonLabel>
+                </IonItem>
+              </>
+            </IonList>
+          </>
+        )}
         {needRefresh[0] ? (
           <IonList inset className="py-0!">
             <IonItem button detail onClick={() => void updateServiceWorker()}>
