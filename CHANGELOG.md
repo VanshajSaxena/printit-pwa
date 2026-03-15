@@ -2,18 +2,52 @@
 
 Following is a list of commits (fixes/features only) in this release.
 
+# [0.2.0] - 2026-03-15
+
+## FEATURES
+
+- [1bd73db2](1bd73db23b8368e6cf85ff2eb22f8eab86b4f6ce) resolve nested jobs, imporve memory usage and microcopy appearance
+- [6c5c837e](6c5c837e598ab1d658caa9574228f8a19a757538) checkout: ability to add, delete documents, new quick settings look
+- [5a1e7035](5a1e7035b41e9afd4d76a73f64eb50350a050f25) home: improve home screen to have a more app like experience
+- [acdf2e45](acdf2e451acda8555d1f35341bd622b0b8962f02) prints: implement pdf page rendering
+- [c47cff9a](c47cff9a273f3b23b63fa4858d7102e787678f24) settings: add headers to lists
+- [25b332d8](25b332d8e44e12ed7a8801b906a70ac3678240ed) summary: use an effect to update transaction status on transaction status changes
+
+## FIXES
+
+- [4c901858](4c9018587a0676551877be7068ce98fa44e0733e) Mixed Color badge was activating when it shouldn't due to mismatch in job's and per-page config's outputColor
+- [364d1ed9](364d1ed9e23059f1bda938c4fa2c6f161ed6e08d) back navigation using physical back button
+- [cec40687](cec4068702d391da387586035851c86d8b92209b) checkout page and print-options page now handle routing properly
+- [103c1206](103c1206bae4d443ac41e088a5499699523b8669) various bug fixes
+- [a4a9653f](a4a9653f27debda4f86d4ea681a3233fb002dba2) various fixes across pages
+- [cacc402f](cacc402f891da03aac433d709496e6b28d835580) various fixes and improvements
+- [b38f67a6](b38f67a63edfd01c5e99f215838de0ecb73f7ae9) various visual improvements in `ios` and `md` mode
+- [f64c7809](f64c7809096b2b192275b4ee49989d7873f0859c) checkout: improve checkout UX and UI
+- [f5814b26](f5814b265f22d43dc4600d3197217a10ec232f4e) print-options: mobile pdf page rendering
+- [023ff89f](023ff89fef7ad41fcc53a30b1bb02b4eed956677) scan-page: double animation while navigating away from scan page
+- [8ae09a6b](8ae09a6b51b515a2620eaf50d56ddc0636d97b72) selected-vendor-page: improve appearance printer card
+- [4af11d76](4af11d76cef1ef8967521c4efaa34edbea21afab) your-prints: center hasAnyActivity microcopy
+
+## PERFORMANCE
+
+- [c81fb533](c81fb53386d01f31a347b7129412be3809acc678) pdfjslib was being recreated for each change in the draft job
+
+## OTHER
+
+- [ac6b7867](ac6b786723b875e82906d3854a0473946e824eef) update cloud api
+- [2b6559c2](2b6559c2af344aa1e120b55ec275055881c4f53f) cliff: include full commit hash, update changelog
+
 # [0.1.0] - 2026-02-25
 
-FEATURES
---------------------------------------------------------------------------------
+## FEATURES
+
 - [5ea4557d](5ea4557d8b4bb0b0fae4ebec04ec3a5d104c6b0e) add past prints to the your prints page
 - [8004e372](8004e3723507845026cd752244c80dc3a5f2afd5) update vendor presence as an effect if he's not online on checkout page
 - [f9879d3e](f9879d3e9f9212d2ff2fca7501be4494a05f88ec) use given name if available
 - [64549395](64549395f998ae39b36e0dbffeb034983ba6491f) use presence service to get status of the printer
 
+## FIXES
 
-FIXES
---------------------------------------------------------------------------------
 - [7bb88b5d](7bb88b5d930f0eb2a421ffefcf94b0a83d156d5e) align text better
 - [0ee8ca05](0ee8ca057838833b96ad460a5efb14b3b4c6d848) appearance mode
 - [08b051c2](08b051c2f8f3a7ecc9d1bd8ed14b0463737e6955) assets, favicons, svg favicons
@@ -64,20 +98,17 @@ FIXES
 - [18834246](1883424677e9bf159ed79c6cadbd93f75a830fd1) vendor store now stores more vendor metadata
 - [a5e0e257](a5e0e257ccaf0406e94b8aa8c39bc5bfea592137) wrap IonButton with div and make IonFooter direct child of the IonPage
 
+## REFACTOR
 
-REFACTOR
---------------------------------------------------------------------------------
 - [9b5256c4](9b5256c44c6bd8493fef290fb1a65e5baf9461f5) better file structure
 - [fdafacaf](fdafacafd9c87580f17c7be95a41d689cb3b5411) separate tabs from route definition
 
+## DOCUMENTATION
 
-DOCUMENTATION
---------------------------------------------------------------------------------
 - [95974c83](95974c83ea109da5dd739b7517c262efc86332a9) changelog: v0.1.0
 
+## OTHER
 
-OTHER
---------------------------------------------------------------------------------
 - [86b32efd](86b32efd87155a206437e7744bd2ccbc2d441c37) everywhere
 - [02cd45f5](02cd45f57f298377e9330c1c5f8a7cc71b9f0fbd) prettier-plugin-tailwindcss
 - [2e5fa7fd](2e5fa7fd1620b89ba0dc522c6e5ecdada85eaf96) printers page
@@ -89,5 +120,3 @@ OTHER
 - [af8cff96](af8cff96f6c802495c83191bbd3408c57d584030) update cloud api spec
 - [5adb0009](5adb0009651eeb3cfb6735960c092db29fbd0dd3) update cloud api spec
 - [ac0fdd77](ac0fdd77f500533e6c7a0f15aaf75a7eea3ec98a) update netlify config to point to new origin
-
-
