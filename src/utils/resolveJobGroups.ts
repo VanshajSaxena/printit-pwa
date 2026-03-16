@@ -10,6 +10,7 @@ export interface PreparedJob {
   filename: string;
   contentType: string;
   outputColor: OutputColor;
+  pageCount: number;
   copyCount: number;
 }
 
@@ -68,15 +69,22 @@ export async function resolveJobGroups(
           type: job.document.contentType,
         });
 
-        const extractedFile = new File([blob], job.document.filename, {
+        const pageRange =
+          groupMap.size === 1 ? "" : pagesToRangeString(group.pageNumbers);
+
+        const base = job.document.filename.replace(/\.pdf$/i, "");
+        const newFilename = `${base}${pageRange}.pdf`;
+
+        const extractedFile = new File([blob], newFilename, {
           type: job.document.contentType,
         });
 
         return {
           draftId: getUUID(),
           file: extractedFile,
-          filename: job.document.filename,
+          filename: newFilename,
           contentType: job.document.contentType,
+          pageCount: pageIndices.length,
           outputColor: group.outputColor,
           copyCount: group.copyCount,
         } satisfies PreparedJob;
@@ -85,4 +93,35 @@ export async function resolveJobGroups(
   );
 
   return prepared;
+}
+
+function pagesToRangeString(pages: number[]): string {
+  const sorted = [...pages].sort((a, b) => a - b);
+  const ranges: string[] = [];
+
+  let start = sorted[0];
+  let prev = sorted[0];
+
+  for (let i = 1; i < sorted.length; i++) {
+    const curr = sorted[i];
+
+    if (curr === prev + 1) {
+      prev = curr;
+    } else {
+      ranges.push(
+        start === prev
+          ? start.toString()
+          : `${start.toString()}-${prev.toString()}`,
+      );
+      start = prev = curr;
+    }
+  }
+
+  ranges.push(
+    start === prev
+      ? start.toString()
+      : `${start.toString()}-${prev.toString()}`,
+  );
+
+  return `[${ranges.join(", ")}]`;
 }

@@ -567,6 +567,7 @@ export default function CheckoutPage() {
             filename: job.filename,
             contentType: job.contentType,
             draftId: job.draftId,
+            pageCount: job.pageCount,
           })),
         },
       });
