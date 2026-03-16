@@ -978,6 +978,7 @@
           "filename": { "type": "string" },
           "contentType": { "type": "string" },
           "draftId": { "type": "string" },
+          "pageCount": { "type": "number" },
           "createdAt": { "format": "date-time", "type": "string" },
           "updatedAt": { "format": "date-time", "type": "string" }
         },
@@ -986,6 +987,7 @@
           "filename",
           "contentType",
           "draftId",
+          "pageCount",
           "createdAt",
           "updatedAt"
         ]
@@ -1046,9 +1048,10 @@
         "properties": {
           "id": { "type": "number" },
           "filename": { "type": "string" },
-          "contentType": { "type": "string" }
+          "contentType": { "type": "string" },
+          "pageCount": { "type": "number" }
         },
-        "required": ["id", "filename", "contentType"]
+        "required": ["id", "filename", "contentType", "pageCount"]
       },
       "FindJobResponseDto": {
         "type": "object",
@@ -1100,9 +1103,10 @@
         "properties": {
           "filename": { "type": "string" },
           "contentType": { "type": "string" },
-          "draftId": { "type": "string" }
+          "draftId": { "type": "string" },
+          "pageCount": { "type": "number" }
         },
-        "required": ["filename", "contentType", "draftId"]
+        "required": ["filename", "contentType", "draftId", "pageCount"]
       },
       "CreateDocumentBatchRequestDto": {
         "type": "object",

@@ -290,6 +290,7 @@ export interface components {
       contentType: string;
       draftId: string;
       filename: string;
+      pageCount: number;
     };
     CreateDocumentResponseDto: {
       contentType: string;
@@ -298,6 +299,7 @@ export interface components {
       draftId: string;
       filename: string;
       id: number;
+      pageCount: number;
       /** Format: date-time */
       updatedAt: string;
     };
@@ -366,6 +368,7 @@ export interface components {
       contentType: string;
       filename: string;
       id: number;
+      pageCount: number;
     };
     FindJobResponseDto: {
       copyCount: number;
