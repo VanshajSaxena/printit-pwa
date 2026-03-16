@@ -532,14 +532,14 @@ const PreviousPrinterCard: React.FC<PreviousPrinterCardProps> = ({
             >
               Printer
             </IonCardSubtitle>
-            <IonCardTitle className="mt-1 text-base font-bold">
+            <IonCardTitle className="mt-1.5 text-base font-bold">
               {vendorDisplayName(vendor)}
             </IonCardTitle>
             <IonNote className="text-sm">@{vendor.username}</IonNote>
           </div>
           <div className="flex flex-shrink-0 flex-col items-end gap-1">
             {vendor.lastUsedAt && (
-              <IonNote className="text-xs">
+              <IonNote className="text-sm">
                 {formatRelativeTime(vendor.lastUsedAt)}
               </IonNote>
             )}
