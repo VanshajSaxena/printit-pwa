@@ -235,9 +235,9 @@ const VendorDialog: React.FC<VendorDialogProps> = ({ vendor, onDismiss }) => {
   const { data: presenceData, isLoading: isPresenceLoading } = client.useQuery(
     "get",
     "/api/v1/vendors/{selector}/presence",
-    { params: { path: { selector: vendor?.username ?? "" } } },
+    { params: { path: { selector: vendor?.id ?? 0 } } },
     {
-      enabled: vendor !== null,
+      enabled: !!vendor,
       refetchOnWindowFocus: false,
     },
   );
