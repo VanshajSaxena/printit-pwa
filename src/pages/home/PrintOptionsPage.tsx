@@ -45,18 +45,18 @@ export function PrintOptionsPage() {
           </IonButtons>
         </IonToolbar>
       </IonHeader>
-      <AppContent fullscreen className="ion-padding-top">
-        <h2
-          style={{
-            fontSize: "20px",
-            fontWeight: 600,
-            margin: "1rem",
-            color: "var(--ion-color-dark)",
-          }}
-        >
-          Documents
-        </h2>
-
+      <AppContent fullscreen>
+        {/* <h2 */}
+        {/*   style={{ */}
+        {/*     fontSize: "20px", */}
+        {/*     fontWeight: 600, */}
+        {/*     margin: "1rem", */}
+        {/*     color: "var(--ion-color-dark)", */}
+        {/*   }} */}
+        {/* > */}
+        {/*   Documents */}
+        {/* </h2> */}
+        {/**/}
         <IonList inset>
           {currentDraftTransaction?.jobs.map((job) => (
             <IonItem
