@@ -39,9 +39,9 @@ import {
   alertCircle,
   close,
   cloudUploadOutline,
-  globeOutline,
-  golfOutline,
+  earthOutline,
   location,
+  mapOutline,
   navigate,
   navigateOutline,
   pin,
@@ -75,9 +75,9 @@ const DISTANCE_RANGES: {
   value: DistanceRange;
   meters: number | undefined;
 }[] = [
-  { label: "Walk", value: "0-1", meters: 1000 },
-  { label: "Area", value: "1-5", meters: 5000 },
-  { label: "Closest", value: "5+", meters: undefined },
+  { label: "Nearby", value: "0-1", meters: 1000 },
+  { label: "Local", value: "1-5", meters: 5000 },
+  { label: "Any Distance", value: "5+", meters: undefined },
 ];
 
 const RADAR_LABEL: Record<RadarState, string | null> = {
@@ -665,8 +665,8 @@ const PrintersPage: React.FC = () => {
               range.value === "0-1"
                 ? walk
                 : range.value === "1-5"
-                  ? golfOutline
-                  : globeOutline;
+                  ? mapOutline
+                  : earthOutline;
             return (
               <IonChip
                 key={range.value}
@@ -675,7 +675,7 @@ const PrintersPage: React.FC = () => {
                   handleRangeSelect(range.value);
                 }}
               >
-                <IonIcon icon={icon}></IonIcon>
+                <IonIcon icon={icon} className="shrink-0"></IonIcon>
                 <IonLabel className="font-semibold">{range.label}</IonLabel>
               </IonChip>
             );
