@@ -308,6 +308,15 @@ const VendorDialog: React.FC<VendorDialogProps> = ({ vendor, onDismiss }) => {
 
       await setMany(processedData.map((d) => d.idbEntry));
 
+      const transactionId = createDraftTransaction(
+        processedData.map((d) => d.metadata),
+        vendor.id,
+      );
+      setCurrentDraftTransactionId(transactionId);
+      router.push(`/${router.routeInfo.tab ?? "home"}/checkout`);
+    } catch (error) {
+      console.error("Failed to process files:", error);
+    } finally {
       const {
         id,
         firstName,
@@ -328,18 +337,7 @@ const VendorDialog: React.FC<VendorDialogProps> = ({ vendor, onDismiss }) => {
         address,
         location: location ?? null,
       });
-
-      const transactionId = createDraftTransaction(
-        processedData.map((d) => d.metadata),
-        vendor.id,
-      );
-      setCurrentDraftTransactionId(transactionId);
-
-      await dismiss();
       event.target.value = "";
-      router.push(`/${router.routeInfo.tab ?? "home"}/checkout`);
-    } catch (error) {
-      console.error("Failed to process files:", error);
       await dismiss();
     }
   };
