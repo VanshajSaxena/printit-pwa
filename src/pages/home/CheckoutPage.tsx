@@ -9,6 +9,7 @@ import {
   IonCardContent,
   IonCardSubtitle,
   IonCardTitle,
+  IonChip,
   IonFooter,
   IonHeader,
   IonIcon,
@@ -211,27 +212,28 @@ function QuickSettingsDialog({
             >
               Output
             </p>
-            <IonSegment
-              value={job.outputColor}
-              onIonChange={(e) => {
-                onColorChange(e.detail.value as OutputColor);
-              }}
-              mode="ios"
-              className="w-full"
-            >
-              <IonSegmentButton value="Grayscale">
-                <IonLabel className="flex items-center gap-1.5" color={"dark"}>
-                  <IonIcon icon={contrastOutline} />
-                  B&amp;W
-                </IonLabel>
-              </IonSegmentButton>
-              <IonSegmentButton value="Color">
-                <IonLabel className="flex items-center gap-1.5" color={"dark"}>
-                  <IonIcon icon={colorPaletteOutline} />
-                  Color
-                </IonLabel>
-              </IonSegmentButton>
-            </IonSegment>
+
+            <div className="flex flex-row gap-2">
+              <IonChip
+                color={job.outputColor === "Grayscale" ? "primary" : undefined}
+                onClick={() => {
+                  onColorChange("Grayscale");
+                }}
+              >
+                <IonIcon icon={contrastOutline} />
+                <IonLabel className="font-semibold">B&amp;W</IonLabel>
+              </IonChip>
+
+              <IonChip
+                color={job.outputColor === "Color" ? "primary" : undefined}
+                onClick={() => {
+                  onColorChange("Color");
+                }}
+              >
+                <IonIcon icon={colorPaletteOutline} />
+                <IonLabel className="font-semibold">Color</IonLabel>
+              </IonChip>
+            </div>
           </div>
 
           {/* Copies stepper */}
