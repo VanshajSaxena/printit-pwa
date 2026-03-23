@@ -970,11 +970,13 @@ export default function CheckoutPage() {
       <IonAlert
         isOpen={alertConfig.isOpen}
         header="Printer Offline"
-        message={`Your printer isn’t connected right now. We’ll queue your files and print them once it's back online.`}
+        subHeader="Queue your documents?"
+        message="We'll save your files and start printing as soon as the printer is back online."
         buttons={[
           {
             text: "Cancel",
             role: "cancel",
+            cssClass: "secondary",
             handler: () => {
               alertConfig.onCancel?.();
               setAlertConfig((prev) => ({ ...prev, isOpen: false }));
@@ -982,7 +984,7 @@ export default function CheckoutPage() {
           },
           {
             text: "Continue",
-            role: "destructive",
+            role: "confirm",
             handler: () => {
               alertConfig.onConfirm?.();
               setAlertConfig((prev) => ({ ...prev, isOpen: false }));
