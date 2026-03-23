@@ -659,7 +659,7 @@ const PrintersPage: React.FC = () => {
           onSelectVendor={setSelectedVendor}
         />
 
-        <div className="flex flex-row justify-center gap-2 overflow-x-auto px-4 pb-4">
+        <div className="flex flex-row justify-evenly gap-1 overflow-x-auto px-4 pb-4">
           {DISTANCE_RANGES.map((range) => {
             const icon =
               range.value === "0-1"
@@ -670,6 +670,7 @@ const PrintersPage: React.FC = () => {
             return (
               <IonChip
                 key={range.value}
+                className="rounded-full"
                 color={selectedRange === range.value ? "primary" : undefined}
                 onClick={() => {
                   handleRangeSelect(range.value);

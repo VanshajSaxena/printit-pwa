@@ -21,8 +21,6 @@ import {
   IonList,
   IonNote,
   IonPage,
-  IonSegment,
-  IonSegmentButton,
   IonTitle,
   IonToolbar,
   useIonLoading,
