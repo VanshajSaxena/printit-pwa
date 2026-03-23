@@ -210,7 +210,7 @@ function QuickSettingsDialog({
               className="m-0 text-sm font-semibold tracking-wide uppercase"
               style={{ color: "var(--ion-color-medium)" }}
             >
-              Output
+              Color Mode
             </p>
 
             <div className="flex flex-row gap-2">
@@ -243,7 +243,7 @@ function QuickSettingsDialog({
                 className="m-0 text-sm font-semibold tracking-wide uppercase"
                 style={{ color: "var(--ion-color-medium)" }}
               >
-                Copies
+                Copy Count
               </p>
               <p
                 className="my-0.5 text-xs tracking-wide"
