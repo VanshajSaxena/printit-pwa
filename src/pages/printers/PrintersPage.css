@@ -231,20 +231,3 @@ ion-modal#pp-vendor-dialog {
   letter-spacing: -0.3px;
   color: var(--ion-text-color);
 }
-
-/* Presence dot used inside PreviousPrinterCard */
-
-.pp-prev-card__status-dot {
-  width: 0.5rem;
-  height: 0.5rem;
-  border-radius: 50%;
-  display: inline-block;
-  flex-shrink: 0;
-}
-
-.pp-prev-card__status-dot--online {
-  background: var(--ion-color-success);
-}
-.pp-prev-card__status-dot--offline {
-  background: var(--ion-color-medium-shade);
-}

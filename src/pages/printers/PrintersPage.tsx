@@ -509,12 +509,6 @@ const PreviousPrinterCard: React.FC<PreviousPrinterCardProps> = ({
   vendor,
   onSelect,
 }) => {
-  const presenceStatus = usePresenceStore((store) =>
-    store.getPresence(vendor.id),
-  );
-  const isOnline = presenceStatus === "online";
-  const hasKnownPresence = presenceStatus !== undefined;
-
   return (
     <IonCard
       button
@@ -542,25 +536,6 @@ const PreviousPrinterCard: React.FC<PreviousPrinterCardProps> = ({
               <IonNote className="text-sm">
                 {formatRelativeTime(vendor.lastUsedAt)}
               </IonNote>
-            )}
-            {hasKnownPresence && (
-              <span
-                className="flex items-center gap-1 text-xs"
-                style={{
-                  color: isOnline
-                    ? "var(--ion-color-success)"
-                    : "var(--ion-color-medium)",
-                }}
-              >
-                <span
-                  className={`pp-prev-card__status-dot ${
-                    isOnline
-                      ? "pp-prev-card__status-dot--online"
-                      : "pp-prev-card__status-dot--offline"
-                  }`}
-                />
-                {isOnline ? "Online" : "Offline"}
-              </span>
             )}
           </div>
         </div>
