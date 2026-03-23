@@ -1,6 +1,7 @@
 import { client } from "@api/client";
 import { PulseIcon } from "@components/graphics/PulseIcon";
 import {
+  IonAlert,
   IonBackButton,
   IonButton,
   IonButtons,
@@ -321,6 +322,15 @@ export default function CheckoutPage() {
   const [presentLoading, dismissLoading] = useIonLoading();
   const [presentToast] = useIonToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [alertConfig, setAlertConfig] = useState<{
+    isOpen: boolean;
+    onConfirm: (() => void) | undefined;
+    onCancel: (() => void) | undefined;
+  }>({
+    isOpen: false,
+    onConfirm: undefined,
+    onCancel: undefined,
+  });
   const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
   const [isAddingFiles, setIsAddingFiles] = useState(false);
 
@@ -509,7 +519,19 @@ export default function CheckoutPage() {
     },
     [currentDraftTransactionId, updateDraftJob],
   );
-
+  const confirmOfflinePrint = () => {
+    return new Promise((resolve) => {
+      setAlertConfig({
+        isOpen: true,
+        onConfirm: () => {
+          resolve(true);
+        },
+        onCancel: () => {
+          resolve(false);
+        },
+      });
+    });
+  };
   const handleSubmit = async () => {
     if (!vendorId || !vendorProfile) {
       await presentToast({
@@ -520,6 +542,11 @@ export default function CheckoutPage() {
         translucent: true,
       });
       return;
+    }
+
+    if (!isOnline) {
+      const shouldContinue = await confirmOfflinePrint();
+      if (!shouldContinue) return;
     }
 
     setIsSubmitting(true);
@@ -939,6 +966,30 @@ export default function CheckoutPage() {
           </div>
         </IonToolbar>
       </IonFooter>
+
+      <IonAlert
+        isOpen={alertConfig.isOpen}
+        header="Printer Offline"
+        message={`Your printer isn’t connected right now. We’ll queue your files and print them once it's back online.`}
+        buttons={[
+          {
+            text: "Cancel",
+            role: "cancel",
+            handler: () => {
+              alertConfig.onCancel?.();
+              setAlertConfig((prev) => ({ ...prev, isOpen: false }));
+            },
+          },
+          {
+            text: "Continue",
+            role: "destructive",
+            handler: () => {
+              alertConfig.onConfirm?.();
+              setAlertConfig((prev) => ({ ...prev, isOpen: false }));
+            },
+          },
+        ]}
+      />
     </IonPage>
   );
 }
