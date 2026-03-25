@@ -47,26 +47,24 @@ export default function UpdateAppPage() {
               </IonLabel>
             </div>
             <IonList inset className="my-1.5! py-0!">
-              <>
-                <IonItem>
-                  <IonLabel>Context</IonLabel>
-                  <IonLabel slot="end">
-                    {import.meta.env.VITE_NETLIFY_CONTEXT}
-                  </IonLabel>
-                </IonItem>
-                <IonItem>
-                  <IonLabel>Commit</IonLabel>
-                  <IonLabel slot="end">
-                    {import.meta.env.VITE_COMMIT_REF.substring(0, 8)}
-                  </IonLabel>
-                </IonItem>
-                <IonItem>
-                  <IonLabel>Deploy URL</IonLabel>
-                  <IonLabel slot="end" color={"secondary"}>
-                    {import.meta.env.VITE_DEPLOY_PRIME_URL}
-                  </IonLabel>
-                </IonItem>
-              </>
+              <IonItem>
+                <IonLabel>Context</IonLabel>
+                <IonLabel slot="end">
+                  {import.meta.env.VITE_NETLIFY_CONTEXT}
+                </IonLabel>
+              </IonItem>
+              <IonItem>
+                <IonLabel>Commit</IonLabel>
+                <IonLabel slot="end">
+                  {import.meta.env.VITE_COMMIT_REF.substring(0, 8)}
+                </IonLabel>
+              </IonItem>
+              <IonItem>
+                <IonLabel>Deploy URL</IonLabel>
+                <IonLabel slot="end" color={"secondary"}>
+                  {import.meta.env.VITE_DEPLOY_PRIME_URL}
+                </IonLabel>
+              </IonItem>
             </IonList>
           </>
         )}
