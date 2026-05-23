@@ -1,7 +1,9 @@
+import { Dialog } from "@components/Dialog";
 import { PrintitIcon } from "@components/graphics/Printit";
 import { QRCodeGraphic } from "@components/graphics/QRCodeGraphic";
 import {
   IonButton,
+  IonButtons,
   IonCard,
   IonCardContent,
   IonHeader,
@@ -18,13 +20,16 @@ import {
 import AppContent from "@layout/AppContent";
 import {
   documentOutline,
+  helpCircleOutline,
   printOutline,
   qrCodeOutline,
   scan,
 } from "ionicons/icons";
+import { useState } from "react";
 import "./HomePage.css";
 
 const HomePage: React.FC = () => {
+  const [hiw, setHiw] = useState(false);
   const router = useIonRouter();
   return (
     <IonPage>
@@ -33,6 +38,17 @@ const HomePage: React.FC = () => {
           <IonTitle>
             <PrintitIcon width={80}></PrintitIcon>
           </IonTitle>
+
+          <IonButtons slot="end">
+            <IonButton
+              onClick={() => {
+                setHiw(true);
+              }}
+              aria-label="How it works"
+            >
+              <IonIcon icon={helpCircleOutline} />
+            </IonButton>
+          </IonButtons>
         </IonToolbar>
       </IonHeader>
       <AppContent fullscreen className="ion-padding h-full">
@@ -69,140 +85,142 @@ const HomePage: React.FC = () => {
               </div>
             </IonCardContent>
           </IonCard>
-          <div className="w-full">
-            <h2
-              style={{
-                fontSize: "20px",
-                fontWeight: 600,
-                marginLeft: "0.5rem",
-                marginTop: "0.5rem",
-                color: "var(--ion-color-dark)",
+          {hiw && (
+            <HowItWorks
+              onDismiss={() => {
+                setHiw(false);
               }}
-            >
-              How It Works
-            </h2>
-
-            <IonList
-              lines="inset"
-              inset
-              className="how-it-works-list !mx-0 !my-3"
-            >
-              <IonItem
-                detail={false}
-                style={{
-                  "--inner-padding-top": "0.5rem",
-                  "--inner-padding-bottom": "0.5rem",
-                }}
-              >
-                <IonIcon
-                  icon={qrCodeOutline}
-                  slot="start"
-                  color="primary"
-                  className="text-2xl"
-                />
-
-                <IonLabel>
-                  <div
-                    style={{
-                      fontSize: "16px",
-                      fontWeight: 600,
-                      color: "var(--ion-color-dark)",
-                    }}
-                  >
-                    1. Scan QR Code
-                  </div>
-
-                  <div
-                    style={{
-                      marginTop: "4px",
-                      fontSize: "14px",
-                      color: "var(--ion-color-medium)",
-                    }}
-                  >
-                    Find a QR code at any Printit Shop or kiosk
-                  </div>
-                </IonLabel>
-              </IonItem>
-
-              <IonItem
-                detail={false}
-                style={{
-                  "--inner-padding-top": "0.5rem",
-                  "--inner-padding-bottom": "0.5rem",
-                }}
-              >
-                <IonIcon
-                  icon={documentOutline}
-                  slot="start"
-                  color="primary"
-                  className="text-2xl"
-                />
-
-                <IonLabel>
-                  <div
-                    style={{
-                      fontSize: "16px",
-                      fontWeight: 600,
-                      color: "var(--ion-color-dark)",
-                    }}
-                  >
-                    2. Upload Documents
-                  </div>
-
-                  <div
-                    style={{
-                      marginTop: "4px",
-                      fontSize: "14px",
-                      color: "var(--ion-color-medium)",
-                    }}
-                  >
-                    Choose files from your device or cloud storage
-                  </div>
-                </IonLabel>
-              </IonItem>
-
-              <IonItem
-                detail={false}
-                style={{
-                  "--inner-padding-top": "0.5rem",
-                  "--inner-padding-bottom": "0.5rem",
-                }}
-              >
-                <IonIcon
-                  icon={printOutline}
-                  slot="start"
-                  color="primary"
-                  className="text-2xl"
-                />
-
-                <IonLabel>
-                  <div
-                    style={{
-                      fontSize: "16px",
-                      fontWeight: 600,
-                      color: "var(--ion-color-dark)",
-                    }}
-                  >
-                    3. Collect Printouts
-                  </div>
-
-                  <div
-                    style={{
-                      marginTop: "4px",
-                      fontSize: "14px",
-                      color: "var(--ion-color-medium)",
-                    }}
-                  >
-                    Pick up your prints at the selected location
-                  </div>
-                </IonLabel>
-              </IonItem>
-            </IonList>
-          </div>
+            ></HowItWorks>
+          )}
         </div>
       </AppContent>
     </IonPage>
   );
 };
+
+interface HowItWorksProps {
+  onDismiss: () => void;
+}
+
+function HowItWorks({ onDismiss }: HowItWorksProps) {
+  return (
+    <Dialog onDismiss={onDismiss} ariaLabel="">
+      <div className="w-full">
+        <IonList lines="inset" inset className="how-it-works-list !mx-0 !my-0">
+          <IonItem
+            detail={false}
+            style={{
+              "--inner-padding-top": "0.5rem",
+              "--inner-padding-bottom": "0.5rem",
+            }}
+          >
+            <IonIcon
+              icon={qrCodeOutline}
+              slot="start"
+              color="primary"
+              className="text-2xl"
+            />
+
+            <IonLabel>
+              <div
+                style={{
+                  fontSize: "16px",
+                  fontWeight: 600,
+                  color: "var(--ion-color-dark)",
+                }}
+              >
+                1. Scan QR Code
+              </div>
+
+              <div
+                style={{
+                  marginTop: "4px",
+                  fontSize: "14px",
+                  color: "var(--ion-color-medium)",
+                }}
+              >
+                Find a QR code at any Printit Shop or kiosk
+              </div>
+            </IonLabel>
+          </IonItem>
+
+          <IonItem
+            detail={false}
+            style={{
+              "--inner-padding-top": "0.5rem",
+              "--inner-padding-bottom": "0.5rem",
+            }}
+          >
+            <IonIcon
+              icon={documentOutline}
+              slot="start"
+              color="primary"
+              className="text-2xl"
+            />
+
+            <IonLabel>
+              <div
+                style={{
+                  fontSize: "16px",
+                  fontWeight: 600,
+                  color: "var(--ion-color-dark)",
+                }}
+              >
+                2. Upload Documents
+              </div>
+
+              <div
+                style={{
+                  marginTop: "4px",
+                  fontSize: "14px",
+                  color: "var(--ion-color-medium)",
+                }}
+              >
+                Choose files from your device or cloud storage
+              </div>
+            </IonLabel>
+          </IonItem>
+
+          <IonItem
+            detail={false}
+            style={{
+              "--inner-padding-top": "0.5rem",
+              "--inner-padding-bottom": "0.5rem",
+            }}
+          >
+            <IonIcon
+              icon={printOutline}
+              slot="start"
+              color="primary"
+              className="text-2xl"
+            />
+
+            <IonLabel>
+              <div
+                style={{
+                  fontSize: "16px",
+                  fontWeight: 600,
+                  color: "var(--ion-color-dark)",
+                }}
+              >
+                3. Collect Printouts
+              </div>
+
+              <div
+                style={{
+                  marginTop: "4px",
+                  fontSize: "14px",
+                  color: "var(--ion-color-medium)",
+                }}
+              >
+                Pick up your prints at the selected location
+              </div>
+            </IonLabel>
+          </IonItem>
+        </IonList>
+      </div>
+    </Dialog>
+  );
+}
 
 export default HomePage;
