@@ -26,8 +26,12 @@ export function PresenceSocketBridge() {
       clear();
     };
 
-    socket.on("presence:update", handlePresenceUpdate);
-    socket.on("disconnect", handleDisconnect);
+    socket.on("presence:update", (vendorId: number, status: PresenceStatus) => {
+      handlePresenceUpdate({ vendorId, status });
+    });
+    socket.on("disconnect", () => {
+      handleDisconnect();
+    });
 
     if (isConnected && !isInitializedRef.current) {
       socket.emit("presence:request");
@@ -35,8 +39,15 @@ export function PresenceSocketBridge() {
     }
 
     return () => {
-      socket.off("presence:update", handlePresenceUpdate);
-      socket.off("disconnect", handleDisconnect);
+      socket.off(
+        "presence:update",
+        (vendorId: number, status: PresenceStatus) => {
+          handlePresenceUpdate({ vendorId, status });
+        },
+      );
+      socket.off("disconnect", () => {
+        handleDisconnect();
+      });
     };
   }, [socket, isConnected]);
 

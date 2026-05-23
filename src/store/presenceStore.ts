@@ -4,7 +4,7 @@ import { enableMapSet } from "immer";
 
 enableMapSet();
 
-export type PresenceStatus = "online" | "offline" | "busy" | "away" | undefined;
+export type PresenceStatus = "online" | "offline" | "away" | undefined;
 
 interface PresenceState {
   presenceMap: Map<number, PresenceStatus>;
