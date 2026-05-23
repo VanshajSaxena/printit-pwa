@@ -60,6 +60,7 @@ import {
   type ChangeEvent,
 } from "react";
 import "./CheckoutPage.css";
+import { Dialog } from "@components/Dialog";
 
 export interface StoredFileWrapper {
   id: string;
@@ -128,190 +129,167 @@ function QuickSettingsDialog({
 }: QuickSettingsDialogProps) {
   const summary = deriveJobSummary(job);
 
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onDismiss();
-    };
-    document.addEventListener("keydown", onKey);
-    return () => {
-      document.removeEventListener("keydown", onKey);
-    };
-  }, [onDismiss]);
-
   return (
-    <div
-      // onClick here (not onPointerDown) — see note above
-      onClick={onDismiss}
-      className="fixed inset-0 z-50 flex items-center justify-center px-8"
-      style={{ background: "rgba(0,0,0,0.45)" }}
-      role="dialog"
-      aria-modal="true"
-      aria-label="Quick Settings"
+    <Dialog
+      onDismiss={onDismiss}
+      ariaLabel="Quick Settings"
+      maxWidthClassName="max-w-sm"
     >
-      {/* Stop clicks inside the card from bubbling to the backdrop */}
+      {/* ── Header ── */}
       <div
-        onClick={(e) => {
-          e.stopPropagation();
-        }}
-        className="w-full max-w-sm overflow-hidden rounded-2xl"
+        className="flex items-center gap-3 px-3 pt-5 pb-3"
         style={{
-          background: "var(--ion-card-background, var(--ion-background-color)",
-          boxShadow:
-            "0 32px 80px rgba(0,0,0,0.35), 0 4px 16px rgba(0,0,0,0.15)",
-          animation: "dialog-pop 0.22s cubic-bezier(0.34, 1.3, 0.64, 1) both",
+          borderBottom: "1px solid rgba(var(--ion-color-medium-rgb), 0.3)",
         }}
       >
-        {/* ── Header ── */}
-        <div
-          className="flex items-center gap-3 px-3 pt-5 pb-3"
-          style={{
-            borderBottom: "1px solid rgba(var(--ion-color-medium-rgb), 0.3)",
-          }}
-        >
-          <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl">
-            <IonIcon
-              icon={documentIcon}
-              className="text-2xl"
-              style={{
-                color:
-                  job.outputColor === "Color"
-                    ? "var(--ion-color-secondary)"
-                    : "var(--ion-color-medium)",
-              }}
-            />
+        <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl">
+          <IonIcon
+            icon={documentIcon}
+            className="text-2xl"
+            style={{
+              color:
+                job.outputColor === "Color"
+                  ? "var(--ion-color-secondary)"
+                  : "var(--ion-color-medium)",
+            }}
+          />
+        </div>
+
+        <div className="flex min-w-0 flex-1 flex-col">
+          <p
+            className="m-0 text-sm leading-snug font-semibold"
+            style={{ color: "var(--ion-color-dark)" }}
+            title={job.document.filename}
+          >
+            {job.document.filename}
+          </p>
+
+          <p
+            className="m-0 mt-0.5 text-xs"
+            style={{ color: "var(--ion-color-medium)" }}
+          >
+            {formatSubtitle(job, summary)}
+          </p>
+
+          <div className="mt-3">
+            {summary.hasAnyOverride && <OverrideChips job={job} />}
           </div>
-          <div className="flex min-w-0 flex-1 flex-col">
-            <p
-              className="m-0 text-sm leading-snug font-semibold"
-              style={{ color: "var(--ion-color-dark)" }}
-              title={job.document.filename}
+        </div>
+      </div>
+
+      {/* ── Controls ── */}
+      <div className="flex flex-col gap-4 px-4 pt-4 pb-4">
+        {/* Output color */}
+        <div className="flex flex-col gap-2">
+          <p
+            className="m-0 text-sm font-semibold tracking-wide uppercase"
+            style={{ color: "var(--ion-color-medium)" }}
+          >
+            Color Mode
+          </p>
+
+          <div className="flex flex-row gap-2">
+            <IonChip
+              color={job.outputColor === "Grayscale" ? "primary" : undefined}
+              onClick={() => {
+                onColorChange("Grayscale");
+              }}
             >
-              {job.document.filename}
-            </p>
-            <p
-              className="m-0 mt-0.5 text-xs"
-              style={{ color: "var(--ion-color-medium)" }}
+              <IonIcon icon={contrastOutline} />
+              <IonLabel className="font-semibold">B&amp;W</IonLabel>
+            </IonChip>
+
+            <IonChip
+              color={job.outputColor === "Color" ? "primary" : undefined}
+              onClick={() => {
+                onColorChange("Color");
+              }}
             >
-              {formatSubtitle(job, summary)}
-            </p>
-            <div className="mt-3">
-              {summary.hasAnyOverride && <OverrideChips job={job} />}
-            </div>
+              <IonIcon icon={colorPaletteOutline} />
+              <IonLabel className="font-semibold">Color</IonLabel>
+            </IonChip>
           </div>
         </div>
 
-        {/* ── Controls ── */}
-        <div className="flex flex-col gap-4 px-4 pt-4 pb-4">
-          {/* Output color */}
-          <div className="flex flex-col gap-2">
+        {/* Copies stepper */}
+        <div className="flex items-center justify-between">
+          <div className="flex flex-col items-start justify-center">
             <p
               className="m-0 text-sm font-semibold tracking-wide uppercase"
               style={{ color: "var(--ion-color-medium)" }}
             >
-              Color Mode
+              Copy Count
             </p>
 
-            <div className="flex flex-row gap-2">
-              <IonChip
-                color={job.outputColor === "Grayscale" ? "primary" : undefined}
-                onClick={() => {
-                  onColorChange("Grayscale");
-                }}
-              >
-                <IonIcon icon={contrastOutline} />
-                <IonLabel className="font-semibold">B&amp;W</IonLabel>
-              </IonChip>
-
-              <IonChip
-                color={job.outputColor === "Color" ? "primary" : undefined}
-                onClick={() => {
-                  onColorChange("Color");
-                }}
-              >
-                <IonIcon icon={colorPaletteOutline} />
-                <IonLabel className="font-semibold">Color</IonLabel>
-              </IonChip>
-            </div>
-          </div>
-
-          {/* Copies stepper */}
-          <div className="flex items-center justify-between">
-            <div className="flex flex-col items-start justify-center">
-              <p
-                className="m-0 text-sm font-semibold tracking-wide uppercase"
-                style={{ color: "var(--ion-color-medium)" }}
-              >
-                Copy Count
-              </p>
-              <p
-                className="my-0.5 text-xs tracking-wide"
-                style={{ color: "var(--ion-color-medium)" }}
-              >
-                Per page default
-              </p>
-            </div>
-            <div className="flex items-center gap-2 rounded-2xl px-2 py-1.5">
-              <button
-                onClick={onDecrement}
-                disabled={job.copyCount <= 1}
-                className="flex h-8 w-8 items-center justify-center rounded-xl transition active:scale-95 disabled:opacity-30"
-                style={{
-                  background: "var(--ion-card-background)",
-                  color: "var(--ion-color-dark)",
-                }}
-                aria-label="Decrease copies"
-              >
-                <IonIcon icon={remove} size="small" />
-              </button>
-
-              <span
-                className="min-w-[26px] text-center text-sm font-semibold tabular-nums"
-                style={{ color: "var(--ion-color-dark)" }}
-              >
-                {job.copyCount}
-              </span>
-
-              <button
-                onClick={onIncrement}
-                disabled={job.copyCount >= 99}
-                className="flex h-8 w-8 items-center justify-center rounded-xl transition active:scale-95 disabled:opacity-30"
-                style={{
-                  background: "var(--ion-card-background)",
-                  color: "var(--ion-color-dark)",
-                }}
-                aria-label="Increase copies"
-              >
-                <IonIcon icon={add} size="small"></IonIcon>
-              </button>
-            </div>
-          </div>
-
-          {summary.hasAnyOverride && (
-            <IonNote
-              className="m-0 flex items-start gap-1.5 rounded-xl text-xs leading-relaxed"
-              style={{
-                color: "var(--ion-color-medium)",
-              }}
+            <p
+              className="my-0.5 text-xs tracking-wide"
+              style={{ color: "var(--ion-color-medium)" }}
             >
-              <IonIcon
-                icon={informationCircle}
-                className="flex-shrink-0"
-                size="small"
-              />
+              Per page default
+            </p>
+          </div>
 
-              <span>
-                Some pages have individual settings. Changes here apply to pages
-                without overrides. Use{" "}
-                <strong style={{ color: "var(--ion-color-dark-shade)" }}>
-                  Print Options
-                </strong>{" "}
-                to edit per-page settings.
-              </span>
-            </IonNote>
-          )}
+          <div className="flex items-center gap-2 rounded-2xl px-2 py-1.5">
+            <button
+              onClick={onDecrement}
+              disabled={job.copyCount <= 1}
+              className="flex h-8 w-8 items-center justify-center rounded-xl transition active:scale-95 disabled:opacity-30"
+              style={{
+                background: "var(--ion-card-background)",
+                color: "var(--ion-color-dark)",
+              }}
+              aria-label="Decrease copies"
+            >
+              <IonIcon icon={remove} size="small" />
+            </button>
+
+            <span
+              className="min-w-[26px] text-center text-sm font-semibold tabular-nums"
+              style={{ color: "var(--ion-color-dark)" }}
+            >
+              {job.copyCount}
+            </span>
+
+            <button
+              onClick={onIncrement}
+              disabled={job.copyCount >= 99}
+              className="flex h-8 w-8 items-center justify-center rounded-xl transition active:scale-95 disabled:opacity-30"
+              style={{
+                background: "var(--ion-card-background)",
+                color: "var(--ion-color-dark)",
+              }}
+              aria-label="Increase copies"
+            >
+              <IonIcon icon={add} size="small" />
+            </button>
+          </div>
         </div>
+
+        {summary.hasAnyOverride && (
+          <IonNote
+            className="m-0 flex items-start gap-1.5 rounded-xl text-xs leading-relaxed"
+            style={{
+              color: "var(--ion-color-medium)",
+            }}
+          >
+            <IonIcon
+              icon={informationCircle}
+              className="flex-shrink-0"
+              size="small"
+            />
+
+            <span>
+              Some pages have individual settings. Changes here apply to pages
+              without overrides. Use{" "}
+              <strong style={{ color: "var(--ion-color-dark-shade)" }}>
+                Print Options
+              </strong>{" "}
+              to edit per-page settings.
+            </span>
+          </IonNote>
+        )}
       </div>
-    </div>
+    </Dialog>
   );
 }
 
