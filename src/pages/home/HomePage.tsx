@@ -46,7 +46,7 @@ const HomePage: React.FC = () => {
               }}
               aria-label="How it works"
             >
-              <IonIcon icon={helpCircleOutline} />
+              <IonIcon slot="icon-only" icon={helpCircleOutline} />
             </IonButton>
           </IonButtons>
         </IonToolbar>
