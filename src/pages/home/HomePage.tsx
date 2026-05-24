@@ -6,6 +6,8 @@ import {
   IonButtons,
   IonCard,
   IonCardContent,
+  IonFab,
+  IonFabButton,
   IonHeader,
   IonIcon,
   IonItem,
@@ -19,6 +21,7 @@ import {
 } from "@ionic/react";
 import AppContent from "@layout/AppContent";
 import {
+  add,
   documentOutline,
   helpCircleOutline,
   printOutline,
@@ -93,6 +96,11 @@ const HomePage: React.FC = () => {
             ></HowItWorks>
           )}
         </div>
+        <IonFab slot="fixed" vertical="bottom" horizontal="end">
+          <IonFabButton>
+            <IonIcon icon={add}></IonIcon>
+          </IonFabButton>
+        </IonFab>
       </AppContent>
     </IonPage>
   );

@@ -73,3 +73,7 @@ http://ionicframework.com/docs/theming/ */
     transform: scale(1);
   }
 }
+
+ion-fab {
+  bottom: calc(var(--ion-safe-area-bottom) + 70px);
+}
