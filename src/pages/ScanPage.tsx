@@ -60,34 +60,33 @@ export default function ScanPage() {
     }
   }
 
-  function handleScanResult(decodedText: string) {
+  function extractPrinterId(decodedText: string): string | null {
     try {
       const url = new URL(decodedText);
-      const origin = url.origin;
 
-      if (origin !== deploymentUrl) {
-        stopScanning();
-        setIsAlertOpen(true);
-        return;
+      if (url.origin !== deploymentUrl) {
+        return null;
       }
 
-      const paths = url.pathname.split("/");
-      const selectorIndex = paths.findIndex((path) => path === "printer");
+      const match = /^\/printers\/([^/]+)/.exec(url.pathname);
 
-      if (selectorIndex === -1 || !paths[selectorIndex + 1]) {
-        stopScanning();
-        setIsAlertOpen(true);
-        return;
-      }
-
-      const printerId = paths[selectorIndex + 1];
-
-      stopScanning();
-      router.push(`/home/printer/${printerId}`, "forward");
+      return match?.[1] ? decodeURIComponent(match[1]) : null;
     } catch {
-      stopScanning();
-      setIsAlertOpen(true);
+      return null;
     }
+  }
+
+  function handleScanResult(decodedText: string) {
+    const printerId = extractPrinterId(decodedText);
+
+    stopScanning();
+
+    if (!printerId) {
+      setIsAlertOpen(true);
+      return;
+    }
+
+    router.push(`/home/printer/${printerId}`, "forward");
   }
 
   function stopScanning() {
