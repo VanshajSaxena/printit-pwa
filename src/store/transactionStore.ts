@@ -3,7 +3,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 import { createIdbStorage } from "./createIdbStorage";
-import { OutputColor } from "./draftStore";
+import { OutputColor } from "./structure";
 
 export type TransactionStatus =
   | "PENDING"

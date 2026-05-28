@@ -4,116 +4,14 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 import { createIdbStorage } from "./createIdbStorage";
-
-export type OutputColor = "Color" | "Monochrome" | "Grayscale";
-
-export interface TimeAndIdentifierType {
-  id: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface DraftPageConfig {
-  pageNumber: number;
-  excluded: boolean;
-  outputColor?: OutputColor;
-  copyCount?: number;
-}
-
-export interface DraftJob extends TimeAndIdentifierType {
-  document: DraftDocument;
-  copyCount: number;
-  outputColor: OutputColor;
-  pageConfigs: DraftPageConfig[];
-}
-
-export interface DraftDocument extends TimeAndIdentifierType {
-  filename: string;
-  contentType: string;
-  fileId: string;
-  pageCount: number;
-}
-
-export interface DraftTransaction extends TimeAndIdentifierType {
-  vendorId?: number;
-  jobs: DraftJob[];
-}
-
-export interface DocumentMetadata {
-  fileId: string;
-  filename: string;
-  contentType: string;
-  pageCount: number;
-}
-
-export interface DraftStore {
-  state: {
-    transactions: Record<string, DraftTransaction>;
-    currentDraftTransactionId: string | null;
-    currentDraftJobId: string | null;
-  };
-  hydrated: boolean;
-  setHydrated: () => void;
-
-  createDraftTransaction: (
-    documents: DocumentMetadata[],
-    vendorId?: number,
-  ) => string;
-
-  setCurrentDraftTransactionId: (id: string) => void;
-  clearCurrentDraftTransactionId: () => void;
-
-  updateTransactionVendor: (transactionId: string, vendorId: number) => void;
-
-  setCurrentDraftJobId: (id: string) => void;
-  clearCurrentDraftJobId: () => void;
-
-  addJobsToTransaction: (
-    transactionId: string,
-    documents: DocumentMetadata[],
-  ) => void;
-
-  updateDraftJob: (
-    transactionId: string,
-    jobId: string,
-    updates: Partial<DraftJob>,
-  ) => void;
-
-  deleteDraftJob: (transactionId: string, jobId: string) => void;
-
-  togglePageExclusion: (
-    transactionId: string,
-    jobId: string,
-    pageNumber: number,
-  ) => void;
-
-  updatePageConfig: (
-    transactionId: string,
-    jobId: string,
-    pageNumber: number,
-    updates: Partial<Omit<DraftPageConfig, "pageNumber">>,
-  ) => void;
-
-  updatePageConfigOutputColor: (
-    transactionId: string,
-    jobId: string,
-    pageNumber: number,
-    outputColor: OutputColor,
-  ) => void;
-
-  updatePageConfigCopyCount: (
-    transactionId: string,
-    jobId: string,
-    pageNumber: number,
-    copyCount: number,
-  ) => void;
-
-  resetPageConfig: (
-    transactionId: string,
-    jobId: string,
-    pageNumber: number,
-  ) => void;
-}
+import {
+  DraftDocument,
+  DraftJob,
+  DraftPageConfig,
+  DraftStore,
+  DraftTransaction,
+  OutputColor,
+} from "./structure";
 
 export const useDraftStore = create<DraftStore>()(
   persist(
