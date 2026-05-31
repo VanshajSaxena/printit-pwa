@@ -24,10 +24,7 @@ import AppContent from "@layout/AppContent";
 import { useDraftStore } from "@store/draftStore";
 import { usePresenceStore } from "@store/presenceStore";
 import { useVendorStore } from "@store/vendorStore";
-import { getPdfPageCount } from "@utils/getPdfPageCount";
-import { getUUID } from "@utils/getUUID";
-import { isPdfEncryptedFast } from "@utils/isPdfEncryptedFast";
-import { setMany } from "idb-keyval";
+import { createDraftTransaction } from "@utils/createDraftTransaction";
 import {
   alertCircle,
   arrowBack,
@@ -50,9 +47,6 @@ export default function SelectedVendorPage() {
 
   const upsertVendor = useVendorStore((store) => store.upsertVendor);
   const setPresence = usePresenceStore((store) => store.setPresence);
-  const createDraftTransaction = useDraftStore(
-    (store) => store.createDraftTransaction,
-  );
   const setCurrentDraftTransactionId = useDraftStore(
     (store) => store.setCurrentDraftTransactionId,
   );
@@ -135,59 +129,19 @@ export default function SelectedVendorPage() {
 
     await present({ message: "Processing files..." });
 
-    const encryptionChecks = await Promise.all(
-      onlyPdfFiles.map(async (file) => {
-        const encrypted = await isPdfEncryptedFast(file);
-        return {
-          file,
-          encrypted,
-        };
-      }),
-    );
-
-    const unencryptedFiles = encryptionChecks
-      .filter(({ encrypted }) => !encrypted)
-      .map(({ file }) => file);
-
     try {
-      const processedData = await Promise.all(
-        unencryptedFiles.map(async (file) => {
-          const fileId = getUUID();
-          const pageCount = await getPdfPageCount(file);
-
-          const storageObject = {
-            id: fileId,
-            file: file,
-            filename: file.name,
-            mimeType: file.type,
-          };
-
-          return {
-            idbEntry: [fileId, storageObject] as [string, typeof storageObject],
-            metadata: {
-              fileId,
-              filename: file.name,
-              contentType: file.type,
-              pageCount,
-            },
-          };
-        }),
+      const transactionId = await createDraftTransaction(
+        onlyPdfFiles,
+        vendorId,
       );
-
-      const idbEntries = processedData.map((data) => data.idbEntry);
-      const documentsMetadata = processedData.map((data) => data.metadata);
-
-      await setMany(idbEntries);
-
-      const transactionId = createDraftTransaction(documentsMetadata, vendorId);
 
       setCurrentDraftTransactionId(transactionId);
 
-      await dismiss();
-      event.target.value = "";
       router.push(`/${router.routeInfo.tab ?? "home"}/checkout`);
     } catch (error) {
       console.error("Failed to process files:", error);
+    } finally {
+      event.target.value = "";
       await dismiss();
     }
   };

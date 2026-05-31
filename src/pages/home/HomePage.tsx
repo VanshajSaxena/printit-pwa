@@ -1,6 +1,5 @@
 import { Dialog } from "@components/Dialog";
 import { PrintitIcon } from "@components/graphics/Printit";
-import { QRCodeGraphic } from "@components/graphics/QRCodeGraphic";
 import {
   IonButton,
   IonButtons,
@@ -13,7 +12,6 @@ import {
   IonItem,
   IonLabel,
   IonList,
-  IonNote,
   IonPage,
   IonTitle,
   IonToolbar,
@@ -22,11 +20,13 @@ import {
 import AppContent from "@layout/AppContent";
 import {
   cameraOutline,
+  chevronForwardOutline,
   documentOutline,
+  documentTextOutline,
   helpCircleOutline,
+  locationOutline,
   printOutline,
   qrCodeOutline,
-  scan,
 } from "ionicons/icons";
 import { useState } from "react";
 import "./HomePage.css";
@@ -34,6 +34,12 @@ import "./HomePage.css";
 const HomePage: React.FC = () => {
   const [hiw, setHiw] = useState(false);
   const router = useIonRouter();
+  const selectPrintersTab = () => {
+    setTimeout(() => {
+      router.push("/printers", "none", "push");
+    }, 250);
+  };
+
   return (
     <IonPage>
       <IonHeader translucent>
@@ -41,7 +47,6 @@ const HomePage: React.FC = () => {
           <IonTitle>
             <PrintitIcon width={80}></PrintitIcon>
           </IonTitle>
-
           <IonButtons slot="end">
             <IonButton
               onClick={() => {
@@ -54,58 +59,139 @@ const HomePage: React.FC = () => {
           </IonButtons>
         </IonToolbar>
       </IonHeader>
-      <AppContent fullscreen className="ion-padding h-full">
+
+      <AppContent fullscreen className="ion-padding">
         <IonHeader collapse="condense">
           <IonToolbar>
             <PrintitIcon width={120}></PrintitIcon>
           </IonToolbar>
         </IonHeader>
-        <div className="flex flex-col items-center justify-evenly pb-14">
-          <IonCard className="scan-card my-4 max-w-full min-w-full">
-            <IonCardContent>
-              <div className="flex max-w-full min-w-full flex-col items-center gap-4">
-                <QRCodeGraphic width={225} />
-                <IonButton
-                  size="default"
-                  expand="block"
-                  onClick={() => {
-                    router.push("/scan", "none", "push");
-                  }}
-                >
-                  Scan QR
-                  <IonIcon slot="end" ios={scan} md={scan}></IonIcon>
-                </IonButton>
 
-                <IonNote className="text-center text-sm leading-relaxed">
-                  You can find the QR code at your nearby Printit Shops. Tap to{" "}
-                  <span
-                    className="cursor-pointer font-medium"
-                    style={{ color: "var(--ion-color-primary)" }}
-                  >
-                    Learn More.
-                  </span>
-                </IonNote>
-              </div>
-            </IonCardContent>
-          </IonCard>
-          {hiw && (
-            <HowItWorks
-              onDismiss={() => {
-                setHiw(false);
+        <div className="ml-auto flex w-full max-w-3xl flex-col gap-6 pt-8 pb-24 md:pt-12 lg:pt-16 xl:pt-20">
+          <div className="grid w-full grid-cols-1 justify-end gap-4 sm:grid-cols-2">
+            <IonCard
+              button
+              color="brand-blue"
+              className="m-0 w-full shadow-lg"
+              onClick={() => {
+                // TODO: Handle navigation/action for printing documents
               }}
-            ></HowItWorks>
-          )}
+            >
+              <IonCardContent className="flex h-full flex-col justify-between p-6">
+                <div className="mb-8 flex h-16 w-16 items-center justify-center rounded-full bg-black/15 shadow-inner">
+                  <IonIcon
+                    icon={documentTextOutline}
+                    style={{ fontSize: "2.25rem" }}
+                    className="text-white"
+                  />
+                </div>
+                <div className="flex w-full flex-col">
+                  <div className="flex w-full items-center justify-between">
+                    <h2 className="m-0 text-2xl font-bold tracking-wide text-white">
+                      Upload & Print
+                    </h2>
+                    <IonIcon
+                      icon={chevronForwardOutline}
+                      style={{ fontSize: "1.75rem" }}
+                      className="text-white/70"
+                    />
+                  </div>
+                  <p className="m-0 mt-1 text-sm font-medium text-white/80">
+                    Print files from your device
+                  </p>
+                </div>
+              </IonCardContent>
+            </IonCard>
+
+            <IonCard
+              button
+              color="brand-purple"
+              className="m-0 w-full shadow-lg"
+              onClick={() => {
+                selectPrintersTab();
+              }}
+            >
+              <IonCardContent className="flex h-full flex-col justify-between p-6">
+                <div className="mb-8 flex h-16 w-16 items-center justify-center rounded-full bg-black/15 shadow-inner">
+                  <IonIcon
+                    icon={locationOutline}
+                    style={{ fontSize: "2.25rem" }}
+                    className="text-white"
+                  />
+                </div>
+                <div className="flex w-full flex-col">
+                  <div className="flex w-full items-center justify-between">
+                    <h2 className="m-0 text-2xl font-bold tracking-wide text-white">
+                      Nearby Shops
+                    </h2>
+                    <IonIcon
+                      icon={chevronForwardOutline}
+                      style={{ fontSize: "1.75rem" }}
+                      className="text-white/70"
+                    />
+                  </div>
+                  <p className="m-0 mt-1 text-sm font-medium text-white/80">
+                    Locate a Printit printer
+                  </p>
+                </div>
+              </IonCardContent>
+            </IonCard>
+
+            <IonCard
+              button
+              color="brand-pink"
+              className="m-0 w-full shadow-lg sm:col-start-2"
+              onClick={() => {
+                router.push("/scan", "none", "push");
+              }}
+            >
+              <IonCardContent className="flex h-full flex-col justify-between p-6">
+                <div className="mb-8 flex h-16 w-16 items-center justify-center rounded-full bg-black/15 shadow-inner">
+                  <IonIcon
+                    icon={qrCodeOutline}
+                    style={{ fontSize: "2.25rem" }}
+                    className="text-white"
+                  />
+                </div>
+                <div className="flex w-full flex-col">
+                  <div className="flex w-full items-center justify-between">
+                    <h2 className="m-0 text-2xl font-bold tracking-wide text-white">
+                      Connect
+                    </h2>
+                    <IonIcon
+                      icon={chevronForwardOutline}
+                      style={{ fontSize: "1.75rem" }}
+                      className="text-white/70"
+                    />
+                  </div>
+                  <p className="m-0 mt-1 text-sm font-medium text-white/80">
+                    Scan a machine's QR code
+                  </p>
+                </div>
+              </IonCardContent>
+            </IonCard>
+          </div>
         </div>
-        <IonFab slot="fixed" vertical="bottom" horizontal="end">
-          <IonFabButton
-            onClick={() => {
-              router.push("/scan", "none", "push");
+
+        {hiw && (
+          <HowItWorks
+            onDismiss={() => {
+              setHiw(false);
             }}
-          >
-            <IonIcon icon={cameraOutline}></IonIcon>
-          </IonFabButton>
-        </IonFab>
+          />
+        )}
       </AppContent>
+
+      <IonFab slot="fixed" vertical="bottom" horizontal="end">
+        <IonFabButton
+          color="brand-blue"
+          onClick={() => {
+            router.push("/scan", "none", "push");
+          }}
+        >
+          <IonIcon icon={cameraOutline} style={{ fontSize: "1.75rem" }} />
+        </IonFabButton>
+      </IonFab>
     </IonPage>
   );
 };

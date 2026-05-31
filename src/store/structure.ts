@@ -5,6 +5,7 @@ export interface DraftStore {
     transactions: Record<string, DraftTransaction>;
     currentDraftTransactionId: string | null;
     currentDraftJobId: string | null;
+    documents: Record<string, Omit<DraftDocument, "id" | "updatedAt">>;
   };
   hydrated: boolean;
   setHydrated: () => void;

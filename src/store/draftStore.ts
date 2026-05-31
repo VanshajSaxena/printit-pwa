@@ -20,6 +20,7 @@ export const useDraftStore = create<DraftStore>()(
         transactions: {},
         currentDraftTransactionId: null,
         currentDraftJobId: null,
+        documents: {},
       },
       hydrated: false,
       setHydrated: () => {
@@ -267,11 +268,29 @@ export const useDraftStore = create<DraftStore>()(
       name: "printit-draft-storage",
       storage: createIdbStorage<Pick<DraftStore, "state">>(),
       partialize: (store: DraftStore) => ({ state: store.state }),
+      version: 1,
       onRehydrateStorage: (store) => {
         return () => {
           console.log("printit-draft-storage: hydrated");
           store.setHydrated();
         };
+      },
+      migrate: (persistedState, version) => {
+        const store = persistedState as Pick<DraftStore, "state">;
+        if (version < 1) {
+          console.debug("Migrating draft store", {
+            fromVersion: version,
+            toVersion: 1,
+          });
+          store.state.documents = {};
+
+          Object.values(store.state.transactions).forEach((transaction) => {
+            transaction.jobs.forEach((job) => {
+              store.state.documents[job.document.fileId] = job.document;
+            });
+          });
+        }
+        return store;
       },
     },
   ),

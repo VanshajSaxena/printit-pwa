@@ -29,12 +29,9 @@ import { useDraftStore } from "@store/draftStore";
 import { usePresenceStore } from "@store/presenceStore";
 import type { VendorProfile } from "@store/vendorStore";
 import { useVendorStore } from "@store/vendorStore";
+import { createDraftTransaction } from "@utils/createDraftTransaction";
 import { formatDistance } from "@utils/formatDistance";
 import { formatRelativeTime } from "@utils/formatRelativeTime";
-import { getPdfPageCount } from "@utils/getPdfPageCount";
-import { getUUID } from "@utils/getUUID";
-import { isPdfEncryptedFast } from "@utils/isPdfEncryptedFast";
-import { setMany } from "idb-keyval";
 import {
   alertCircle,
   close,
@@ -225,9 +222,6 @@ const VendorDialog: React.FC<VendorDialogProps> = ({ vendor, onDismiss }) => {
 
   const upsertVendor = useVendorStore((store) => store.upsertVendor);
   const setPresence = usePresenceStore((store) => store.setPresence);
-  const createDraftTransaction = useDraftStore(
-    (store) => store.createDraftTransaction,
-  );
   const setCurrentDraftTransactionId = useDraftStore(
     (store) => store.setCurrentDraftTransactionId,
   );
@@ -269,50 +263,14 @@ const VendorDialog: React.FC<VendorDialogProps> = ({ vendor, onDismiss }) => {
     await dismissModal();
     await present({ message: "Processing files..." });
 
-    const encryptionChecks = await Promise.all(
-      onlyPdfFiles.map(async (file) => {
-        const encrypted = await isPdfEncryptedFast(file);
-        return {
-          file,
-          encrypted,
-        };
-      }),
-    );
-
-    const unencryptedFiles = encryptionChecks
-      .filter(({ encrypted }) => !encrypted)
-      .map(({ file }) => file);
-
     try {
-      const processedData = await Promise.all(
-        unencryptedFiles.map(async (file) => {
-          const fileId = getUUID();
-          const pageCount = await getPdfPageCount(file);
-          const storageObject = {
-            id: fileId,
-            file,
-            filename: file.name,
-            mimeType: file.type,
-          };
-          return {
-            idbEntry: [fileId, storageObject] as [string, typeof storageObject],
-            metadata: {
-              fileId,
-              filename: file.name,
-              contentType: file.type,
-              pageCount,
-            },
-          };
-        }),
-      );
-
-      await setMany(processedData.map((d) => d.idbEntry));
-
-      const transactionId = createDraftTransaction(
-        processedData.map((d) => d.metadata),
+      const transactionId = await createDraftTransaction(
+        onlyPdfFiles,
         vendor.id,
       );
+
       setCurrentDraftTransactionId(transactionId);
+
       router.push(`/${router.routeInfo.tab ?? "home"}/checkout`);
     } catch (error) {
       console.error("Failed to process files:", error);
