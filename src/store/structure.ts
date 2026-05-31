@@ -10,7 +10,7 @@ export interface DraftStore {
   setHydrated: () => void;
 
   createDraftTransaction: (
-    documents: DocumentMetadata[],
+    documents: DocumentInfo[],
     vendorId?: number,
   ) => string;
 
@@ -24,7 +24,7 @@ export interface DraftStore {
 
   addJobsToTransaction: (
     transactionId: string,
-    documents: DocumentMetadata[],
+    documents: DocumentInfo[],
   ) => void;
 
   updateDraftJob: (
@@ -83,14 +83,14 @@ export interface DraftJob extends WithIdentifierAndTimeStamps {
   pageConfigs: DraftPageConfig[];
 }
 
-export interface DocumentMetadata {
+export interface DocumentInfo {
   fileId: string;
-  contentType: string;
   filename: string;
+  contentType: string;
   pageCount: number;
 }
 
-export type DraftDocument = DocumentMetadata & WithIdentifierAndTimeStamps;
+export type DraftDocument = DocumentInfo & WithIdentifierAndTimeStamps;
 
 export interface DraftTransaction extends WithIdentifierAndTimeStamps {
   vendorId?: number;

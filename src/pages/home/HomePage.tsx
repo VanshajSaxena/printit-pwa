@@ -21,7 +21,7 @@ import {
 } from "@ionic/react";
 import AppContent from "@layout/AppContent";
 import {
-  add,
+  cameraOutline,
   documentOutline,
   helpCircleOutline,
   printOutline,
@@ -97,8 +97,12 @@ const HomePage: React.FC = () => {
           )}
         </div>
         <IonFab slot="fixed" vertical="bottom" horizontal="end">
-          <IonFabButton>
-            <IonIcon icon={add}></IonIcon>
+          <IonFabButton
+            onClick={() => {
+              router.push("/scan", "none", "push");
+            }}
+          >
+            <IonIcon icon={cameraOutline}></IonIcon>
           </IonFabButton>
         </IonFab>
       </AppContent>

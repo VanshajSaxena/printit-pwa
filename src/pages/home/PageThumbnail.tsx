@@ -1,5 +1,5 @@
 import { IonIcon, IonSpinner } from "@ionic/react";
-import type { OutputColor } from "@store/draftStore";
+import type { OutputColor } from "@store/structure";
 import { add, checkmarkCircle, ellipseOutline, remove } from "ionicons/icons";
 import * as pdfjsLib from "pdfjs-dist";
 import { useCallback, useEffect, useRef, useState } from "react";

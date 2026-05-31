@@ -28,9 +28,11 @@ import {
   useIonToast,
 } from "@ionic/react";
 
+import { Dialog } from "@components/Dialog";
 import AppContent from "@layout/AppContent";
-import { OutputColor, useDraftStore, type DraftJob } from "@store/draftStore";
+import { useDraftStore } from "@store/draftStore";
 import { usePresenceStore } from "@store/presenceStore";
+import { OutputColor, type DraftJob } from "@store/structure";
 import { useTransactionStore } from "@store/transactionStore";
 import { useVendorStore } from "@store/vendorStore";
 import { getPdfPageCount } from "@utils/getPdfPageCount";
@@ -60,7 +62,6 @@ import {
   type ChangeEvent,
 } from "react";
 import "./CheckoutPage.css";
-import { Dialog } from "@components/Dialog";
 
 export interface StoredFileWrapper {
   id: string;

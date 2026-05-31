@@ -1,4 +1,4 @@
-import type { DraftJob, OutputColor } from "@store/draftStore";
+import type { DraftJob, OutputColor } from "@store/structure";
 
 export interface JobDisplaySummary {
   activePagesCount: number;

@@ -14,7 +14,8 @@ import {
   useIonViewDidLeave,
 } from "@ionic/react";
 import AppContent from "@layout/AppContent";
-import { DraftJob, OutputColor, useDraftStore } from "@store/draftStore";
+import { useDraftStore } from "@store/draftStore";
+import { DraftJob, OutputColor } from "@store/structure";
 import { get } from "idb-keyval";
 import * as pdfjsLib from "pdfjs-dist";
 import { useCallback, useEffect, useState } from "react";

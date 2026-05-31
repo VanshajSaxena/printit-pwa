@@ -1,6 +1,6 @@
 import { PDFDocument } from "pdf-lib";
 import { getUUID } from "@utils/getUUID";
-import type { DraftJob, OutputColor } from "@store/draftStore";
+import type { DraftJob, OutputColor } from "@store/structure";
 import pLimit from "p-limit";
 
 export interface PreparedJob {
