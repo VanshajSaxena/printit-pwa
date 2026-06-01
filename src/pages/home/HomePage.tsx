@@ -28,7 +28,7 @@ import {
   printOutline,
   qrCodeOutline,
 } from "ionicons/icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./HomePage.css";
 
 const HomePage: React.FC = () => {
@@ -39,6 +39,19 @@ const HomePage: React.FC = () => {
       router.push("/printers", "none", "push");
     }, 250);
   };
+
+  useEffect(() => {
+    const handler = (event: Event) => {
+      const e = event as CustomEvent<string>;
+      router.push(e.detail);
+    };
+
+    window.addEventListener("navigate", handler);
+
+    return () => {
+      window.removeEventListener("navigate", handler);
+    };
+  }, [router]);
 
   return (
     <IonPage>
@@ -67,8 +80,8 @@ const HomePage: React.FC = () => {
           </IonToolbar>
         </IonHeader>
 
-        <div className="ml-auto flex w-full max-w-3xl flex-col gap-6 pt-8 pb-24 md:pt-12 lg:pt-16 xl:pt-20">
-          <div className="grid w-full grid-cols-1 justify-end gap-4 sm:grid-cols-2">
+        <div className="ml-auto flex w-full flex-col gap-6 pt-8 pb-24 md:pt-12 lg:pt-16 xl:pt-20">
+          <div className="grid w-full grid-cols-2 justify-end gap-4">
             <IonCard
               button
               color="brand-blue"
@@ -77,12 +90,11 @@ const HomePage: React.FC = () => {
                 // TODO: Handle navigation/action for printing documents
               }}
             >
-              <IonCardContent className="flex h-full flex-col justify-between p-6">
-                <div className="mb-8 flex h-16 w-16 items-center justify-center rounded-full bg-black/15 shadow-inner">
+              <IonCardContent className="flex h-full flex-col justify-between !p-4 sm:!p-6">
+                <div className="mb-4 flex size-12 items-center justify-center rounded-full bg-black/15 shadow-inner sm:mb-8 sm:size-16">
                   <IonIcon
                     icon={documentTextOutline}
-                    style={{ fontSize: "2.25rem" }}
-                    className="text-white"
+                    className="text-2xl text-white sm:text-3xl"
                   />
                 </div>
                 <div className="flex w-full flex-col">
@@ -92,11 +104,10 @@ const HomePage: React.FC = () => {
                     </h2>
                     <IonIcon
                       icon={chevronForwardOutline}
-                      style={{ fontSize: "1.75rem" }}
-                      className="text-white/70"
+                      className="text-2xl text-white/70 sm:text-3xl"
                     />
                   </div>
-                  <p className="m-0 mt-1 text-sm font-medium text-white/80">
+                  <p className="m-0 mt-1 hidden text-sm font-medium text-white/80">
                     Print files from your device
                   </p>
                 </div>
@@ -111,12 +122,11 @@ const HomePage: React.FC = () => {
                 selectPrintersTab();
               }}
             >
-              <IonCardContent className="flex h-full flex-col justify-between p-6">
-                <div className="mb-8 flex h-16 w-16 items-center justify-center rounded-full bg-black/15 shadow-inner">
+              <IonCardContent className="flex h-full flex-col justify-between !p-4 sm:!p-6">
+                <div className="mb-4 flex size-12 items-center justify-center rounded-full bg-black/15 shadow-inner sm:mb-8 sm:size-16">
                   <IonIcon
                     icon={locationOutline}
-                    style={{ fontSize: "2.25rem" }}
-                    className="text-white"
+                    className="text-2xl text-white sm:text-3xl"
                   />
                 </div>
                 <div className="flex w-full flex-col">
@@ -126,11 +136,10 @@ const HomePage: React.FC = () => {
                     </h2>
                     <IonIcon
                       icon={chevronForwardOutline}
-                      style={{ fontSize: "1.75rem" }}
-                      className="text-white/70"
+                      className="text-2xl text-white/70 sm:text-3xl"
                     />
                   </div>
-                  <p className="m-0 mt-1 text-sm font-medium text-white/80">
+                  <p className="m-0 mt-1 hidden text-sm font-medium text-white/80">
                     Locate a Printit printer
                   </p>
                 </div>
@@ -140,17 +149,16 @@ const HomePage: React.FC = () => {
             <IonCard
               button
               color="brand-pink"
-              className="m-0 w-full shadow-lg sm:col-start-2"
+              className="col-start-2 m-0 w-full shadow-lg"
               onClick={() => {
                 router.push("/scan", "none", "push");
               }}
             >
-              <IonCardContent className="flex h-full flex-col justify-between p-6">
-                <div className="mb-8 flex h-16 w-16 items-center justify-center rounded-full bg-black/15 shadow-inner">
+              <IonCardContent className="flex h-full flex-col justify-between !p-4 sm:!p-6">
+                <div className="mb-4 flex size-12 items-center justify-center rounded-full bg-black/15 shadow-inner sm:mb-8 sm:size-16">
                   <IonIcon
                     icon={qrCodeOutline}
-                    style={{ fontSize: "2.25rem" }}
-                    className="text-white"
+                    className="text-2xl text-white sm:text-3xl"
                   />
                 </div>
                 <div className="flex w-full flex-col">
@@ -160,11 +168,10 @@ const HomePage: React.FC = () => {
                     </h2>
                     <IonIcon
                       icon={chevronForwardOutline}
-                      style={{ fontSize: "1.75rem" }}
-                      className="text-white/70"
+                      className="text-2xl text-white/70 sm:text-3xl"
                     />
                   </div>
-                  <p className="m-0 mt-1 text-sm font-medium text-white/80">
+                  <p className="m-0 mt-1 hidden text-sm font-medium text-white/80">
                     Scan a machine's QR code
                   </p>
                 </div>

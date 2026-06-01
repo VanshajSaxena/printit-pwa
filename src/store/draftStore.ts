@@ -263,6 +263,14 @@ export const useDraftStore = create<DraftStore>()(
           }
         });
       },
+      addDocument: (
+        fileId: string,
+        document: Omit<DraftDocument, "id" | "updatedAt">,
+      ) => {
+        set((store) => {
+          store.state.documents[fileId] = document;
+        });
+      },
     })),
     {
       name: "printit-draft-storage",

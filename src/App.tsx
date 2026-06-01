@@ -33,6 +33,7 @@ import { UpdateProvider } from "@context/UpdateProvider";
 import AppLayout from "@layout/AppLayout";
 import { QueryClientProvider } from "@tanstack/react-query";
 import "./theme/variables.css";
+import { ingestShareSession } from "@utils/ingestShareSessions";
 
 interface PersistedSettings {
   state: {
@@ -75,6 +76,39 @@ document.documentElement.classList.toggle("ion-palette-dark", isDark);
 setupIonicReact({
   mode: savedMode,
 });
+
+export interface SWMessage {
+  type: "SHARE_SESSION";
+  shareId: string;
+}
+
+function isShareSessionMessage(data: unknown): data is SWMessage {
+  if (typeof data !== "object" || data === null) return false;
+
+  const d = data as Record<string, unknown>;
+
+  return d.type === "SHARE_SESSION" && typeof d.shareId === "string";
+}
+
+navigator.serviceWorker.addEventListener(
+  "message",
+  (event: MessageEvent<unknown>) => {
+    const data = event.data;
+
+    if (!isShareSessionMessage(data)) return;
+
+    void ingestShareSession(data.shareId);
+  },
+);
+
+const params = new URLSearchParams(window.location.search);
+const shareId = params.get("share");
+
+if (shareId) {
+  void (async () => {
+    await ingestShareSession(shareId);
+  })();
+}
 
 const App: React.FC = () => (
   <QueryClientProvider client={queryClient}>

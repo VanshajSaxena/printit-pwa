@@ -68,6 +68,11 @@ export interface DraftStore {
     jobId: string,
     pageNumber: number,
   ) => void;
+
+  addDocument: (
+    fileId: string,
+    document: Omit<DraftDocument, "id" | "updatedAt">,
+  ) => void;
 }
 
 export interface DraftPageConfig {

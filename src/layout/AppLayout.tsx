@@ -18,6 +18,7 @@ import ScanPage from "@pages/ScanPage";
 import AppearanceModePage from "@pages/settings/AppearanceModePage";
 import AppearancePage from "@pages/settings/AppearancePage";
 import SettingsPage from "@pages/settings/SettingsPage";
+import { ShareTargetPage } from "@pages/settings/ShareTargetPage";
 import UpdateAppPage from "@pages/settings/UpdateAppPage";
 import { Redirect, Route } from "react-router-dom";
 import AppTabBar from "./AppTabBar";
@@ -133,6 +134,9 @@ export default function Applayout() {
               </Route>
               <Route exact path="/settings/appearance/mode">
                 <AppearanceModePage />
+              </Route>
+              <Route exact path="/shared">
+                <ShareTargetPage></ShareTargetPage>
               </Route>
               <Route exact path="/">
                 <Redirect to="/home" />
