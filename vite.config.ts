@@ -76,6 +76,20 @@ export default defineConfig({
             purpose: "maskable",
           },
         ],
+        share_target: {
+          action: "/share-target",
+          method: "POST",
+          enctype: "multipart/form-data",
+
+          params: {
+            files: [
+              {
+                name: "pdf",
+                accept: ["application/pdf"],
+              },
+            ],
+          },
+        },
       },
     }),
   ],
