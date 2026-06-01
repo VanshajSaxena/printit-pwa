@@ -21,6 +21,7 @@ import SettingsPage from "@pages/settings/SettingsPage";
 import UpdateAppPage from "@pages/settings/UpdateAppPage";
 import { Redirect, Route } from "react-router-dom";
 import AppTabBar from "./AppTabBar";
+import { ShareTargetPage } from "@pages/settings/ShareTargetPage";
 
 export default function Applayout() {
   useAndroidBackButton();
@@ -133,6 +134,9 @@ export default function Applayout() {
               </Route>
               <Route exact path="/settings/appearance/mode">
                 <AppearanceModePage />
+              </Route>
+              <Route exact path="/share-target">
+                <ShareTargetPage></ShareTargetPage>
               </Route>
               <Route exact path="/">
                 <Redirect to="/home" />
