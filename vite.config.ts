@@ -34,6 +34,9 @@ export default defineConfig({
     react(),
     tailwindcss({ optimize: { minify: true } }),
     VitePWA({
+      strategies: "injectManifest",
+      srcDir: "src",
+      filename: "sw.ts",
       registerType: "prompt",
       // Caching strategies
       workbox: {
@@ -80,12 +83,14 @@ export default defineConfig({
           action: "/share-target",
           method: "POST",
           enctype: "multipart/form-data",
-
           params: {
+            title: "title",
+            text: "text",
+            url: "url",
             files: [
               {
-                name: "pdf",
-                accept: ["application/pdf"],
+                name: "file",
+                accept: ["application/pdf", ".pdf"],
               },
             ],
           },
