@@ -15,9 +15,12 @@ import {
   IonPage,
   IonTitle,
   IonToolbar,
+  useIonLoading,
   useIonRouter,
 } from "@ionic/react";
 import AppContent from "@layout/AppContent";
+import { useDraftStore } from "@store/draftStore";
+import { createDraftTransaction } from "@utils/createDraftTransaction";
 import {
   cameraOutline,
   chevronForwardOutline,
@@ -28,12 +31,18 @@ import {
   printOutline,
   qrCodeOutline,
 } from "ionicons/icons";
-import { useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 import "./HomePage.css";
 
 const HomePage: React.FC = () => {
   const [hiw, setHiw] = useState(false);
   const router = useIonRouter();
+  const [present, dismiss] = useIonLoading();
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const setCurrentDraftTransactionId = useDraftStore(
+    (store) => store.setCurrentDraftTransactionId,
+  );
   const selectPrintersTab = () => {
     setTimeout(() => {
       router.push("/printers", "none", "push");
@@ -52,6 +61,36 @@ const HomePage: React.FC = () => {
       window.removeEventListener("navigate", handler);
     };
   }, [router]);
+
+  const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
+    const eventTargetFiles = event.target.files;
+    if (!eventTargetFiles || eventTargetFiles.length === 0) return;
+
+    const selectedFiles = Array.from(eventTargetFiles);
+    const onlyPdfFiles = selectedFiles.filter(
+      (file) => file.type === "application/pdf",
+    );
+
+    if (onlyPdfFiles.length === 0) return;
+
+    await present({ message: "Processing files..." });
+
+    try {
+      const transactionId = await createDraftTransaction(onlyPdfFiles, null);
+
+      setCurrentDraftTransactionId(transactionId);
+      router.push(`/${router.routeInfo.tab ?? "home"}/checkout`);
+    } catch (error) {
+      console.error("Failed to process files:", error);
+    } finally {
+      event.target.value = "";
+      await dismiss();
+    }
+  };
+
+  const pickFiles = () => {
+    fileInputRef.current?.click();
+  };
 
   return (
     <IonPage>
@@ -87,10 +126,10 @@ const HomePage: React.FC = () => {
               color="brand-blue"
               className="m-0 w-full shadow-lg"
               onClick={() => {
-                // TODO: Handle navigation/action for printing documents
+                pickFiles();
               }}
             >
-              <IonCardContent className="flex h-full flex-col justify-between !p-4 sm:!p-6">
+              <IonCardContent className="!p-4 sm:!p-6">
                 <div className="mb-4 flex size-12 items-center justify-center rounded-full bg-black/15 shadow-inner sm:mb-8 sm:size-16">
                   <IonIcon
                     icon={documentTextOutline}
@@ -99,15 +138,15 @@ const HomePage: React.FC = () => {
                 </div>
                 <div className="flex w-full flex-col">
                   <div className="flex w-full items-center justify-between">
-                    <h2 className="m-0 text-2xl font-bold tracking-wide text-white">
+                    <IonLabel className="m-0 font-bold tracking-wide text-white">
                       Upload & Print
-                    </h2>
+                    </IonLabel>
                     <IonIcon
                       icon={chevronForwardOutline}
                       className="text-2xl text-white/70 sm:text-3xl"
                     />
                   </div>
-                  <p className="m-0 mt-1 hidden text-sm font-medium text-white/80">
+                  <p className="m-0 mt-1 hidden text-sm font-medium text-white/80 sm:block">
                     Print files from your device
                   </p>
                 </div>
@@ -122,24 +161,24 @@ const HomePage: React.FC = () => {
                 selectPrintersTab();
               }}
             >
-              <IonCardContent className="flex h-full flex-col justify-between !p-4 sm:!p-6">
+              <IonCardContent className="!p-4 sm:!p-6">
                 <div className="mb-4 flex size-12 items-center justify-center rounded-full bg-black/15 shadow-inner sm:mb-8 sm:size-16">
                   <IonIcon
                     icon={locationOutline}
                     className="text-2xl text-white sm:text-3xl"
                   />
                 </div>
-                <div className="flex w-full flex-col">
+                <div className="flex size-full flex-col">
                   <div className="flex w-full items-center justify-between">
-                    <h2 className="m-0 text-2xl font-bold tracking-wide text-white">
+                    <IonLabel className="m-0 font-semibold tracking-wide text-white">
                       Nearby Shops
-                    </h2>
+                    </IonLabel>
                     <IonIcon
                       icon={chevronForwardOutline}
                       className="text-2xl text-white/70 sm:text-3xl"
                     />
                   </div>
-                  <p className="m-0 mt-1 hidden text-sm font-medium text-white/80">
+                  <p className="m-0 mt-1 hidden text-sm font-medium text-white/80 sm:block">
                     Locate a Printit printer
                   </p>
                 </div>
@@ -154,7 +193,7 @@ const HomePage: React.FC = () => {
                 router.push("/scan", "none", "push");
               }}
             >
-              <IonCardContent className="flex h-full flex-col justify-between !p-4 sm:!p-6">
+              <IonCardContent className="!p-4 sm:!p-6">
                 <div className="mb-4 flex size-12 items-center justify-center rounded-full bg-black/15 shadow-inner sm:mb-8 sm:size-16">
                   <IonIcon
                     icon={qrCodeOutline}
@@ -163,15 +202,15 @@ const HomePage: React.FC = () => {
                 </div>
                 <div className="flex w-full flex-col">
                   <div className="flex w-full items-center justify-between">
-                    <h2 className="m-0 text-2xl font-bold tracking-wide text-white">
+                    <IonLabel className="m-0 font-bold tracking-wide text-white">
                       Connect
-                    </h2>
+                    </IonLabel>
                     <IonIcon
                       icon={chevronForwardOutline}
                       className="text-2xl text-white/70 sm:text-3xl"
                     />
                   </div>
-                  <p className="m-0 mt-1 hidden text-sm font-medium text-white/80">
+                  <p className="m-0 mt-1 hidden text-sm font-medium text-white/80 sm:block">
                     Scan a machine's QR code
                   </p>
                 </div>
@@ -187,6 +226,15 @@ const HomePage: React.FC = () => {
             }}
           />
         )}
+
+        <input
+          type="file"
+          ref={fileInputRef}
+          onChange={(event) => void handleFileChange(event)}
+          style={{ display: "none" }}
+          multiple
+          accept=".pdf"
+        />
       </AppContent>
 
       <IonFab slot="fixed" vertical="bottom" horizontal="end">

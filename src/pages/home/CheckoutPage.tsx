@@ -45,6 +45,7 @@ import {
   add,
   addOutline,
   alertCircle,
+  chevronForwardOutline,
   colorPaletteOutline,
   contrastOutline,
   document as documentIcon,
@@ -530,7 +531,7 @@ export default function CheckoutPage() {
 
     setIsSubmitting(true);
     await presentLoading({
-      message: "Please wait while we talk to the printer...",
+      message: "Please wait while we connect to the printer...",
     });
 
     try {
@@ -689,10 +690,18 @@ export default function CheckoutPage() {
     0,
   );
 
-  const displayName =
-    vendorProfile?.displayName ??
-    `${vendorProfile?.firstName ?? ""} ${vendorProfile?.lastName ?? ""}`.trim();
+  const isVendorSelected = vendorId !== null;
 
+  const selectedVendor = !isVendorSelected
+    ? "Please select a printer"
+    : (vendorProfile?.displayName ??
+      `${vendorProfile?.firstName ?? ""} ${vendorProfile?.lastName ?? ""}`);
+
+  const selectedVendorStatus = isOnline ? "Printer Ready" : "Printer Offline";
+
+  const vendorLabel = !isVendorSelected
+    ? "No Printer Selected"
+    : selectedVendorStatus;
   const selectedJob = currentDraftTransaction.jobs.find(
     (j) => j.id === selectedJobId,
   );
@@ -732,22 +741,37 @@ export default function CheckoutPage() {
         scrollY={true}
         className="ion-padding flex min-h-full flex-col items-center justify-start gap-0"
       >
-        <IonCard className="m-0 min-w-full bg-transparent px-4 pt-2 pb-2 shadow-none">
+        <IonCard
+          className="m-0 min-w-full bg-transparent py-2 pr-2 pl-4 shadow-none"
+          routerLink={`/${router.routeInfo.tab ?? "home"}/checkout/select-printer`}
+        >
           <IonCardContent className="p-0!">
-            <IonCardTitle className="flex items-center gap-2">
-              {isOnline ? "Printer Ready" : "Printer Offline"}
-              {isOnline ? (
-                <PulseIcon status={presenceStatus} className="m-1 mt-0" />
-              ) : (
-                <IonIcon
-                  icon={alertCircle}
-                  color="danger"
-                  className="shrink-0"
-                  style={{ fontSize: "1.75rem" }}
-                />
-              )}
+            <IonCardTitle className="mb-1 flex items-center justify-between gap-2">
+              <div className="flex items-center justify-between gap-2">
+                <IonLabel
+                  color={"dark"}
+                  className="m-0 h-auto p-0 text-left font-bold"
+                >
+                  {vendorLabel}
+                </IonLabel>
+                {isVendorSelected &&
+                  (isOnline ? (
+                    <PulseIcon status={presenceStatus} className="m-1 mt-0" />
+                  ) : (
+                    <IonIcon
+                      icon={alertCircle}
+                      color="danger"
+                      className="shrink-0"
+                      style={{ fontSize: "1.75rem" }}
+                    />
+                  ))}
+              </div>
+              <IonIcon
+                icon={chevronForwardOutline}
+                className="text-2xl text-white/70 sm:text-3xl"
+              />
             </IonCardTitle>
-            <IonCardSubtitle color="medium">{displayName}</IonCardSubtitle>
+            <IonCardSubtitle color="medium">{selectedVendor}</IonCardSubtitle>
           </IonCardContent>
         </IonCard>
 

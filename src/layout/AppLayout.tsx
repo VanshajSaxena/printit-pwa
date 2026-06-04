@@ -11,6 +11,7 @@ import { RequireCurrentDraftTransaction } from "@pages/home/RequireCurrentDraftT
 import { RequireCurrentTransaction } from "@pages/home/RequireCurrentTransaction";
 import { RequireVendorAndTransactionStore } from "@pages/home/RequireVendorAndTransactionStore";
 import SelectedVendorPage from "@pages/home/SelectedVendorPage";
+import { SelectPrinterPage } from "@pages/home/SelectPrinter";
 import { SummaryPage } from "@pages/home/SummaryPage";
 import NotFoundPage from "@pages/NotFoundPage";
 import PrintersPage from "@pages/printers/PrintersPage";
@@ -54,7 +55,11 @@ export default function Applayout() {
                   <PrintOptionsPage />
                 </RequireCurrentDraftTransaction>
               </Route>
-
+              <Route exact path="/home/checkout/select-printer">
+                <RequireCurrentDraftTransaction>
+                  <SelectPrinterPage />
+                </RequireCurrentDraftTransaction>
+              </Route>
               <Route exact path="/home/checkout/print-options/document">
                 <RequireCurrentDraftTransaction>
                   <RequireCurrentDraftJob>
@@ -80,6 +85,11 @@ export default function Applayout() {
               <Route exact path="/prints/checkout/print-options">
                 <RequireCurrentDraftTransaction>
                   <PrintOptionsPage />
+                </RequireCurrentDraftTransaction>
+              </Route>
+              <Route exact path="/prints/checkout/select-printer">
+                <RequireCurrentDraftTransaction>
+                  <SelectPrinterPage />
                 </RequireCurrentDraftTransaction>
               </Route>
               <Route exact path="/prints/checkout/print-options/document">
@@ -110,7 +120,11 @@ export default function Applayout() {
                   <PrintOptionsPage />
                 </RequireCurrentDraftTransaction>
               </Route>
-
+              <Route exact path="/printers/checkout/select-printer">
+                <RequireCurrentDraftTransaction>
+                  <SelectPrinterPage />
+                </RequireCurrentDraftTransaction>
+              </Route>
               <Route exact path="/printers/checkout/print-options/document">
                 <RequireCurrentDraftTransaction>
                   <RequireCurrentDraftJob>
