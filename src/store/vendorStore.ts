@@ -35,9 +35,7 @@ interface VendorState {
 
   setHydrated: () => void;
   upsertVendor: (vendor: VendorProfile) => void;
-  getVendor: (
-    selector: number | string | undefined,
-  ) => VendorProfile | undefined;
+  getVendor: (selector: number | string | null) => VendorProfile | undefined;
   getAllVendors: () => VendorProfile[];
 }
 

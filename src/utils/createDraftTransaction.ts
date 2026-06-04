@@ -6,7 +6,7 @@ import { setMany } from "idb-keyval";
 
 export const createDraftTransaction = async (
   pdfFiles: File[],
-  vendorId?: number,
+  vendorId: number | null,
 ) => {
   const encryptionChecks = await Promise.all(
     pdfFiles.map(async (file) => {

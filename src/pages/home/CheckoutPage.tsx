@@ -314,7 +314,6 @@ export default function CheckoutPage() {
   const [isAddingFiles, setIsAddingFiles] = useState(false);
 
   const slidingRefs = useRef<Map<string, HTMLIonItemSlidingElement>>(new Map());
-  // Hidden file input for "Add more" — triggered programmatically
   const addFileInputRef = useRef<HTMLInputElement>(null);
 
   const setPresence = usePresenceStore((store) => store.setPresence);
@@ -335,6 +334,7 @@ export default function CheckoutPage() {
   );
 
   if (!currentDraftTransactionId) {
+    // this will never happen because of the parent guard
     throw new Error("CurrentDraftTransactionId doesn't exist");
   }
 

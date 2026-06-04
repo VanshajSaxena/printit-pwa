@@ -71,8 +71,8 @@ const YourPrintsPage: React.FC = () => {
     router.push("/prints/status");
   };
 
-  const getVendorName = (vendorId?: number) => {
-    if (!vendorId) return "Unknown Printer";
+  const getVendorName = (vendorId: number | null) => {
+    if (!vendorId) return "No Printer Selected";
     const vendor = vendorsMap[vendorId];
     return vendor.displayName ?? `${vendor.firstName} ${vendor.lastName}`;
   };

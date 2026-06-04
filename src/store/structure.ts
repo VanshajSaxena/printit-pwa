@@ -12,7 +12,7 @@ export interface DraftStore {
 
   createDraftTransaction: (
     documents: DocumentInfo[],
-    vendorId?: number,
+    vendorId: number | null,
   ) => string;
 
   setCurrentDraftTransactionId: (id: string) => void;
@@ -99,7 +99,7 @@ export interface DocumentInfo {
 export type DraftDocument = DocumentInfo & WithIdentifierAndTimeStamps;
 
 export interface DraftTransaction extends WithIdentifierAndTimeStamps {
-  vendorId?: number;
+  vendorId: number | null;
   jobs: DraftJob[];
 }
 

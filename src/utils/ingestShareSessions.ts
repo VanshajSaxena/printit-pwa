@@ -14,12 +14,13 @@ export async function ingestShareSession(shareId: string) {
   if (!session) return;
 
   const files = [];
+  const store = useDraftStore.getState();
   for (const file of session.files) {
     const fileId = file.id;
 
     await set(`document:${fileId}`, file.buffer);
 
-    useDraftStore.getState().addDocument(fileId, {
+    store.addDocument(fileId, {
       fileId,
       filename: file.name,
       contentType: file.type,
@@ -30,8 +31,8 @@ export async function ingestShareSession(shareId: string) {
   }
   await del(`share-session:${shareId}`);
 
-  const transactionId = await createDraftTransaction(files, undefined);
-  useDraftStore.getState().setCurrentDraftTransactionId(transactionId);
+  const transactionId = await createDraftTransaction(files, null);
+  store.setCurrentDraftTransactionId(transactionId);
 
   window.dispatchEvent(
     new CustomEvent("navigate", {
