@@ -36,6 +36,8 @@ export interface DraftStore {
 
   deleteDraftJob: (transactionId: string, jobId: string) => void;
 
+  setDraftAsPrinted: (transactionId: string) => void;
+
   togglePageExclusion: (
     transactionId: string,
     jobId: string,
@@ -101,6 +103,7 @@ export type DraftDocument = DocumentInfo & WithIdentifierAndTimeStamps;
 export interface DraftTransaction extends WithIdentifierAndTimeStamps {
   vendorId: number | null;
   jobs: DraftJob[];
+  printed: boolean;
 }
 
 export interface WithIdentifierAndTimeStamps {

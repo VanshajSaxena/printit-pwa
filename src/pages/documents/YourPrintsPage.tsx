@@ -25,7 +25,6 @@ import {
 } from "@store/transactionStore";
 import { useVendorStore } from "@store/vendorStore";
 import {
-  alertCircle,
   alertCircleOutline,
   cameraOutline,
   chevronForward,
@@ -55,10 +54,12 @@ const YourPrintsPage: React.FC = () => {
   const vendorsMap = useVendorStore((state) => state.vendors);
 
   const drafts = useMemo(() => {
-    return Object.values(draftTransactionsMap).sort(
-      (a, b) =>
-        new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
-    );
+    return Object.values(draftTransactionsMap)
+      .filter((draft) => !draft.printed)
+      .sort(
+        (a, b) =>
+          new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
+      );
   }, [draftTransactionsMap]);
 
   const pastPrints = useMemo(() => {

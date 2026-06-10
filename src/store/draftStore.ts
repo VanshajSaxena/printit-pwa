@@ -62,6 +62,7 @@ export const useDraftStore = create<DraftStore>()(
 
         const transaction: DraftTransaction = {
           vendorId,
+          printed: false,
           id: getUUID(),
           createdAt: now,
           updatedAt: now,
@@ -137,6 +138,13 @@ export const useDraftStore = create<DraftStore>()(
           const transaction = store.state.transactions[transactionId];
           if (!transaction) return;
           transaction.jobs = transaction.jobs.filter((j) => j.id !== jobId);
+        });
+      },
+      setDraftAsPrinted: (transactionId: string) => {
+        set((store) => {
+          const transaction = store.state.transactions[transactionId];
+          if (!transaction) return;
+          transaction.printed = true;
         });
       },
       updateTransactionVendor: (transactionId, vendorId) => {
@@ -276,7 +284,7 @@ export const useDraftStore = create<DraftStore>()(
       name: "printit-draft-storage",
       storage: createIdbStorage<Pick<DraftStore, "state">>(),
       partialize: (store: DraftStore) => ({ state: store.state }),
-      version: 2,
+      version: 3,
       onRehydrateStorage: (store) => {
         return () => {
           console.log("printit-draft-storage: hydrated");
@@ -305,6 +313,12 @@ export const useDraftStore = create<DraftStore>()(
             if (transaction.vendorId === undefined) {
               transaction.vendorId = null;
             }
+          });
+        }
+
+        if (version < 3) {
+          Object.values(store.state.transactions).forEach((transaction) => {
+            transaction.printed ??= false;
           });
         }
         return store;

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unnecessary-condition */
 import { CreateTransactionResponseDto } from "@api/cloud-api-types";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
@@ -36,6 +37,7 @@ export interface Transaction {
   updatedAt: string;
   vendorId: number;
   friendlyId: string;
+  draftId: string | null;
   status: TransactionStatus;
   jobs: TransactionJob[];
 }
@@ -52,6 +54,7 @@ interface TransactionStore {
 
   createTransaction: (
     transactionResponse: CreateTransactionResponseDto,
+    draftId: string,
   ) => void;
   setCurrentTransactionId: (id: number | null) => void;
   updateTransactionStatus: (id: number, status: TransactionStatus) => void;
@@ -70,10 +73,13 @@ export const useTransactionStore = create<TransactionStore>()(
           store.hydrated = true;
         });
       },
-      createTransaction: (transactionResponse) => {
+      createTransaction: (transactionResponse, draftId: string) => {
+        const transaction: Transaction = {
+          ...transactionResponse,
+          draftId,
+        };
         set((store) => {
-          store.state.transactions[transactionResponse.id] =
-            transactionResponse as Transaction;
+          store.state.transactions[transactionResponse.id] = transaction;
         });
       },
       setCurrentTransactionId: (id) => {
@@ -91,7 +97,7 @@ export const useTransactionStore = create<TransactionStore>()(
     })),
     {
       name: "printit-transaction-store",
-      version: 1,
+      version: 2,
       storage: createIdbStorage<Pick<TransactionStore, "state">>(),
       partialize: (store: TransactionStore) => ({ state: store.state }),
       onRehydrateStorage: (store) => {
@@ -99,6 +105,17 @@ export const useTransactionStore = create<TransactionStore>()(
           console.log("printit-transaction-store: hydrated");
           store.setHydrated();
         };
+      },
+      migrate: (persistedState, version: number) => {
+        const store = persistedState as Pick<TransactionStore, "state">;
+        if (version < 2) {
+          Object.values(store.state.transactions).forEach((transaction) => {
+            if (transaction.draftId === undefined) {
+              transaction.draftId = null;
+            }
+          });
+        }
+        return store;
       },
     },
   ),

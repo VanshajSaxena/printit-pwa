@@ -329,6 +329,7 @@ export default function CheckoutPage() {
   const addJobsToTransaction = useDraftStore(
     (store) => store.addJobsToTransaction,
   );
+  const setDraftAsPrinted = useDraftStore((store) => store.setDraftAsPrinted);
 
   const currentDraftTransactionId = useDraftStore(
     (store) => store.state.currentDraftTransactionId,
@@ -646,7 +647,8 @@ export default function CheckoutPage() {
         body: { jobs: finalJobs, vendorId },
       });
 
-      createTransaction(transactionResponse);
+      createTransaction(transactionResponse, currentDraftTransactionId);
+      setDraftAsPrinted(currentDraftTransactionId);
       setCurrentTransactionId(transactionResponse.id);
       router.push(
         `/${router.routeInfo.tab ?? "home"}/status`,
