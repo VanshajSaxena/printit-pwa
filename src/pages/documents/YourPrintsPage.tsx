@@ -4,6 +4,8 @@ import {
   IonCardHeader,
   IonCardSubtitle,
   IonCardTitle,
+  IonFab,
+  IonFabButton,
   IonHeader,
   IonIcon,
   IonLabel,
@@ -22,7 +24,7 @@ import {
   useTransactionStore,
 } from "@store/transactionStore";
 import { useVendorStore } from "@store/vendorStore";
-import { chevronForward, document } from "ionicons/icons";
+import { cameraOutline, chevronForward, document } from "ionicons/icons";
 import React, { useMemo } from "react";
 
 const YourPrintsPage: React.FC = () => {
@@ -260,6 +262,17 @@ const YourPrintsPage: React.FC = () => {
           </div>
         )}
       </AppContent>
+
+      <IonFab slot="fixed" vertical="bottom" horizontal="end">
+        <IonFabButton
+          color="brand-blue"
+          onClick={() => {
+            router.push("/scan", "none", "push");
+          }}
+        >
+          <IonIcon icon={cameraOutline} style={{ fontSize: "1.75rem" }} />
+        </IonFabButton>
+      </IonFab>
     </IonPage>
   );
 };
