@@ -30,7 +30,7 @@ import {
   cameraOutline,
   chevronForward,
   document,
-  print,
+  print as printIcon,
 } from "ionicons/icons";
 import React, { useMemo } from "react";
 
@@ -183,7 +183,7 @@ const YourPrintsPage: React.FC = () => {
                               {draft.vendorId === null ? (
                                 <IonIcon icon={alertCircleOutline}></IonIcon>
                               ) : (
-                                <IonIcon icon={print}></IonIcon>
+                                <IonIcon icon={printIcon}></IonIcon>
                               )}
                               {vendorName}
                             </IonCardTitle>
@@ -248,7 +248,8 @@ const YourPrintsPage: React.FC = () => {
                               </IonCardSubtitle>
                             </div>
 
-                            <IonCardTitle className="mt-1 text-base font-bold">
+                            <IonCardTitle className="mt-2 flex items-center justify-start gap-1.5 text-base font-bold">
+                              <IonIcon icon={printIcon}></IonIcon>
                               {vendorName}
                             </IonCardTitle>
                           </div>

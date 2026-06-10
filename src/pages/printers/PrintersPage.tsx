@@ -42,6 +42,7 @@ import {
   navigate,
   navigateOutline,
   pin,
+  print,
   printOutline,
   walk,
 } from "ionicons/icons";
@@ -477,9 +478,10 @@ const PreviousPrinterCard: React.FC<PreviousPrinterCardProps> = ({
         <div className="flex items-start justify-between">
           <div className="mr-3 min-w-0 flex-1">
             <IonCardSubtitle
-              className="text-xs font-bold tracking-wider uppercase"
+              className="flex items-center justify-start gap-1.5 text-xs font-bold tracking-wider uppercase"
               color="primary"
             >
+              <IonIcon icon={print}></IonIcon>
               Printer
             </IonCardSubtitle>
             <IonCardTitle className="mt-1.5 text-base font-bold">

@@ -67,7 +67,7 @@ export function SelectPrinterPage() {
               }}
               className="m-0 h-full w-full cursor-pointer transition-transform active:scale-[0.98]"
             >
-              <div className="flex justify-center pt-3">
+              <div className="flex justify-center p-4">
                 <PrinterGraphic />
               </div>
 
