@@ -24,7 +24,14 @@ import {
   useTransactionStore,
 } from "@store/transactionStore";
 import { useVendorStore } from "@store/vendorStore";
-import { cameraOutline, chevronForward, document } from "ionicons/icons";
+import {
+  alertCircle,
+  alertCircleOutline,
+  cameraOutline,
+  chevronForward,
+  document,
+  print,
+} from "ionicons/icons";
 import React, { useMemo } from "react";
 
 const YourPrintsPage: React.FC = () => {
@@ -172,7 +179,12 @@ const YourPrintsPage: React.FC = () => {
                             >
                               Draft
                             </IonCardSubtitle>
-                            <IonCardTitle className="mt-1 text-base font-bold">
+                            <IonCardTitle className="mt-2 flex items-center justify-start gap-1.5 text-base font-bold">
+                              {draft.vendorId === null ? (
+                                <IonIcon icon={alertCircleOutline}></IonIcon>
+                              ) : (
+                                <IonIcon icon={print}></IonIcon>
+                              )}
                               {vendorName}
                             </IonCardTitle>
                           </div>
@@ -181,7 +193,7 @@ const YourPrintsPage: React.FC = () => {
                       </IonCardHeader>
                       <IonCardContent>
                         <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-1.5">
                             <IonIcon icon={document} />
                             <IonLabel>{fileLabel}</IonLabel>
                           </div>
