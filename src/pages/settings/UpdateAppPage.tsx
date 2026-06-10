@@ -80,6 +80,18 @@ export default function UpdateAppPage() {
             You are using the latest version of Printit.
           </IonNote>
         )}
+        <IonNote className="absolute right-0 bottom-16 left-0 flex justify-center">
+          Handcrafted by
+          <a
+            href="https://vanshajsaxena.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="ml-1 no-underline"
+          >
+            <IonLabel color="brand-blue">Vanshaj Saxena</IonLabel>
+          </a>
+          .
+        </IonNote>
       </AppContent>
     </IonPage>
   );
