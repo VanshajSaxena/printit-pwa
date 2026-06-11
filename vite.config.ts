@@ -46,7 +46,8 @@ export default defineConfig({
         id: "/",
         name: "Printit",
         short_name: "Printit",
-        description: "Print, Instantly. Anywhere.",
+        description:
+          "Printit lets you print your documents from anywhere through a fast, secure, and private experience.",
         background_color: "#F9F9FA",
         display: "standalone",
         theme_color: "#FFFFFF",
@@ -89,18 +90,18 @@ export default defineConfig({
             label: "Upload PDFs instantly",
           },
           {
-            src: "/screenshots/order.png",
-            sizes: "1170x2532",
-            type: "image/png",
-            form_factor: "narrow",
-            label: "Track print orders",
-          },
-          {
             src: "/screenshots/print.png",
             sizes: "1170x2532",
             type: "image/png",
             form_factor: "narrow",
             label: "Configure to Print any page",
+          },
+          {
+            src: "/screenshots/order.png",
+            sizes: "1170x2532",
+            type: "image/png",
+            form_factor: "narrow",
+            label: "Track print orders",
           },
           {
             src: "/screenshots/desktop-home.png",
