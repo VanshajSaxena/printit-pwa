@@ -39,7 +39,7 @@ export default defineConfig({
       filename: "sw.ts",
       registerType: "prompt",
       // Caching strategies
-      workbox: {
+      injectManifest: {
         globPatterns: ["**/*.{js,css,html,ico,png,svg,woff2}"],
       },
       manifest: {
@@ -77,6 +77,37 @@ export default defineConfig({
             sizes: "512x512",
             type: "image/png",
             purpose: "maskable",
+          },
+        ],
+
+        screenshots: [
+          {
+            src: "/screenshots/home.png",
+            sizes: "1170x2532",
+            type: "image/png",
+            form_factor: "narrow",
+            label: "Upload PDFs instantly",
+          },
+          {
+            src: "/screenshots/order.png",
+            sizes: "1170x2532",
+            type: "image/png",
+            form_factor: "narrow",
+            label: "Track print orders",
+          },
+          {
+            src: "/screenshots/print.png",
+            sizes: "1170x2532",
+            type: "image/png",
+            form_factor: "narrow",
+            label: "Configure to Print any page",
+          },
+          {
+            src: "/screenshots/desktop-home.png",
+            sizes: "1920x1080",
+            type: "image/png",
+            form_factor: "wide",
+            label: "Desktop experience",
           },
         ],
         share_target: {
