@@ -38,6 +38,10 @@ export function SelectPrinterPage() {
     (store) => store.updateTransactionVendor,
   );
 
+  const currentDraftTransactionVendorId = useDraftStore(
+    (store) => store.state.transactions[currentDraftTransactionId].vendorId,
+  );
+
   const handleSelect = (vendorId: number) => {
     updateTransactionVendor(currentDraftTransactionId, vendorId);
     router.push(`/${router.routeInfo.tab ?? "home"}/checkout`, "back");
@@ -77,11 +81,13 @@ export function SelectPrinterPage() {
                     {vendor.displayName ?? vendor.firstName}
                   </span>
 
-                  <IonIcon
-                    icon={checkmarkCircle}
-                    color="success"
-                    style={{ fontSize: "1.2rem" }}
-                  />
+                  {currentDraftTransactionVendorId === vendor.id && (
+                    <IonIcon
+                      icon={checkmarkCircle}
+                      color="success"
+                      style={{ fontSize: "1.2rem" }}
+                    />
+                  )}
                 </IonCardTitle>
 
                 <IonCardSubtitle className="text-xs">
@@ -90,7 +96,7 @@ export function SelectPrinterPage() {
               </IonCardHeader>
 
               <IonCardContent className="pt-0">
-                <div className="flex items-center gap-2 text-xs">
+                <div className="flex items-center gap-2 text-sm">
                   <IonIcon icon={time} color="medium" />
                   <span>
                     {vendor.lastUsedAt
