@@ -770,7 +770,8 @@ export default function CheckoutPage() {
               </div>
               <IonIcon
                 icon={chevronForwardOutline}
-                className="text-2xl text-white/70 sm:text-3xl"
+                color={"medium"}
+                className="text-2xl sm:text-3xl"
               />
             </IonCardTitle>
             <IonCardSubtitle color="medium">{selectedVendor}</IonCardSubtitle>

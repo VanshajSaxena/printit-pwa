@@ -236,7 +236,7 @@ export default function SelectedVendorPage() {
               }}
             >
               <div className="h-auto w-full">
-                <PrinterGraphic />
+                <PrinterGraphic height={150} />
               </div>
 
               <div className="flex flex-col gap-2">

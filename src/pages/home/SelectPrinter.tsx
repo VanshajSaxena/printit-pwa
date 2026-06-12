@@ -16,10 +16,10 @@ import {
 
 import { PrinterGraphic } from "@components/graphics/PrinterGraphic";
 import AppContent from "@layout/AppContent";
+import { useDraftStore } from "@store/draftStore";
 import { useVendorStore } from "@store/vendorStore";
 import { formatRelativeTime } from "@utils/formatRelativeTime";
 import { checkmarkCircle, time } from "ionicons/icons";
-import { useDraftStore } from "@store/draftStore";
 
 export function SelectPrinterPage() {
   const router = useIonRouter();
@@ -71,11 +71,11 @@ export function SelectPrinterPage() {
               }}
               className="m-0 h-full w-full cursor-pointer transition-transform active:scale-[0.98]"
             >
-              <div className="flex justify-center p-4">
-                <PrinterGraphic />
+              <div className="flex justify-center px-4">
+                <PrinterGraphic height={150} />
               </div>
 
-              <IonCardHeader>
+              <IonCardHeader className="pt-0">
                 <IonCardTitle className="flex items-start justify-between gap-2 text-base">
                   <span className="line-clamp-1">
                     {vendor.displayName ?? vendor.firstName}
