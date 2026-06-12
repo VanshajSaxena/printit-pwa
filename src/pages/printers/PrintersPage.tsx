@@ -319,7 +319,7 @@ const VendorDialog: React.FC<VendorDialogProps> = ({ vendor, onDismiss }) => {
               {/* Printer status card */}
               <div className="grid grid-cols-[6rem_1fr] items-center gap-4 rounded-[0.875rem]">
                 <div className="h-auto w-full">
-                  <PrinterGraphic height={150} />
+                  <PrinterGraphic height={90} />
                 </div>
 
                 <div className="flex min-w-0 flex-col gap-[0.375rem]">

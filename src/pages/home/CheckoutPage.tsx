@@ -745,7 +745,7 @@ export default function CheckoutPage() {
         className="ion-padding flex min-h-full flex-col items-center justify-start gap-0"
       >
         <IonCard
-          className="m-0 min-w-full bg-transparent py-2 pr-2 pl-2 shadow-none"
+          className="m-0 min-w-full bg-transparent pr-1 shadow-none"
           routerLink={`/${router.routeInfo.tab ?? "home"}/checkout/select-printer`}
         >
           <IonCardContent className="p-0!">
