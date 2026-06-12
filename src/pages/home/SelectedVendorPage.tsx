@@ -232,11 +232,11 @@ export default function SelectedVendorPage() {
             <div
               className="grid items-start gap-6"
               style={{
-                gridTemplateColumns: "minmax(120px, 30%) 1fr",
+                gridTemplateColumns: "minmax(120px, 25%) 1fr",
               }}
             >
               <div className="h-auto w-full">
-                <PrinterGraphic height={150} />
+                <PrinterGraphic height={130} />
               </div>
 
               <div className="flex flex-col gap-2">
