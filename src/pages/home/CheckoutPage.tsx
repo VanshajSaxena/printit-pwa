@@ -29,6 +29,7 @@ import {
 } from "@ionic/react";
 
 import { Dialog } from "@components/Dialog";
+import { PrinterGraphic } from "@components/graphics/PrinterGraphic";
 import AppContent from "@layout/AppContent";
 import { useDraftStore } from "@store/draftStore";
 import { usePresenceStore } from "@store/presenceStore";
@@ -744,37 +745,49 @@ export default function CheckoutPage() {
         className="ion-padding flex min-h-full flex-col items-center justify-start gap-0"
       >
         <IonCard
-          className="m-0 min-w-full bg-transparent py-2 pr-2 pl-4 shadow-none"
+          className="m-0 min-w-full bg-transparent py-2 pr-2 pl-2 shadow-none"
           routerLink={`/${router.routeInfo.tab ?? "home"}/checkout/select-printer`}
         >
           <IonCardContent className="p-0!">
-            <IonCardTitle className="mb-1 flex items-center justify-between gap-2">
+            <div className="flex items-start justify-between">
               <div className="flex items-center justify-between gap-2">
-                <IonLabel
-                  color={"dark"}
-                  className="m-0 h-auto p-0 text-left font-bold"
-                >
-                  {vendorLabel}
-                </IonLabel>
-                {isVendorSelected &&
-                  (isOnline ? (
-                    <PulseIcon status={presenceStatus} className="m-1 mt-0" />
-                  ) : (
-                    <IonIcon
-                      icon={alertCircle}
-                      color="danger"
-                      className="shrink-0"
-                      style={{ fontSize: "1.75rem" }}
-                    />
-                  ))}
+                <PrinterGraphic height={60}></PrinterGraphic>
+                <div>
+                  <IonCardTitle className="mb-1 flex items-center justify-between gap-2">
+                    <div className="flex items-center justify-between gap-2">
+                      <IonLabel
+                        color={"dark"}
+                        className="m-0 h-auto p-0 text-left font-bold"
+                      >
+                        {vendorLabel}
+                      </IonLabel>
+                      {isVendorSelected &&
+                        (isOnline ? (
+                          <PulseIcon
+                            status={presenceStatus}
+                            className="m-1 mt-0"
+                          />
+                        ) : (
+                          <IonIcon
+                            icon={alertCircle}
+                            color="danger"
+                            className="shrink-0"
+                            style={{ fontSize: "1.75rem" }}
+                          />
+                        ))}
+                    </div>
+                  </IonCardTitle>
+                  <IonCardSubtitle color="medium">
+                    {selectedVendor}
+                  </IonCardSubtitle>
+                </div>
               </div>
               <IonIcon
                 icon={chevronForwardOutline}
                 color={"medium"}
-                className="text-2xl sm:text-3xl"
+                className="mt-1.5 text-2xl sm:text-3xl"
               />
-            </IonCardTitle>
-            <IonCardSubtitle color="medium">{selectedVendor}</IonCardSubtitle>
+            </div>
           </IonCardContent>
         </IonCard>
 
