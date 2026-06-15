@@ -34,6 +34,7 @@ import { formatDistance } from "@utils/formatDistance";
 import { formatRelativeTime } from "@utils/formatRelativeTime";
 import {
   alertCircle,
+  bookmark,
   close,
   cloudUploadOutline,
   earthOutline,
@@ -276,25 +277,15 @@ const VendorDialog: React.FC<VendorDialogProps> = ({ vendor, onDismiss }) => {
     } catch (error) {
       console.error("Failed to process files:", error);
     } finally {
-      const {
-        id,
-        firstName,
-        lastName,
-        displayName,
-        username,
-        slug,
-        address,
-        location,
-      } = vendor;
+      const { id, firstName, lastName, displayName, username, address } =
+        vendor;
       upsertVendor({
         id,
         firstName,
         lastName,
         displayName,
         username,
-        slug,
         address,
-        location: location ?? null,
       });
       event.target.value = "";
       await dismiss();
@@ -484,12 +475,15 @@ const PreviousPrinterCard: React.FC<PreviousPrinterCardProps> = ({
               <IonIcon icon={print}></IonIcon>
               Printer
             </IonCardSubtitle>
-            <IonCardTitle className="mt-1.5 text-base font-bold">
+            <IonCardTitle className="mt-1.5 flex items-center gap-2 text-base font-bold">
               {vendorDisplayName(vendor)}
+              {vendor.username === "vanshaj" && (
+                <IonIcon icon={bookmark} color="medium"></IonIcon>
+              )}
             </IonCardTitle>
             <IonNote className="text-sm">@{vendor.username}</IonNote>
           </div>
-          <div className="flex flex-shrink-0 flex-col items-end gap-1">
+          <div className="flex flex-shrink-0 flex-col items-end justify-between gap-8">
             {vendor.lastUsedAt && (
               <IonNote className="text-sm">
                 {formatRelativeTime(vendor.lastUsedAt)}
@@ -592,9 +586,7 @@ const PrintersPage: React.FC = () => {
       lastName: vendor.lastName,
       displayName: vendor.displayName,
       username: vendor.username,
-      slug: vendor.slug,
       address: vendor.address,
-      location: vendor.location,
     });
   };
 

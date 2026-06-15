@@ -16,6 +16,21 @@
         "tags": ["App"]
       }
     },
+    "/api/v1/download": {
+      "get": {
+        "operationId": "DownloadController_download_v1",
+        "parameters": [
+          {
+            "name": "user-agent",
+            "required": true,
+            "in": "header",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": { "200": { "description": "" } },
+        "tags": ["Download"]
+      }
+    },
     "/api/v1/vendors": {
       "post": {
         "operationId": "VendorController_create_v1",
@@ -51,6 +66,49 @@
                 "schema": {
                   "type": "array",
                   "items": { "$ref": "#/components/schemas/VendorResponseDto" }
+                }
+              }
+            }
+          }
+        },
+        "tags": ["Vendor"]
+      }
+    },
+    "/api/v1/vendors/me": {
+      "get": {
+        "operationId": "VendorController_getVendorProfile_v1",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/VendorResponseDto" }
+              }
+            }
+          }
+        },
+        "tags": ["Vendor"]
+      }
+    },
+    "/api/v1/vendors/username": {
+      "get": {
+        "operationId": "VendorController_checkUsernameAvailability_v1",
+        "parameters": [
+          {
+            "name": "username",
+            "required": true,
+            "in": "query",
+            "schema": { "minLength": 3, "maxLength": 20, "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CheckUsernameResponseDto"
                 }
               }
             }
@@ -109,12 +167,11 @@
             "description": "The unique identifier",
             "examples": {
               "id": { "summary": "Internal ID", "value": 999 },
-              "slug": { "summary": "Slug", "value": "xi28b2sg8d" },
               "username": { "summary": "Username", "value": "@username" }
             },
             "schema": {
               "oneOf": [
-                { "type": "string", "description": "Slug or Username" },
+                { "type": "string", "description": "Username" },
                 { "type": "integer", "description": "Internal Database ID" }
               ]
             }
@@ -152,12 +209,11 @@
             "description": "The unique identifier",
             "examples": {
               "id": { "summary": "Internal ID", "value": 999 },
-              "slug": { "summary": "Slug", "value": "xi28b2sg8d" },
               "username": { "summary": "Username", "value": "@username" }
             },
             "schema": {
               "oneOf": [
-                { "type": "string", "description": "Slug or Username" },
+                { "type": "string", "description": "Username" },
                 { "type": "integer", "description": "Internal Database ID" }
               ]
             }
@@ -381,13 +437,35 @@
         "operationId": "TransactionController_findAll_v1",
         "parameters": [
           {
-            "name": "status",
+            "name": "statuses",
             "required": false,
             "in": "query",
             "schema": {
-              "enum": ["PENDING", "QUEUED", "PRINTING", "COMPLETED", "ERROR"],
-              "type": "string"
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "PENDING",
+                  "QUEUED",
+                  "PRINTING",
+                  "COMPLETED",
+                  "REJECTED",
+                  "ERROR"
+                ]
+              }
             }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": { "minimum": 1, "type": "number" }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "schema": { "minimum": 1, "maximum": 50, "type": "number" }
           }
         ],
         "responses": {
@@ -396,10 +474,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/FindTransactionResponseDto"
-                  }
+                  "$ref": "#/components/schemas/PaginatedFindTransactionResponseDto"
                 }
               }
             }
@@ -431,6 +506,27 @@
             }
           }
         },
+        "tags": ["Transaction"]
+      },
+      "patch": {
+        "operationId": "TransactionController_updateTransactionAndJobStatus_v1",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UpdateTransactionDto" }
+            }
+          }
+        },
+        "responses": { "204": { "description": "" } },
         "tags": ["Transaction"]
       }
     },
@@ -728,7 +824,7 @@
             "name": "id",
             "required": true,
             "in": "path",
-            "schema": { "type": "string" }
+            "schema": { "type": "number" }
           }
         ],
         "requestBody": {
@@ -760,7 +856,7 @@
             "name": "id",
             "required": true,
             "in": "path",
-            "schema": { "type": "string" }
+            "schema": { "type": "number" }
           }
         ],
         "responses": {
@@ -776,6 +872,199 @@
           }
         },
         "tags": ["Job"]
+      }
+    },
+    "/api/v1/jobs/{id}/status": {
+      "patch": {
+        "operationId": "JobController_updateStatus_v1",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UpdateJobStatusDto" }
+            }
+          }
+        },
+        "responses": { "204": { "description": "" } },
+        "tags": ["Job"]
+      }
+    },
+    "/api/v1/auth/register": {
+      "post": {
+        "operationId": "AuthController_register_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/RegisterVendorDto" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/TokenResponseDto" }
+              }
+            }
+          },
+          "409": { "description": "Email or username already in use" }
+        },
+        "summary": "Create a new vendor account with email and password",
+        "tags": ["Auth"]
+      }
+    },
+    "/api/v1/auth/login": {
+      "post": {
+        "operationId": "AuthController_login_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/LoginDto" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/TokenResponseDto" }
+              }
+            }
+          },
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/TokenResponseDto" }
+              }
+            }
+          },
+          "401": { "description": "Invalid credentials" }
+        },
+        "summary": "Authenticate with email and password",
+        "tags": ["Auth"]
+      }
+    },
+    "/api/v1/auth/refresh": {
+      "post": {
+        "operationId": "AuthController_refresh_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/RefreshRequestDto" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/TokenResponseDto" }
+              }
+            }
+          },
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/TokenResponseDto" }
+              }
+            }
+          },
+          "401": { "description": "Refresh token invalid or expired" }
+        },
+        "summary": "Rotate access and refresh tokens",
+        "tags": ["Auth"]
+      }
+    },
+    "/api/v1/auth/exchange": {
+      "post": {
+        "description": "Called by the Electron app after receiving the code via the `printit://` custom protocol redirect.",
+        "operationId": "AuthController_exchangeCode_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ExchangeRequestDto" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/TokenResponseDto" }
+              }
+            }
+          },
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/TokenResponseDto" }
+              }
+            }
+          },
+          "401": { "description": "Code invalid or expired" }
+        },
+        "summary": "Exchange one-time OAuth code for token pair",
+        "tags": ["Auth"]
+      }
+    },
+    "/api/v1/auth/logout": {
+      "post": {
+        "operationId": "AuthController_logout_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/RefreshRequestDto" }
+            }
+          }
+        },
+        "responses": { "204": { "description": "Successfully logged out" } },
+        "summary": "Revoke refresh token and end session",
+        "tags": ["Auth"]
+      }
+    },
+    "/api/v1/auth/google": {
+      "get": {
+        "description": "Redirects to Google consent screen. Open in system browser from Electron via `shell.openExternal`.",
+        "operationId": "AuthController_googleAuth_v1",
+        "parameters": [],
+        "responses": { "200": { "description": "Redirects to Google" } },
+        "summary": "Initiate Google OAuth flow",
+        "tags": ["Auth"]
+      }
+    },
+    "/api/v1/auth/microsoft": {
+      "get": {
+        "description": "Redirects to Microsoft consent screen. Open in system browser from Electron via `shell.openExternal`.",
+        "operationId": "AuthController_microsoftAuth_v1",
+        "parameters": [],
+        "responses": { "200": { "description": "Redirects to Microsoft" } },
+        "summary": "Initiate Microsoft OAuth flow",
+        "tags": ["Auth"]
       }
     },
     "/api/v1/files/upload": {
@@ -835,6 +1124,41 @@
         },
         "tags": ["R2"]
       }
+    },
+    "/api/v1/analytics/dashboard/cards": {
+      "get": {
+        "operationId": "AnalyticsController_findOne_v1",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DashboardCardAnalytics"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["Analytics"]
+      }
+    },
+    "/api/v1/anon-users/identify": {
+      "post": {
+        "operationId": "AnonUserController_upsert_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/AnonUserIdentifyDto" }
+            }
+          }
+        },
+        "responses": { "204": { "description": "" } },
+        "tags": ["AnonUser"]
+      }
     }
   },
   "info": {
@@ -858,29 +1182,14 @@
             "maxLength": 20,
             "pattern": "/^[a-zA-Z0-9_]+$/"
           },
+          "password": { "type": "string" },
           "email": { "type": "string", "format": "email" },
           "displayName": { "type": "string" },
           "address": { "type": "string" },
           "latitude": { "type": "number", "minimum": -90, "maximum": 90 },
           "longitude": { "type": "number", "minimum": -180, "maximum": 180 }
         },
-        "required": ["firstName", "lastName", "username", "email"]
-      },
-      "LocationDto": {
-        "type": "object",
-        "properties": {
-          "latitude": {
-            "type": "number",
-            "nullable": true,
-            "example": 12.9716
-          },
-          "longitude": {
-            "type": "number",
-            "nullable": true,
-            "example": 77.5946
-          }
-        },
-        "required": ["latitude", "longitude"]
+        "required": ["firstName", "email"]
       },
       "VendorResponseDto": {
         "type": "object",
@@ -891,11 +1200,6 @@
           "displayName": { "type": "string", "nullable": true },
           "username": { "type": "string" },
           "address": { "type": "string" },
-          "slug": { "type": "string" },
-          "location": {
-            "nullable": true,
-            "allOf": [{ "$ref": "#/components/schemas/LocationDto" }]
-          },
           "distance": { "type": "number" }
         },
         "required": [
@@ -905,10 +1209,13 @@
           "displayName",
           "username",
           "address",
-          "slug",
-          "location",
           "distance"
         ]
+      },
+      "CheckUsernameResponseDto": {
+        "type": "object",
+        "properties": { "available": { "type": "boolean" } },
+        "required": ["available"]
       },
       "NotFoundErrorDto": {
         "type": "object",
@@ -1001,6 +1308,17 @@
             "type": "string"
           },
           "copyCount": { "type": "number" },
+          "status": {
+            "enum": [
+              "PENDING",
+              "QUEUED",
+              "PRINTING",
+              "COMPLETED",
+              "REJECTED",
+              "ERROR"
+            ],
+            "type": "string"
+          },
           "document": {
             "$ref": "#/components/schemas/CreateDocumentResponseDto"
           },
@@ -1011,6 +1329,7 @@
           "id",
           "outputColor",
           "copyCount",
+          "status",
           "document",
           "createdAt",
           "updatedAt"
@@ -1021,7 +1340,14 @@
         "properties": {
           "id": { "type": "number" },
           "status": {
-            "enum": ["PENDING", "QUEUED", "PRINTING", "COMPLETED", "ERROR"],
+            "enum": [
+              "PENDING",
+              "QUEUED",
+              "PRINTING",
+              "COMPLETED",
+              "REJECTED",
+              "ERROR"
+            ],
             "type": "string"
           },
           "friendlyId": { "type": "string" },
@@ -1064,7 +1390,14 @@
           "copyCount": { "type": "number" },
           "status": {
             "type": "string",
-            "enum": ["PENDING", "QUEUED", "PRINTING", "COMPLETED", "ERROR"]
+            "enum": [
+              "PENDING",
+              "QUEUED",
+              "PRINTING",
+              "COMPLETED",
+              "REJECTED",
+              "ERROR"
+            ]
           },
           "document": { "$ref": "#/components/schemas/FindDocumentResponseDto" }
         },
@@ -1075,7 +1408,14 @@
         "properties": {
           "id": { "type": "number" },
           "status": {
-            "enum": ["PENDING", "QUEUED", "PRINTING", "COMPLETED", "ERROR"],
+            "enum": [
+              "PENDING",
+              "QUEUED",
+              "PRINTING",
+              "COMPLETED",
+              "REJECTED",
+              "ERROR"
+            ],
             "type": "string"
           },
           "friendlyId": { "type": "string" },
@@ -1087,17 +1427,64 @@
         },
         "required": ["id", "status", "friendlyId", "jobs", "createdAt"]
       },
+      "PaginatedMetadataDto": {
+        "type": "object",
+        "properties": {
+          "page": { "type": "number" },
+          "pageSize": { "type": "number" },
+          "total": { "type": "number" },
+          "totalPages": { "type": "number" }
+        },
+        "required": ["page", "pageSize", "total", "totalPages"]
+      },
+      "PaginatedFindTransactionResponseDto": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FindTransactionResponseDto"
+            }
+          },
+          "meta": { "$ref": "#/components/schemas/PaginatedMetadataDto" }
+        },
+        "required": ["data", "meta"]
+      },
       "TransactionStatusResponseDto": {
         "type": "object",
         "properties": {
           "status": {
             "type": "string",
-            "enum": ["PENDING", "QUEUED", "PRINTING", "COMPLETED", "ERROR"]
+            "enum": [
+              "PENDING",
+              "QUEUED",
+              "PRINTING",
+              "COMPLETED",
+              "REJECTED",
+              "ERROR"
+            ]
           }
         },
         "required": ["status"]
       },
-      "UpdateTransactionDto": { "type": "object", "properties": {} },
+      "UpdateTransactionDto": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "enum": [
+              "PENDING",
+              "QUEUED",
+              "PRINTING",
+              "COMPLETED",
+              "REJECTED",
+              "ERROR"
+            ],
+            "type": "string"
+          },
+          "reason": { "type": "string" }
+        },
+        "required": ["status"]
+      },
       "CreateDocumentRequestDto": {
         "type": "object",
         "properties": {
@@ -1144,13 +1531,89 @@
       "UpdateJobDto": {
         "type": "object",
         "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "PENDING",
+              "QUEUED",
+              "PRINTING",
+              "COMPLETED",
+              "REJECTED",
+              "ERROR"
+            ]
+          },
           "documentId": { "type": "number" },
           "outputColor": {
             "type": "string",
             "enum": ["Color", "Monochrome", "Grayscale"]
           },
           "copyCount": { "type": "number", "minimum": 1 }
-        }
+        },
+        "required": ["status"]
+      },
+      "UpdateJobStatusDto": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "PENDING",
+              "QUEUED",
+              "PRINTING",
+              "COMPLETED",
+              "REJECTED",
+              "ERROR"
+            ]
+          }
+        },
+        "required": ["status"]
+      },
+      "RegisterVendorDto": {
+        "type": "object",
+        "properties": {
+          "firstName": { "type": "string", "example": "John" },
+          "lastName": { "type": "string", "example": "Doe" },
+          "username": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 20,
+            "pattern": "/^[a-zA-Z0-9_]+$/",
+            "example": "john_doe"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "john@printit.com"
+          },
+          "password": { "type": "string", "example": "Str0ng!Pass" }
+        },
+        "required": ["firstName", "lastName", "username", "email", "password"]
+      },
+      "TokenResponseDto": {
+        "type": "object",
+        "properties": {
+          "accessToken": { "type": "string" },
+          "refreshToken": { "type": "string" }
+        },
+        "required": ["accessToken", "refreshToken"]
+      },
+      "LoginDto": {
+        "type": "object",
+        "properties": {
+          "email": { "type": "string", "format": "email" },
+          "password": { "type": "string" }
+        },
+        "required": ["email", "password"]
+      },
+      "RefreshRequestDto": {
+        "type": "object",
+        "properties": { "refreshToken": { "type": "string" } },
+        "required": ["refreshToken"]
+      },
+      "ExchangeRequestDto": {
+        "type": "object",
+        "properties": { "code": { "type": "string" } },
+        "required": ["code"]
       },
       "UploadFileBatchRequestDto": {
         "type": "object",
@@ -1210,6 +1673,46 @@
           }
         },
         "required": ["signedUrls"]
+      },
+      "DashboardCardAnalytics": {
+        "type": "object",
+        "properties": {
+          "todaySheets": { "type": "number" },
+          "yesterdaySheets": { "type": "number" },
+          "sheetPercentageChange": { "type": "number", "nullable": true },
+          "todayOrders": { "type": "number" },
+          "yesterdayOrders": { "type": "number" },
+          "orderPercentageChange": { "type": "number", "nullable": true },
+          "totalUsers": { "type": "number" },
+          "todayUsers": { "type": "number" },
+          "yesterdayUsers": { "type": "number" },
+          "userPercentageChange": { "type": "number", "nullable": true },
+          "todayNewUsers": { "type": "number" },
+          "yesterdayNewUsers": { "type": "number" }
+        },
+        "required": [
+          "todaySheets",
+          "yesterdaySheets",
+          "sheetPercentageChange",
+          "todayOrders",
+          "yesterdayOrders",
+          "orderPercentageChange",
+          "totalUsers",
+          "todayUsers",
+          "yesterdayUsers",
+          "userPercentageChange",
+          "todayNewUsers",
+          "yesterdayNewUsers"
+        ]
+      },
+      "AnonUserIdentifyDto": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "vendorId": { "type": "number" },
+          "userAgent": { "type": "string" }
+        },
+        "required": ["id", "vendorId"]
       }
     }
   }

@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-condition */
+import { enableMapSet } from "immer";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 import { createIdbStorage } from "./createIdbStorage";
-import { enableMapSet } from "immer";
 
 enableMapSet();
 
@@ -18,21 +18,15 @@ export interface VendorProfile {
   lastName: string;
   displayName: string | null;
   username: string;
-  slug: string;
   address: string;
-  location: VendorLocation | null;
   lastUsedAt?: string;
 }
 
 interface VendorState {
   vendors: Record<number, VendorProfile>;
-
   usernameSelectorMap: Record<string, number>;
 
-  slugSelectorMap: Record<string, number>;
-
   hydrated: boolean;
-
   setHydrated: () => void;
   upsertVendor: (vendor: VendorProfile) => void;
   getVendor: (selector: number | string | null) => VendorProfile | undefined;
@@ -67,10 +61,6 @@ export const useVendorStore = create<VendorState>()(
               : `@${vendor.username}`;
             state.usernameSelectorMap[usernameKey] = vendor.id;
           }
-
-          if (vendor.slug) {
-            state.slugSelectorMap[vendor.slug] = vendor.id;
-          }
         });
       },
 
@@ -87,8 +77,7 @@ export const useVendorStore = create<VendorState>()(
           return id ? state.vendors[id] : undefined;
         }
 
-        const slugId = state.slugSelectorMap[selector];
-        return slugId ? state.vendors[slugId] : undefined;
+        return undefined;
       },
 
       getAllVendors: () => {
@@ -101,23 +90,35 @@ export const useVendorStore = create<VendorState>()(
     })),
     {
       name: "printit-vendor-storage",
+      version: 1,
       storage:
         createIdbStorage<
-          Pick<
-            VendorState,
-            "vendors" | "usernameSelectorMap" | "slugSelectorMap"
-          >
+          Pick<VendorState, "vendors" | "usernameSelectorMap">
         >(),
       partialize: (state) => ({
         vendors: state.vendors,
         usernameSelectorMap: state.usernameSelectorMap,
-        slugSelectorMap: state.slugSelectorMap,
       }),
       onRehydrateStorage: (store) => {
         return () => {
           console.log("printit-vendor-storage: hydrated");
           store.setHydrated();
         };
+      },
+      migrate: (persistedState, version: number) => {
+        const store = persistedState as VendorState;
+        if (version < 1) {
+          store.vendors[1] = {
+            id: 1,
+            firstName: "Vanshaj",
+            lastName: "Saxena",
+            displayName: "Vanshaj's Printer",
+            username: "vanshaj",
+            address: "",
+            lastUsedAt: new Date().toISOString(),
+          };
+        }
+        return store;
       },
     },
   ),

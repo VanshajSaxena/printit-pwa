@@ -4,6 +4,166 @@
  */
 
 export interface paths {
+  "/api/v1/analytics/dashboard/cards": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["AnalyticsController_findOne_v1"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/anon-users/identify": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["AnonUserController_upsert_v1"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/auth/exchange": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Exchange one-time OAuth code for token pair
+     * @description Called by the Electron app after receiving the code via the `printit://` custom protocol redirect.
+     */
+    post: operations["AuthController_exchangeCode_v1"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/auth/google": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Initiate Google OAuth flow
+     * @description Redirects to Google consent screen. Open in system browser from Electron via `shell.openExternal`.
+     */
+    get: operations["AuthController_googleAuth_v1"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/auth/login": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Authenticate with email and password */
+    post: operations["AuthController_login_v1"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/auth/logout": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Revoke refresh token and end session */
+    post: operations["AuthController_logout_v1"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/auth/microsoft": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Initiate Microsoft OAuth flow
+     * @description Redirects to Microsoft consent screen. Open in system browser from Electron via `shell.openExternal`.
+     */
+    get: operations["AuthController_microsoftAuth_v1"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/auth/refresh": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Rotate access and refresh tokens */
+    post: operations["AuthController_refresh_v1"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/auth/register": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Create a new vendor account with email and password */
+    post: operations["AuthController_register_v1"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/v1/documents": {
     parameters: {
       query?: never;
@@ -34,6 +194,22 @@ export interface paths {
     options?: never;
     head?: never;
     patch: operations["DocumentController_update_v1"];
+    trace?: never;
+  };
+  "/api/v1/download": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["DownloadController_download_v1"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
     trace?: never;
   };
   "/api/v1/files/download": {
@@ -98,6 +274,22 @@ export interface paths {
     options?: never;
     head?: never;
     patch: operations["JobController_update_v1"];
+    trace?: never;
+  };
+  "/api/v1/jobs/{id}/status": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch: operations["JobController_updateStatus_v1"];
     trace?: never;
   };
   "/api/v1/ping": {
@@ -193,7 +385,7 @@ export interface paths {
     delete?: never;
     options?: never;
     head?: never;
-    patch?: never;
+    patch: operations["TransactionController_updateTransactionAndJobStatus_v1"];
     trace?: never;
   };
   "/api/v1/vendors": {
@@ -260,6 +452,22 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/vendors/me": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["VendorController_getVendorProfile_v1"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/v1/vendors/nearby": {
     parameters: {
       query?: never;
@@ -276,10 +484,34 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/vendors/username": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["VendorController_checkUsernameAvailability_v1"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
 }
 export type webhooks = Record<string, never>;
 export interface components {
   schemas: {
+    AnonUserIdentifyDto: {
+      id: string;
+      userAgent?: string;
+      vendorId: number;
+    };
+    CheckUsernameResponseDto: {
+      available: boolean;
+    };
     CreateDocumentBatchRequestDto: {
       documents: components["schemas"]["CreateDocumentRequestDto"][];
     };
@@ -317,6 +549,14 @@ export interface components {
       id: number;
       /** @enum {string} */
       outputColor: "Color" | "Monochrome" | "Grayscale";
+      /** @enum {string} */
+      status:
+        | "PENDING"
+        | "QUEUED"
+        | "PRINTING"
+        | "COMPLETED"
+        | "REJECTED"
+        | "ERROR";
       /** Format: date-time */
       updatedAt: string;
     };
@@ -337,7 +577,13 @@ export interface components {
       id: number;
       jobs: components["schemas"]["CreateJobResponseDto"][];
       /** @enum {string} */
-      status: "PENDING" | "QUEUED" | "PRINTING" | "COMPLETED" | "ERROR";
+      status:
+        | "PENDING"
+        | "QUEUED"
+        | "PRINTING"
+        | "COMPLETED"
+        | "REJECTED"
+        | "ERROR";
       /** Format: date-time */
       updatedAt: string;
       vendorId: number;
@@ -348,10 +594,25 @@ export interface components {
       /** Format: email */
       email: string;
       firstName: string;
-      lastName: string;
+      lastName?: string;
       latitude?: number;
       longitude?: number;
-      username: string;
+      password?: string;
+      username?: string;
+    };
+    DashboardCardAnalytics: {
+      orderPercentageChange: number | null;
+      sheetPercentageChange: number | null;
+      todayNewUsers: number;
+      todayOrders: number;
+      todaySheets: number;
+      todayUsers: number;
+      totalUsers: number;
+      userPercentageChange: number | null;
+      yesterdayNewUsers: number;
+      yesterdayOrders: number;
+      yesterdaySheets: number;
+      yesterdayUsers: number;
     };
     DownloadFileBatchRequestDto: {
       ids: number[];
@@ -363,6 +624,9 @@ export interface components {
       contentType: string;
       id: number;
       url: string;
+    };
+    ExchangeRequestDto: {
+      code: string;
     };
     FindDocumentResponseDto: {
       contentType: string;
@@ -377,7 +641,13 @@ export interface components {
       /** @enum {string} */
       outputColor: "Color" | "Monochrome" | "Grayscale";
       /** @enum {string} */
-      status: "PENDING" | "QUEUED" | "PRINTING" | "COMPLETED" | "ERROR";
+      status:
+        | "PENDING"
+        | "QUEUED"
+        | "PRINTING"
+        | "COMPLETED"
+        | "REJECTED"
+        | "ERROR";
     };
     FindTransactionResponseDto: {
       /** Format: date-time */
@@ -386,13 +656,18 @@ export interface components {
       id: number;
       jobs: components["schemas"]["FindJobResponseDto"][];
       /** @enum {string} */
-      status: "PENDING" | "QUEUED" | "PRINTING" | "COMPLETED" | "ERROR";
+      status:
+        | "PENDING"
+        | "QUEUED"
+        | "PRINTING"
+        | "COMPLETED"
+        | "REJECTED"
+        | "ERROR";
     };
-    LocationDto: {
-      /** @example 12.9716 */
-      latitude: number | null;
-      /** @example 77.5946 */
-      longitude: number | null;
+    LoginDto: {
+      /** Format: email */
+      email: string;
+      password: string;
     };
     NotFoundErrorDto: {
       /** @example Not Found */
@@ -402,15 +677,53 @@ export interface components {
       /** @example 404 */
       statusCode: number;
     };
+    PaginatedFindTransactionResponseDto: {
+      data: components["schemas"]["FindTransactionResponseDto"][];
+      meta: components["schemas"]["PaginatedMetadataDto"];
+    };
+    PaginatedMetadataDto: {
+      page: number;
+      pageSize: number;
+      total: number;
+      totalPages: number;
+    };
     PrinterResponseDto: {
       /** Format: json */
       capabilities: string;
       id: number;
       name: string;
     };
+    RefreshRequestDto: {
+      refreshToken: string;
+    };
+    RegisterVendorDto: {
+      /**
+       * Format: email
+       * @example john@printit.com
+       */
+      email: string;
+      /** @example John */
+      firstName: string;
+      /** @example Doe */
+      lastName: string;
+      /** @example Str0ng!Pass */
+      password: string;
+      /** @example john_doe */
+      username: string;
+    };
+    TokenResponseDto: {
+      accessToken: string;
+      refreshToken: string;
+    };
     TransactionStatusResponseDto: {
       /** @enum {string} */
-      status: "PENDING" | "QUEUED" | "PRINTING" | "COMPLETED" | "ERROR";
+      status:
+        | "PENDING"
+        | "QUEUED"
+        | "PRINTING"
+        | "COMPLETED"
+        | "REJECTED"
+        | "ERROR";
     };
     UpdateDocumentRequestDto: {
       /** @enum {string} */
@@ -421,9 +734,37 @@ export interface components {
       documentId?: number;
       /** @enum {string} */
       outputColor?: "Color" | "Monochrome" | "Grayscale";
+      /** @enum {string} */
+      status:
+        | "PENDING"
+        | "QUEUED"
+        | "PRINTING"
+        | "COMPLETED"
+        | "REJECTED"
+        | "ERROR";
+    };
+    UpdateJobStatusDto: {
+      /** @enum {string} */
+      status:
+        | "PENDING"
+        | "QUEUED"
+        | "PRINTING"
+        | "COMPLETED"
+        | "REJECTED"
+        | "ERROR";
     };
     UpdatePrinterDto: Record<string, never>;
-    UpdateTransactionDto: Record<string, never>;
+    UpdateTransactionDto: {
+      reason?: string;
+      /** @enum {string} */
+      status:
+        | "PENDING"
+        | "QUEUED"
+        | "PRINTING"
+        | "COMPLETED"
+        | "REJECTED"
+        | "ERROR";
+    };
     UpdateVendorDto: Record<string, never>;
     UploadFileBatchRequestDto: {
       ids: number[];
@@ -447,8 +788,6 @@ export interface components {
       firstName: string;
       id: number;
       lastName: string;
-      location: components["schemas"]["LocationDto"] | null;
-      slug: string;
       username: string;
     };
   };
@@ -458,6 +797,9 @@ export interface components {
   headers: never;
   pathItems: never;
 }
+export type AnonUserIdentifyDto = components["schemas"]["AnonUserIdentifyDto"];
+export type CheckUsernameResponseDto =
+  components["schemas"]["CheckUsernameResponseDto"];
 export type CreateDocumentBatchRequestDto =
   components["schemas"]["CreateDocumentBatchRequestDto"];
 export type CreateDocumentBatchResponseDto =
@@ -475,25 +817,36 @@ export type CreateTransactionRequestDto =
 export type CreateTransactionResponseDto =
   components["schemas"]["CreateTransactionResponseDto"];
 export type CreateVendorDto = components["schemas"]["CreateVendorDto"];
+export type DashboardCardAnalytics =
+  components["schemas"]["DashboardCardAnalytics"];
 export type DownloadFileBatchRequestDto =
   components["schemas"]["DownloadFileBatchRequestDto"];
 export type DownloadFileBatchResponseDto =
   components["schemas"]["DownloadFileBatchResponseDto"];
 export type DownloadFileResponseDto =
   components["schemas"]["DownloadFileResponseDto"];
+export type ExchangeRequestDto = components["schemas"]["ExchangeRequestDto"];
 export type FindDocumentResponseDto =
   components["schemas"]["FindDocumentResponseDto"];
 export type FindJobResponseDto = components["schemas"]["FindJobResponseDto"];
 export type FindTransactionResponseDto =
   components["schemas"]["FindTransactionResponseDto"];
-export type LocationDto = components["schemas"]["LocationDto"];
+export type LoginDto = components["schemas"]["LoginDto"];
 export type NotFoundErrorDto = components["schemas"]["NotFoundErrorDto"];
+export type PaginatedFindTransactionResponseDto =
+  components["schemas"]["PaginatedFindTransactionResponseDto"];
+export type PaginatedMetadataDto =
+  components["schemas"]["PaginatedMetadataDto"];
 export type PrinterResponseDto = components["schemas"]["PrinterResponseDto"];
+export type RefreshRequestDto = components["schemas"]["RefreshRequestDto"];
+export type RegisterVendorDto = components["schemas"]["RegisterVendorDto"];
+export type TokenResponseDto = components["schemas"]["TokenResponseDto"];
 export type TransactionStatusResponseDto =
   components["schemas"]["TransactionStatusResponseDto"];
 export type UpdateDocumentRequestDto =
   components["schemas"]["UpdateDocumentRequestDto"];
 export type UpdateJobDto = components["schemas"]["UpdateJobDto"];
+export type UpdateJobStatusDto = components["schemas"]["UpdateJobStatusDto"];
 export type UpdatePrinterDto = components["schemas"]["UpdatePrinterDto"];
 export type UpdateTransactionDto =
   components["schemas"]["UpdateTransactionDto"];
@@ -508,6 +861,248 @@ export type VendorPresenceDto = components["schemas"]["VendorPresenceDto"];
 export type VendorResponseDto = components["schemas"]["VendorResponseDto"];
 export type $defs = Record<string, never>;
 export interface operations {
+  AnalyticsController_findOne_v1: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["DashboardCardAnalytics"];
+        };
+      };
+    };
+  };
+  AnonUserController_upsert_v1: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["AnonUserIdentifyDto"];
+      };
+    };
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AuthController_exchangeCode_v1: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ExchangeRequestDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["TokenResponseDto"];
+        };
+      };
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["TokenResponseDto"];
+        };
+      };
+      /** @description Code invalid or expired */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AuthController_googleAuth_v1: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Redirects to Google */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AuthController_login_v1: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["LoginDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["TokenResponseDto"];
+        };
+      };
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["TokenResponseDto"];
+        };
+      };
+      /** @description Invalid credentials */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AuthController_logout_v1: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["RefreshRequestDto"];
+      };
+    };
+    responses: {
+      /** @description Successfully logged out */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AuthController_microsoftAuth_v1: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Redirects to Microsoft */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AuthController_refresh_v1: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["RefreshRequestDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["TokenResponseDto"];
+        };
+      };
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["TokenResponseDto"];
+        };
+      };
+      /** @description Refresh token invalid or expired */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AuthController_register_v1: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["RegisterVendorDto"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["TokenResponseDto"];
+        };
+      };
+      /** @description Email or username already in use */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   DocumentController_findAll_v1: {
     parameters: {
       query?: never;
@@ -614,6 +1209,25 @@ export interface operations {
         content: {
           "application/json": components["schemas"]["CreateDocumentResponseDto"];
         };
+      };
+    };
+  };
+  DownloadController_download_v1: {
+    parameters: {
+      query?: never;
+      header: {
+        "user-agent": string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
       };
     };
   };
@@ -731,7 +1345,7 @@ export interface operations {
       query?: never;
       header?: never;
       path: {
-        id: string;
+        id: number;
       };
       cookie?: never;
     };
@@ -752,7 +1366,7 @@ export interface operations {
       query?: never;
       header?: never;
       path: {
-        id: string;
+        id: number;
       };
       cookie?: never;
     };
@@ -769,6 +1383,29 @@ export interface operations {
         content: {
           "application/json": components["schemas"]["CreateJobResponseDto"];
         };
+      };
+    };
+  };
+  JobController_updateStatus_v1: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: number;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UpdateJobStatusDto"];
+      };
+    };
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
       };
     };
   };
@@ -903,7 +1540,16 @@ export interface operations {
   TransactionController_findAll_v1: {
     parameters: {
       query?: {
-        status?: "PENDING" | "QUEUED" | "PRINTING" | "COMPLETED" | "ERROR";
+        page?: number;
+        pageSize?: number;
+        statuses?: (
+          | "PENDING"
+          | "QUEUED"
+          | "PRINTING"
+          | "COMPLETED"
+          | "REJECTED"
+          | "ERROR"
+        )[];
       };
       header?: never;
       path?: never;
@@ -916,7 +1562,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["FindTransactionResponseDto"][];
+          "application/json": components["schemas"]["PaginatedFindTransactionResponseDto"];
         };
       };
     };
@@ -1029,6 +1675,29 @@ export interface operations {
         content: {
           "application/json": components["schemas"]["TransactionStatusResponseDto"];
         };
+      };
+    };
+  };
+  TransactionController_updateTransactionAndJobStatus_v1: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: number;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UpdateTransactionDto"];
+      };
+    };
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
       };
     };
   };
@@ -1172,6 +1841,25 @@ export interface operations {
       };
     };
   };
+  VendorController_getVendorProfile_v1: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["VendorResponseDto"];
+        };
+      };
+    };
+  };
   VendorController_findNearby_v1: {
     parameters: {
       query: {
@@ -1191,6 +1879,27 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["VendorResponseDto"][];
+        };
+      };
+    };
+  };
+  VendorController_checkUsernameAvailability_v1: {
+    parameters: {
+      query: {
+        username: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["CheckUsernameResponseDto"];
         };
       };
     };

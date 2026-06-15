@@ -11,7 +11,8 @@ export type TransactionStatus =
   | "QUEUED"
   | "PRINTING"
   | "COMPLETED"
-  | "ERROR";
+  | "ERROR"
+  | "REJECTED";
 
 export interface TransactionDocument {
   id: number;
