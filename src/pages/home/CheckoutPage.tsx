@@ -517,7 +517,7 @@ export default function CheckoutPage() {
   const handleSubmit = async () => {
     if (!vendorId || !vendorProfile) {
       await presentToast({
-        message: "No printer selected. Please go back and select a printer.",
+        message: "No printer selected. Please choose and select a printer.",
         duration: 3000,
         color: "danger",
         position: "top",
