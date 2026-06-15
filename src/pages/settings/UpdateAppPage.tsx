@@ -81,7 +81,7 @@ export default function UpdateAppPage() {
           </IonNote>
         )}
         <IonNote className="absolute right-0 bottom-16 left-0 flex justify-center">
-          Handcrafted by
+          Crafted from concept to completion by
           <a
             href="https://vanshajsaxena.com"
             target="_blank"
@@ -90,7 +90,6 @@ export default function UpdateAppPage() {
           >
             <IonLabel color="brand-blue">Vanshaj Saxena</IonLabel>
           </a>
-          .
         </IonNote>
       </AppContent>
     </IonPage>
