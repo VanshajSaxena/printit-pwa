@@ -80,7 +80,7 @@ export default function UpdateAppPage() {
             You are using the latest version of Printit.
           </IonNote>
         )}
-        <IonNote className="absolute right-0 bottom-16 left-0 flex justify-center">
+        <IonNote className="absolute right-0 bottom-16 left-0 block px-4 text-center">
           Crafted from concept to completion by
           <a
             href="https://vanshajsaxena.com"
