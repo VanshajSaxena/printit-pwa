@@ -8,6 +8,7 @@ import {
   IonCardTitle,
   IonHeader,
   IonIcon,
+  IonNote,
   IonPage,
   IonTitle,
   IonToolbar,
@@ -19,7 +20,7 @@ import AppContent from "@layout/AppContent";
 import { useDraftStore } from "@store/draftStore";
 import { useVendorStore } from "@store/vendorStore";
 import { formatRelativeTime } from "@utils/formatRelativeTime";
-import { checkmarkCircle, time } from "ionicons/icons";
+import { checkmarkCircle, print, time } from "ionicons/icons";
 
 export function SelectPrinterPage() {
   const router = useIonRouter();
@@ -60,54 +61,73 @@ export function SelectPrinterPage() {
         </IonToolbar>
       </IonHeader>
 
-      <AppContent fullscreen className="ion-padding">
-        <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
-          {vendors.map((vendor) => (
-            <IonCard
-              key={vendor.id}
-              button
-              onClick={() => {
-                handleSelect(vendor.id);
+      <AppContent fullscreen className="ion-padding h-full">
+        {vendors.length === 0 ? (
+          <div className="flex h-full flex-col items-center justify-center pb-12.5 text-center">
+            <IonIcon icon={print} className="mb-2 text-3xl"></IonIcon>
+            <h2
+              style={{
+                fontSize: "1.5rem",
+                fontWeight: 600,
+                margin: "0.25rem",
+                color: "var(--ion-color-dark)",
               }}
-              className="m-0 h-full w-full cursor-pointer transition-transform active:scale-[0.98]"
             >
-              <div className="flex justify-center px-4">
-                <PrinterGraphic height={150} />
-              </div>
-
-              <IonCardHeader className="pt-0">
-                <IonCardTitle className="flex items-start justify-between gap-2 text-base">
-                  <span className="line-clamp-1">
-                    {vendor.displayName ?? vendor.firstName}
-                  </span>
-
-                  {currentDraftTransactionVendorId === vendor.id && (
-                    <IonIcon
-                      icon={checkmarkCircle}
-                      color="success"
-                      style={{ fontSize: "1.2rem" }}
-                    />
-                  )}
-                </IonCardTitle>
-
-                <IonCardSubtitle className="text-xs">
-                  @{vendor.username}
-                </IonCardSubtitle>
-              </IonCardHeader>
-
-              <IonCardContent className="pt-0">
-                <div className="flex items-center gap-2 text-sm">
-                  <IonIcon icon={time} color="medium" />
-                  <span>
-                    {vendor.lastUsedAt
-                      ? formatRelativeTime(vendor.lastUsedAt)
-                      : "Never used"}
-                  </span>
+              No printers here
+            </h2>
+            <IonNote className="max-w-xs text-sm">
+              Scan a QR code or search printers to find them here
+            </IonNote>
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
+            {vendors.map((vendor) => (
+              <IonCard
+                key={vendor.id}
+                button
+                onClick={() => {
+                  handleSelect(vendor.id);
+                }}
+                className="m-0 h-full w-full cursor-pointer transition-transform active:scale-[0.98]"
+              >
+                <div className="flex justify-center px-4">
+                  <PrinterGraphic height={150} />
                 </div>
-              </IonCardContent>
-            </IonCard>
-          ))}
-        </div>
+
+                <IonCardHeader className="pt-0">
+                  <IonCardTitle className="flex items-start justify-between gap-2 text-base">
+                    <span className="line-clamp-1">
+                      {vendor.displayName ?? vendor.firstName}
+                    </span>
+
+                    {currentDraftTransactionVendorId === vendor.id && (
+                      <IonIcon
+                        icon={checkmarkCircle}
+                        color="success"
+                        style={{ fontSize: "1.2rem" }}
+                      />
+                    )}
+                  </IonCardTitle>
+
+                  <IonCardSubtitle className="text-xs">
+                    @{vendor.username}
+                  </IonCardSubtitle>
+                </IonCardHeader>
+
+                <IonCardContent className="pt-0">
+                  <div className="flex items-center gap-2 text-sm">
+                    <IonIcon icon={time} color="medium" />
+                    <span>
+                      {vendor.lastUsedAt
+                        ? formatRelativeTime(vendor.lastUsedAt)
+                        : "Never used"}
+                    </span>
+                  </div>
+                </IonCardContent>
+              </IonCard>
+            ))}
+          </div>
+        )}
       </AppContent>
     </IonPage>
   );
